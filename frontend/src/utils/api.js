@@ -43,6 +43,34 @@ export const api = {
       request('/api/ai/analyze', { method: 'POST', body: JSON.stringify({ text }) }),
     hotspots: () => request('/api/ai/hotspots'),
   },
+  agent: {
+    ask: (question) =>
+      request('/api/agent/ask', { method: 'POST', body: JSON.stringify({ question }) }),
+  },
+  pulse: {
+    list: (params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return request(`/api/pulse${q ? '?' + q : ''}`);
+    },
+    summary: () => request('/api/pulse/summary'),
+  },
+  admin: {
+    queue: (params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return request(`/api/admin/queue${q ? '?' + q : ''}`);
+    },
+    breaches: () => request('/api/admin/breaches'),
+    departments: () => request('/api/admin/departments'),
+    deptMetrics: () => request('/api/admin/dept-metrics'),
+    staff: () => request('/api/admin/staff'),
+    assign: (id, payload) =>
+      request(`/api/admin/issues/${id}/assign`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    resolve: (id, formData) =>
+      request(`/api/admin/issues/${id}/resolve`, { method: 'POST', body: formData }),
+  },
   stats: () => request('/api/stats'),
 };
 

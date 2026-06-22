@@ -120,6 +120,24 @@ export default function Landing() {
               text="Hotspot forecasting helps cities stay ahead of problems, not behind them."
               gradient="from-indigo-400 to-fuchsia-500"
             />
+            <Feature
+              icon={<Sparkles />}
+              title="AI Civic Assistant"
+              text={'Ask "how many SLA breaches?" or "what is the sentiment trend?" — answers with cited sources.'}
+              gradient="from-fuchsia-400 to-purple-600"
+            />
+            <Feature
+              icon={<Sparkles />}
+              title="City Pulse"
+              text="Passive listening on social, news, and forums — sentiment-tagged in real time."
+              gradient="from-rose-400 to-orange-500"
+            />
+            <Feature
+              icon={<Sparkles />}
+              title="Open311 Compatible"
+              text="Drop-in for any city already speaking the Open311 standard. Multi-authority routing built in."
+              gradient="from-cyan-400 to-blue-500"
+            />
           </div>
         </div>
       </section>

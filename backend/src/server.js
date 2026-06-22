@@ -12,6 +12,10 @@ import issuesRouter from './routes/issues.js';
 import usersRouter from './routes/users.js';
 import aiRouter from './routes/ai.js';
 import statsRouter from './routes/stats.js';
+import open311Router from './routes/open311.js';
+import agentRouter from './routes/agent.js';
+import adminRouter from './routes/admin.js';
+import pulseRouter from './routes/pulse.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,6 +68,10 @@ app.use('/api/issues', issuesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/agent', agentRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/pulse', pulseRouter);
+app.use('/open311/v2', open311Router);
 
 // --- 404 ---
 app.use((req, res) => {

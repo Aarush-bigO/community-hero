@@ -4,6 +4,8 @@ import { nanoid } from 'nanoid';
 import { getDb } from '../db/init.js';
 import { upload } from '../middleware/upload.js';
 import { analyzeIssue } from '../services/llm.js';
+import { analyzeSentiment } from '../services/sentiment.js';
+import { routeReport, computeSlaDueAt } from '../services/routing.js';
 import { awardXp, checkBadges } from '../services/gamification.js';
 
 const router = Router();
@@ -80,15 +82,20 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
     const parsed = CreateSchema.parse(req.body);
     const id = nanoid(10);
 
-    const ai = await analyzeIssue(`${parsed.title}\n\n${parsed.description || ''}`);
+    const text = `${parsed.title}\n\n${parsed.description || ''}`;
+    const ai = await analyzeIssue(text);
+    const sent = analyzeSentiment(text);
+    const route = routeReport({ lat: parsed.lat, lng: parsed.lng, category: ai.category });
 
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const db = getDb();
     db.prepare(
       `INSERT INTO issues
-       (id, title, description, category, severity, lat, lng, address, photo_url, reporter_id, ai_tags, ai_summary)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       (id, title, description, category, severity, lat, lng, address, photo_url, reporter_id,
+        municipality_id, department_id, sla_due_at,
+        ai_tags, ai_summary, sentiment, sentiment_label)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       id,
       parsed.title,
@@ -100,8 +107,13 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
       parsed.address || '',
       photo_url,
       parsed.reporter_id || null,
+      route.municipality?.id || 'demo-city',
+      route.department?.id || null,
+      computeSlaDueAt(route.sla_hours),
       JSON.stringify(ai.tags),
-      ai.summary
+      ai.summary,
+      sent.score,
+      sent.label
     );
 
     if (parsed.reporter_id) {
@@ -110,7 +122,12 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
     }
 
     const created = db.prepare('SELECT * FROM issues WHERE id = ?').get(id);
-    res.status(201).json({ ...decodeIssue(created), ai });
+    res.status(201).json({
+      ...decodeIssue(created),
+      ai,
+      sentiment: sent,
+      routed_to: route.department?.name || null,
+    });
   } catch (e) {
     if (e.issues) return res.status(400).json({ error: 'Validation failed', issues: e.issues });
     next(e);

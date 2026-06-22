@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Globe2, Map, BarChart3, Trophy, Plus } from 'lucide-react';
+import { Globe2, Map, BarChart3, Trophy, Plus, Radio, Briefcase } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export default function Navbar() {
@@ -24,11 +24,17 @@ export default function Navbar() {
           <NavLink to="/map" className={link}>
             <Map className="w-4 h-4" /> Map
           </NavLink>
+          <NavLink to="/pulse" className={link}>
+            <Radio className="w-4 h-4" /> Pulse
+          </NavLink>
           <NavLink to="/dashboard" className={link}>
             <BarChart3 className="w-4 h-4" /> Dashboard
           </NavLink>
           <NavLink to="/leaderboard" className={link}>
             <Trophy className="w-4 h-4" /> Heroes
+          </NavLink>
+          <NavLink to="/admin" className={link}>
+            <Briefcase className="w-4 h-4" /> Admin
           </NavLink>
         </div>
 

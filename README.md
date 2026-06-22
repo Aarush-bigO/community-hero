@@ -37,11 +37,22 @@ This isn't a CRUD app dressed up. The frontend is a **living 3D world**:
 |---|---|
 | **Auto-categorization** | LLM tags each report (pothole, streetlight, water, waste, infrastructure, other) |
 | **Severity scoring** | AI rates urgency 1–5 from photo + description |
-| **Duplicate detection** | Geo + semantic similarity prevents spam |
+| **Sentiment analysis** | Every report + social signal scored on a -1..1 scale |
 | **Predictive insights** | Hotspot forecasting from historical data |
-| **Smart routing** | Suggests the right municipal department |
+| **AI Civic Assistant** | Floating chat that answers natural-language questions about the data, with citations |
+| **City Pulse** | Passive listening on social/news/forums, sentiment-tagged |
+| **Smart routing** | Multi-authority engine routes each report to the correct municipality + department |
 
 > Backend ships with a pluggable LLM service. Drop in OpenAI, Anthropic, Groq, or run local with Ollama.
+
+## 🏢 Built for Real Cities
+
+Community Hero isn't just a demo — it speaks the same protocols as production civic platforms:
+
+- **Open311 v2 GeoReport API** — drop-in compatible with any city using the standard (Chicago, San Francisco, D.C., …). Endpoints: `/open311/v2/services.json`, `/open311/v2/requests.json` (GET/POST), `/open311/v2/requests/:id.json`.
+- **Multi-authority routing** — geographic boundary detection picks the correct municipality; per-department category mapping picks the correct team; per-department SLAs.
+- **Work-order portal** — `/admin` route gives staff a queue with assignment, SLA countdowns, breach alerts, resolution proof photos, and per-department metrics.
+- **Multi-tenant ready** — every record carries `municipality_id`. Add more cities by inserting rows into the `municipalities` table.
 
 ---
 

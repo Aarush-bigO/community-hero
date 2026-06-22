@@ -25,10 +25,32 @@ export function initDb() {
       name TEXT NOT NULL,
       email TEXT UNIQUE,
       avatar_url TEXT,
+      role TEXT DEFAULT 'citizen',
+      municipality_id TEXT DEFAULT 'demo-city',
       xp INTEGER DEFAULT 0,
       level INTEGER DEFAULT 1,
       badges TEXT DEFAULT '[]',
       created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS municipalities (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      country TEXT,
+      bbox TEXT,
+      contact_email TEXT,
+      open311_jurisdiction_id TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS departments (
+      id TEXT PRIMARY KEY,
+      municipality_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      categories TEXT DEFAULT '[]',
+      sla_hours INTEGER DEFAULT 72,
+      contact_email TEXT,
+      FOREIGN KEY (municipality_id) REFERENCES municipalities(id)
     );
 
     CREATE TABLE IF NOT EXISTS issues (
@@ -43,11 +65,22 @@ export function initDb() {
       address TEXT,
       photo_url TEXT,
       reporter_id TEXT,
+      municipality_id TEXT DEFAULT 'demo-city',
+      department_id TEXT,
+      assignee_id TEXT,
+      sla_due_at TEXT,
       ai_tags TEXT DEFAULT '[]',
       ai_summary TEXT,
+      sentiment REAL DEFAULT 0,
+      sentiment_label TEXT DEFAULT 'neutral',
+      resolution_photo_url TEXT,
+      resolution_note TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now')),
-      FOREIGN KEY (reporter_id) REFERENCES users(id)
+      FOREIGN KEY (reporter_id) REFERENCES users(id),
+      FOREIGN KEY (municipality_id) REFERENCES municipalities(id),
+      FOREIGN KEY (department_id) REFERENCES departments(id),
+      FOREIGN KEY (assignee_id) REFERENCES users(id)
     );
 
     CREATE TABLE IF NOT EXISTS verifications (
@@ -72,10 +105,29 @@ export function initDb() {
       FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS pulse_signals (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      author TEXT,
+      text TEXT NOT NULL,
+      url TEXT,
+      lat REAL,
+      lng REAL,
+      municipality_id TEXT DEFAULT 'demo-city',
+      sentiment REAL DEFAULT 0,
+      sentiment_label TEXT DEFAULT 'neutral',
+      topic TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
     CREATE INDEX IF NOT EXISTS idx_issues_category ON issues(category);
     CREATE INDEX IF NOT EXISTS idx_issues_status ON issues(status);
     CREATE INDEX IF NOT EXISTS idx_issues_geo ON issues(lat, lng);
+    CREATE INDEX IF NOT EXISTS idx_issues_muni ON issues(municipality_id);
+    CREATE INDEX IF NOT EXISTS idx_issues_dept ON issues(department_id);
     CREATE INDEX IF NOT EXISTS idx_verifications_issue ON verifications(issue_id);
+    CREATE INDEX IF NOT EXISTS idx_pulse_muni ON pulse_signals(municipality_id);
+    CREATE INDEX IF NOT EXISTS idx_pulse_topic ON pulse_signals(topic);
   `);
 
   console.log(`📦 SQLite ready at ${DB_PATH}`);

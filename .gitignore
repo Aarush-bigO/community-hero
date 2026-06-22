@@ -29,8 +29,7 @@ yarn-error.log*
 .DS_Store
 
 # Backend
-backend/data/*.db
-backend/data/*.db-journal
+backend/data/
 backend/uploads/*
 !backend/uploads/.gitkeep
 

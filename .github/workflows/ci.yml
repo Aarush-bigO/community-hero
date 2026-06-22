@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [frontend, backend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.app }}/package-lock.json
+      - name: Install
+        working-directory: ${{ matrix.app }}
+        run: npm install --no-audit --no-fund
+      - name: Build (frontend only)
+        if: matrix.app == 'frontend'
+        working-directory: frontend
+        run: npm run build

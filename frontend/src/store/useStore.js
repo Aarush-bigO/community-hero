@@ -20,4 +20,12 @@ export const useStore = create((set, get) => ({
     set({ toast });
     setTimeout(() => set({ toast: null }), 3500);
   },
+
+  // --- Real-time (SSE) state ---
+  liveConnected: false,
+  setLiveConnected: (liveConnected) => set({ liveConnected }),
+
+  // Buffer of pulse signals pushed live; Pulse page drains/prepends these.
+  liveSignals: [],
+  pushLiveSignal: (sig) => set({ liveSignals: [sig, ...get().liveSignals].slice(0, 200) }),
 }));

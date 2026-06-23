@@ -56,6 +56,17 @@ Community Hero isn't just a demo — it speaks the same protocols as production 
 
 ---
 
+## ⚡ Advanced Platform Parity (v1.1)
+
+Features that close the gap with SeeClickFix, FixMyStreet, and Zencity:
+
+- **Real-time notifications (SSE)** — an in-process event bus (`services/events.js`) fans every state change (new report, status change, assignment, resolution, duplicate, new pulse signal) to browsers over `GET /api/stream`. The navbar shows a live ● indicator; toasts pop the moment a report lands anywhere in the system.
+- **Live passive listening** — `services/pulseGenerator.js` simulates a Zencity-style firehose: it injects sentiment-scored social/news chatter on an interval (`PULSE_LIVE=true`, `PULSE_INTERVAL_MS`) and streams it to the City Pulse page, which flashes each new signal with a `NEW` badge. Also exposed on demand via `POST /api/pulse/simulate`.
+- **GIS asset layer + road detection** — `services/assets.js` carries a road network and does exact point-to-segment geometry to classify any report as **public / private / off-network road** (FixMyStreet-style private-road detection), plus spatial **duplicate detection** (same category within ~75 m → linked as `duplicate_of`). Endpoints: `GET /api/assets/roads.json` (GeoJSON overlay), `/api/assets/classify`, `/api/assets/duplicates`. Every new issue is auto-tagged with `road_type`, `nearest_road`, `on_private_road`, and `duplicate_of`.
+- **Multi-language UI** — dependency-free i18n (`frontend/src/i18n`) with English, हिन्दी, Español, and Français, persisted per-resident and switchable from the navbar.
+
+---
+
 ## 🏗️ Architecture
 
 ```

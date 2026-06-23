@@ -7,6 +7,8 @@ import { analyzeIssue } from '../services/llm.js';
 import { analyzeSentiment } from '../services/sentiment.js';
 import { routeReport, computeSlaDueAt } from '../services/routing.js';
 import { awardXp, checkBadges } from '../services/gamification.js';
+import { classifyLocation, findDuplicates } from '../services/assets.js';
+import { publish, EVENTS } from '../services/events.js';
 
 const router = Router();
 
@@ -87,6 +89,11 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
     const sent = analyzeSentiment(text);
     const route = routeReport({ lat: parsed.lat, lng: parsed.lng, category: ai.category });
 
+    // GIS asset layer: classify location + detect nearby duplicate reports.
+    const geo = classifyLocation(parsed.lat, parsed.lng);
+    const dupes = findDuplicates(parsed.lat, parsed.lng, ai.category);
+    const duplicate_of = dupes[0]?.id || null;
+
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const db = getDb();
@@ -94,8 +101,9 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
       `INSERT INTO issues
        (id, title, description, category, severity, lat, lng, address, photo_url, reporter_id,
         municipality_id, department_id, sla_due_at,
-        ai_tags, ai_summary, sentiment, sentiment_label)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ai_tags, ai_summary, sentiment, sentiment_label,
+        road_type, nearest_road, on_private_road, duplicate_of, lang)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       id,
       parsed.title,
@@ -113,7 +121,12 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
       JSON.stringify(ai.tags),
       ai.summary,
       sent.score,
-      sent.label
+      sent.label,
+      geo.road_type,
+      geo.nearest_road_name,
+      geo.on_private_road ? 1 : 0,
+      duplicate_of,
+      req.body.lang || 'en'
     );
 
     if (parsed.reporter_id) {
@@ -122,11 +135,29 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
     }
 
     const created = db.prepare('SELECT * FROM issues WHERE id = ?').get(id);
+
+    // Real-time push: new issue (and a duplicate hint if we found one).
+    publish(EVENTS.ISSUE_CREATED, {
+      id,
+      title: created.title,
+      category: created.category,
+      severity: created.severity,
+      municipality_id: created.municipality_id,
+      lat: created.lat,
+      lng: created.lng,
+      routed_to: route.department?.name || null,
+    });
+    if (duplicate_of) {
+      publish(EVENTS.ISSUE_DUPLICATE, { id, duplicate_of, distance_m: dupes[0].distance_m });
+    }
+
     res.status(201).json({
       ...decodeIssue(created),
       ai,
       sentiment: sent,
       routed_to: route.department?.name || null,
+      geo,
+      duplicates: dupes,
     });
   } catch (e) {
     if (e.issues) return res.status(400).json({ error: 'Validation failed', issues: e.issues });
@@ -177,6 +208,12 @@ router.patch('/:id/status', (req, res) => {
     const issue = db.prepare('SELECT reporter_id FROM issues WHERE id = ?').get(req.params.id);
     if (issue?.reporter_id) awardXp(issue.reporter_id, 'RESOLVE');
   }
+
+  publish(status === 'resolved' ? EVENTS.ISSUE_RESOLVED : EVENTS.ISSUE_STATUS, {
+    id: req.params.id,
+    status,
+    note: note || '',
+  });
 
   res.json({ ok: true });
 });

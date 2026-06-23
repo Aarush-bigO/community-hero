@@ -10,8 +10,35 @@ import Leaderboard from './pages/Leaderboard';
 import Onboard from './pages/Onboard';
 import Pulse from './pages/Pulse';
 import Admin from './pages/Admin';
+import { useEventStream } from './hooks/useEventStream';
+import { useStore } from './store/useStore';
+
+// Maps a server event to a human toast. Live notifications across the app.
+const TOAST_FOR = {
+  'issue.created': (e) => `🆕 New report: ${e.payload.title} → ${e.payload.routed_to || 'routing…'}`,
+  'issue.resolved': () => `✅ An issue was marked resolved`,
+  'issue.assigned': () => `👷 Issue assigned to a crew`,
+  'issue.duplicate': (e) => `🔁 Possible duplicate (${e.payload.distance_m}m away)`,
+  'sla.breach': () => `⏰ SLA breach detected`,
+};
 
 export default function App() {
+  const showToast = useStore((s) => s.showToast);
+  const setLiveConnected = useStore((s) => s.setLiveConnected);
+  const pushLiveSignal = useStore((s) => s.pushLiveSignal);
+
+  const { connected } = useEventStream((event) => {
+    if (event.type === 'pulse.signal') {
+      pushLiveSignal(event.payload);
+      return;
+    }
+    const fn = TOAST_FOR[event.type];
+    if (fn) showToast({ type: 'live', message: fn(event) });
+  });
+
+  // keep the navbar LIVE indicator in sync
+  if (connected !== useStore.getState().liveConnected) setLiveConnected(connected);
+
   return (
     <>
       <Navbar />

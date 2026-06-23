@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import { getDb } from '../db/init.js';
 import { upload } from '../middleware/upload.js';
+import { publish, EVENTS } from '../services/events.js';
 
 const router = Router();
 
@@ -58,6 +59,7 @@ router.post('/issues/:id/assign', (req, res) => {
        status = CASE WHEN status = 'reported' THEN 'in_progress' ELSE status END,
        updated_at = datetime('now') WHERE id = ?`
   ).run(assignee_id || null, department_id || null, req.params.id);
+  publish(EVENTS.ISSUE_ASSIGNED, { id: req.params.id, assignee_id, department_id });
   res.json({ ok: true });
 });
 
@@ -69,6 +71,7 @@ router.post('/issues/:id/resolve', upload.single('proof'), (req, res) => {
     `UPDATE issues SET status='resolved', resolution_note=?, resolution_photo_url=?,
        updated_at=datetime('now') WHERE id=?`
   ).run(note || '', photo_url, req.params.id);
+  publish(EVENTS.ISSUE_RESOLVED, { id: req.params.id, note: note || '', photo_url });
   res.json({ ok: true, photo_url });
 });
 

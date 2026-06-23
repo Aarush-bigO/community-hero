@@ -40,7 +40,7 @@
     @apply bg-gradient-to-br from-white via-brand-200 to-accent-400 bg-clip-text text-transparent;
   }
   .card {
-    @apply glass rounded-2xl p-5;
+    @apply glass rounded-2xl p-5 relative;
   }
   .input {
     @apply w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10

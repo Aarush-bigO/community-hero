@@ -7,7 +7,9 @@
  */
 import { useEffect, useRef, useState } from 'react';
 
-const BASE = import.meta.env.VITE_API_URL || '';
+const BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://community-hero-backend.onrender.com' : '');
 
 export function useEventStream(onEvent) {
   const [connected, setConnected] = useState(false);

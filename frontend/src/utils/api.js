@@ -1,4 +1,8 @@
-const BASE = import.meta.env.VITE_API_URL || '';
+// API base: explicit env var wins; in production default to the hosted backend;
+// in dev fall back to '' (Vite proxy → localhost:4000).
+const BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://community-hero-backend.onrender.com' : '');
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {

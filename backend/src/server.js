@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { initDb } from './db/init.js';
+import { seedIfEmpty } from './db/seed.js';
 import issuesRouter from './routes/issues.js';
 import usersRouter from './routes/users.js';
 import aiRouter from './routes/ai.js';
@@ -27,8 +28,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// --- Boot DB ---
+// --- Boot DB (and seed demo data on first run / empty DB) ---
 initDb();
+seedIfEmpty();
 
 // --- Security & basics ---
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));

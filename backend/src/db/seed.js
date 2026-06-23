@@ -3,8 +3,10 @@ import { initDb, getDb } from './init.js';
 import { nanoid } from 'nanoid';
 import { analyzeSentiment } from '../services/sentiment.js';
 
-initDb();
-const db = getDb();
+/** Seed the database with demo data (wipes existing rows first). */
+export function seed() {
+  initDb();
+  const db = getDb();
 
 // Wipe so reseeds are deterministic
 db.exec(`
@@ -150,6 +152,23 @@ pulse.forEach((p) => {
   ).run(nanoid(10), p.source, p.author, p.text, p.url || null, p.topic, sent.score, sent.label, 'new-delhi', `-${Math.floor(Math.random() * 24)} hours`);
 });
 
-console.log(
-  `✅ Seeded ${munis.length} municipalities, ${depts.length} departments, ${users.length} users, ${samples.length} issues, ${pulse.length} pulse signals`
-);
+  console.log(
+    `✅ Seeded ${munis.length} municipalities, ${depts.length} departments, ${users.length} users, ${samples.length} issues, ${pulse.length} pulse signals`
+  );
+}
+
+/** Seed only when the database is empty — safe to call on every boot. */
+export function seedIfEmpty() {
+  initDb();
+  const db = getDb();
+  const count = db.prepare('SELECT COUNT(*) c FROM users').get().c;
+  if (!count) {
+    console.log('🌱 Empty database detected — seeding demo data…');
+    seed();
+  }
+}
+
+// Run as a CLI script: `node src/db/seed.js`
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seed();
+}

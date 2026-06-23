@@ -12,6 +12,7 @@ export function getDb() {
 }
 
 export function initDb() {
+  if (db) return db; // idempotent — reuse the open connection
   const dir = path.dirname(DB_PATH);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 

@@ -17,7 +17,9 @@ import {
 import { TrendingUp, CheckCircle2, Clock, Users } from 'lucide-react';
 import { api } from '../utils/api';
 
-const COLORS = ['#06a0ee', '#a855f7', '#f87171', '#fbbf24', '#a3e635', '#38bdf8'];
+const COLORS = ['#2fbbff', '#7cc7ff', '#0080cc', '#38bdf8', '#1e6f9f', '#9fe0ff'];
+
+const SEVERITY_COLORS = { low: '#34d399', mid: '#fbbf24', high: '#f87171' };
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -30,54 +32,57 @@ export default function Dashboard() {
 
   if (!stats) {
     return (
-      <main className="pt-24 px-6 max-w-7xl mx-auto">
-        <div className="card text-center text-slate-400">Loading dashboard...</div>
+      <main className="page">
+        <div className="page-wrap">
+          <div className="card text-center text-slate-400">Loading dashboard...</div>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="pt-24 pb-12 px-6">
-      <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-2">
+    <main className="page">
+      <div className="page-wrap">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+          <p className="eyebrow">ANALYTICS</p>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mb-2 text-white">
             Impact <span className="gradient-text">Dashboard</span>
           </h1>
           <p className="text-slate-400">Real-time view of community action.</p>
         </motion.div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <KPI icon={<TrendingUp />} label="Total Reports" value={stats.total} accent="from-brand-400 to-cyan-400" />
-          <KPI icon={<CheckCircle2 />} label="Resolution Rate" value={`${stats.resolutionRate}%`} accent="from-emerald-400 to-teal-500" />
-          <KPI icon={<Clock />} label="In Progress" value={stats.inProgress} accent="from-purple-400 to-fuchsia-500" />
-          <KPI icon={<Users />} label="Active Heroes" value={stats.reporters} accent="from-amber-400 to-orange-500" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <KPI icon={<TrendingUp />} label="Total Reports" value={stats.total} />
+          <KPI icon={<CheckCircle2 />} label="Resolution Rate" value={`${stats.resolutionRate}%`} />
+          <KPI icon={<Clock />} label="In Progress" value={stats.inProgress} />
+          <KPI icon={<Users />} label="Active Heroes" value={stats.reporters} />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Trend */}
           <div className="card lg:col-span-2">
-            <h3 className="font-display font-semibold mb-4">Reports Over Time (30d)</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">Reports Over Time (30d)</h3>
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={stats.trend}>
                 <defs>
                   <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06a0ee" stopOpacity={0.6} />
-                    <stop offset="95%" stopColor="#06a0ee" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#2fbbff" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#2fbbff" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis dataKey="day" stroke="#64748b" fontSize={11} />
                 <YAxis stroke="#64748b" fontSize={11} />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Area type="monotone" dataKey="c" stroke="#06a0ee" fill="url(#grad1)" />
+                <Area type="monotone" dataKey="c" stroke="#2fbbff" strokeWidth={2} fill="url(#grad1)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
           {/* Category breakdown */}
           <div className="card">
-            <h3 className="font-display font-semibold mb-4">By Category</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">By Category</h3>
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
@@ -99,21 +104,28 @@ export default function Dashboard() {
 
           {/* Severity */}
           <div className="card">
-            <h3 className="font-display font-semibold mb-4">Severity Distribution</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">Severity Distribution</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stats.bySeverity}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis dataKey="severity" stroke="#64748b" fontSize={11} />
                 <YAxis stroke="#64748b" fontSize={11} />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="c" fill="#a855f7" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="c" radius={[6, 6, 0, 0]}>
+                  {stats.bySeverity.map((s, i) => (
+                    <Cell
+                      key={i}
+                      fill={SEVERITY_COLORS[String(s.severity).toLowerCase()] || '#2fbbff'}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Hotspots */}
           <div className="card lg:col-span-2">
-            <h3 className="font-display font-semibold mb-4">🔥 Predictive Hotspots</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">Predictive Hotspots</h3>
             {hotspots.length === 0 ? (
               <p className="text-sm text-slate-400">
                 Not enough data yet. Hotspots appear when 2+ issues cluster in an area.
@@ -131,11 +143,11 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <div className="w-32 h-2 rounded-full bg-white/10 overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-amber-400 to-red-500"
+                          className="h-full bg-brand-400"
                           style={{ width: `${h.risk * 100}%` }}
                         />
                       </div>
-                      <span className="text-xs font-mono text-red-300">
+                      <span className="text-xs font-mono text-slate-300">
                         {Math.round(h.risk * 100)}%
                       </span>
                     </div>
@@ -151,20 +163,19 @@ export default function Dashboard() {
 }
 
 const tooltipStyle = {
-  background: 'rgba(10,14,28,0.95)',
+  background: '#0a0f1e',
   border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: '12px',
+  borderRadius: '10px',
+  color: '#e2e8f0',
   fontSize: '12px',
 };
 
-function KPI({ icon, label, value, accent }) {
+function KPI({ icon, label, value }) {
   return (
     <motion.div whileHover={{ y: -3 }} className="card">
-      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${accent} grid place-items-center mb-3`}>
-        <span className="text-white">{icon}</span>
-      </div>
-      <div className="text-3xl font-bold gradient-text">{value}</div>
-      <div className="text-xs uppercase tracking-wide text-slate-400 mt-1">{label}</div>
+      <div className="icon-tile mb-3">{icon}</div>
+      <div className="stat-num">{value}</div>
+      <div className="text-slate-400 text-xs uppercase tracking-wide mt-1">{label}</div>
     </motion.div>
   );
 }

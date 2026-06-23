@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Toast from './components/Toast';
@@ -36,8 +37,10 @@ export default function App() {
     if (fn) showToast({ type: 'live', message: fn(event) });
   });
 
-  // keep the navbar LIVE indicator in sync
-  if (connected !== useStore.getState().liveConnected) setLiveConnected(connected);
+  // keep the navbar LIVE indicator in sync (effect, not during render)
+  useEffect(() => {
+    setLiveConnected(connected);
+  }, [connected, setLiveConnected]);
 
   return (
     <>

@@ -75,9 +75,9 @@ export default function Landing() {
       </section>
 
       {/* STANDARDS / CREDIBILITY STRIP */}
-      <section className="relative border-y border-white/5 bg-white/[0.015] py-8 px-6">
+      <section className="relative hairline border-x-0 bg-white/[0.015] py-8 px-6">
         <div className="max-w-7xl mx-auto">
-          <p className="text-center text-[11px] uppercase tracking-[0.2em] text-slate-500 mb-6">
+          <p className="eyebrow text-center mb-6">
             Speaks the protocols of production civic platforms
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-slate-400">
@@ -95,6 +95,7 @@ export default function Landing() {
       <section className="relative py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
+            <p className="eyebrow mb-3">Capabilities</p>
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
               Built for <span className="gradient-text">action.</span>
             </h2>
@@ -108,55 +109,46 @@ export default function Landing() {
               icon={<Zap />}
               title="Snap & Report"
               text="Photo + GPS + voice = instant report. AI categorizes in under a second."
-              gradient="from-brand-400 to-cyan-400"
             />
             <Feature
               icon={<Sparkles />}
               title="AI Triage"
               text="Severity scoring, duplicate detection, and smart routing to the right department."
-              gradient="from-accent-400 to-pink-500"
             />
             <Feature
               icon={<Users />}
               title="Community Verify"
               text="Neighbours upvote and confirm. No spam, no noise — just signal."
-              gradient="from-emerald-400 to-teal-500"
             />
             <Feature
               icon={<Shield />}
               title="Transparent Tracking"
               text="Every status update is public. From reported to resolved, in plain sight."
-              gradient="from-amber-400 to-orange-500"
             />
             <Feature
               icon={<Trophy />}
               title="Earn XP & Badges"
               text="Rise through the ranks. The most active heroes get city-wide recognition."
-              gradient="from-yellow-400 to-red-500"
             />
             <Feature
               icon={<Sparkles />}
               title="Predictive Insights"
               text="Hotspot forecasting helps cities stay ahead of problems, not behind them."
-              gradient="from-indigo-400 to-fuchsia-500"
             />
             <Feature
               icon={<Sparkles />}
               title="AI Civic Assistant"
               text={'Ask "how many SLA breaches?" or "what is the sentiment trend?" — answers with cited sources.'}
-              gradient="from-fuchsia-400 to-purple-600"
             />
             <Feature
               icon={<Sparkles />}
               title="City Pulse"
               text="Passive listening on social, news, and forums — sentiment-tagged in real time."
-              gradient="from-rose-400 to-orange-500"
             />
             <Feature
               icon={<Sparkles />}
               title="Open311 Compatible"
               text="Drop-in for any city already speaking the Open311 standard. Multi-authority routing built in."
-              gradient="from-cyan-400 to-blue-500"
             />
           </div>
         </div>
@@ -164,7 +156,8 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="relative py-32 px-6">
-        <div className="max-w-5xl mx-auto card text-center py-16 px-8 shine">
+        <div className="max-w-5xl mx-auto card text-center py-16 px-8">
+          <p className="eyebrow mb-3">Get started</p>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
             Be the change. <span className="gradient-text">Literally.</span>
           </h2>
@@ -178,15 +171,15 @@ export default function Landing() {
       </section>
 
       {/* FOOTER */}
-      <footer className="relative border-t border-white/5 bg-[#070b18]/60 pt-16 pb-8 px-6">
+      <footer className="relative hairline border-x-0 border-b-0 bg-[#070b18]/60 pt-16 pb-8 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
-                  <Globe2 className="w-5 h-5 text-white" />
+                <div className="icon-tile w-9 h-9">
+                  <Globe2 className="w-5 h-5 text-brand-300" />
                 </div>
-                <span className="gradient-text font-display font-bold text-lg">Community Hero</span>
+                <span className="font-display font-bold text-lg text-white">Community Hero</span>
               </div>
               <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
                 A hyperlocal civic platform that turns citizen reports into resolved
@@ -221,7 +214,7 @@ export default function Landing() {
             />
           </div>
 
-          <div className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+          <div className="mt-12 pt-6 hairline border-x-0 border-b-0 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <p>© 2026 Community Hero. Released under the MIT License.</p>
             <p className="flex items-center gap-4">
               <span>Built for stronger communities</span>
@@ -271,22 +264,22 @@ function FooterCol({ title, links }) {
 function Stat({ label, value }) {
   return (
     <div className="card !p-4">
-      <div className="text-2xl font-bold gradient-text">{value}</div>
+      <div className="stat-num text-2xl">{value}</div>
       <div className="text-xs text-slate-400 uppercase tracking-wide">{label}</div>
     </div>
   );
 }
 
-function Feature({ icon, title, text, gradient }) {
+function Feature({ icon, title, text }) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="card group cursor-default"
+      className="card card-hover group cursor-default"
     >
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} grid place-items-center mb-4 shadow-lg`}>
-        <span className="text-white">{icon}</span>
+      <div className="icon-tile mb-4">
+        <span className="text-brand-300">{icon}</span>
       </div>
-      <h3 className="font-display font-semibold text-lg mb-2">{title}</h3>
+      <h3 className="font-display font-semibold text-lg mb-2 text-white">{title}</h3>
       <p className="text-sm text-slate-400">{text}</p>
     </motion.div>
   );

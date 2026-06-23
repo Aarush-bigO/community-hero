@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, AlertTriangle, CheckCircle2, Clock, UserCheck, Loader2 } from 'lucide-react';
+import { CheckCircle2, UserCheck } from 'lucide-react';
 import { api } from '../utils/api';
 import { useStore } from '../store/useStore';
 
@@ -57,36 +57,38 @@ export default function Admin() {
   };
 
   return (
-    <main className="pt-24 pb-12 px-6">
-      <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-red-500 grid place-items-center">
-              <Briefcase className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="font-display text-4xl md:text-5xl font-bold">
-              Admin <span className="gradient-text">Portal</span>
-            </h1>
-          </div>
-          <p className="text-slate-400">Work-order queue, SLA tracking, department metrics.</p>
+    <main className="page">
+      <div className="page-wrap">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <p className="eyebrow">OPERATIONS</p>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mt-2 text-white">
+            Admin <span className="gradient-text">Portal</span>
+          </h1>
+          <p className="text-slate-400 mt-2">Work-order queue, SLA tracking, department metrics.</p>
         </motion.div>
 
         {/* Department metrics row */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {metrics.slice(0, 4).map((m) => (
-            <div key={m.id} className="card !p-4">
-              <div className="text-xs text-slate-400 uppercase tracking-wide mb-1">{m.name}</div>
-              <div className="flex items-end gap-3">
+            <div key={m.id} className="card">
+              <div className="text-xs text-slate-500 uppercase tracking-wide mb-3">{m.name}</div>
+              <div className="flex items-end justify-between gap-3">
                 <div>
-                  <div className="text-2xl font-bold">{m.resolved}/{m.total}</div>
-                  <div className="text-xs text-slate-500">resolved</div>
+                  <div className="stat-num text-2xl">{m.resolved}/{m.total}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">resolved</div>
                 </div>
-                <div className="ml-auto text-right">
-                  <div className={`text-sm font-mono ${m.breaches > 0 ? 'text-red-300' : 'text-emerald-300'}`}>
-                    {m.breaches} ⚠
-                  </div>
+                <div className="text-right">
+                  <span
+                    className={`chip text-xs ${
+                      m.breaches > 0
+                        ? 'bg-red-500/10 border-red-500/20 text-red-300'
+                        : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                    }`}
+                  >
+                    {m.breaches} breach{m.breaches === 1 ? '' : 'es'}
+                  </span>
                   {m.avg_resolve_hours != null && (
-                    <div className="text-xs text-slate-500">{m.avg_resolve_hours?.toFixed(1)}h avg</div>
+                    <div className="text-xs text-slate-500 mt-1.5">{m.avg_resolve_hours?.toFixed(1)}h avg</div>
                   )}
                 </div>
               </div>
@@ -94,20 +96,22 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-2 flex-wrap mb-4">
+        {/* Filters — segmented control */}
+        <div className="inline-flex flex-wrap gap-1 bg-white/[0.03] p-1 rounded-xl mb-5">
           {[
-            { id: 'open', label: 'Open', icon: Clock },
-            { id: 'in_progress', label: 'In Progress', icon: Loader2 },
-            { id: 'resolved', label: 'Resolved', icon: CheckCircle2 },
-            { id: 'breach', label: 'SLA Breach', icon: AlertTriangle },
-            { id: 'all', label: 'All', icon: null },
+            { id: 'open', label: 'Open' },
+            { id: 'in_progress', label: 'In Progress' },
+            { id: 'resolved', label: 'Resolved' },
+            { id: 'breach', label: 'SLA Breach' },
+            { id: 'all', label: 'All' },
           ].map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`chip transition ${
-                filter === f.id ? 'bg-brand-500/30 border-brand-400/50 text-white' : 'hover:bg-white/10'
+              className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition ${
+                filter === f.id
+                  ? 'bg-white/10 text-white border border-white/15'
+                  : 'text-slate-400 hover:text-white border border-transparent'
               }`}
             >
               {f.label}
@@ -115,67 +119,88 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* Queue */}
+        {/* Queue — enterprise data table */}
         <div className="card !p-0 overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-white/5 text-left">
-              <tr>
-                <th className="px-4 py-3 font-medium text-slate-300">Issue</th>
-                <th className="px-4 py-3 font-medium text-slate-300">Dept</th>
-                <th className="px-4 py-3 font-medium text-slate-300">SLA</th>
-                <th className="px-4 py-3 font-medium text-slate-300">Status</th>
-                <th className="px-4 py-3 font-medium text-slate-300">Assignee</th>
-                <th className="px-4 py-3 font-medium text-slate-300">Actions</th>
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-5 py-3.5 font-medium">Issue</th>
+                <th className="px-5 py-3.5 font-medium">Dept</th>
+                <th className="px-5 py-3.5 font-medium">SLA</th>
+                <th className="px-5 py-3.5 font-medium">Status</th>
+                <th className="px-5 py-3.5 font-medium">Assignee</th>
+                <th className="px-5 py-3.5 font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-white/5">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-slate-400">Loading...</td>
+                  <td colSpan={6} className="px-5 py-12 text-center text-slate-400">Loading...</td>
                 </tr>
               ) : queue.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-slate-400">
-                    {filter === 'breach' ? '🎉 No SLA breaches!' : 'Queue empty.'}
+                  <td colSpan={6} className="px-5 py-12 text-center text-slate-400">
+                    {filter === 'breach' ? 'No SLA breaches.' : 'Queue empty.'}
                   </td>
                 </tr>
               ) : (
                 queue.map((i) => {
                   const breaching = (i.hours_remaining ?? 0) < 0 && i.status !== 'resolved';
                   return (
-                    <tr key={i.id} className="border-t border-white/5 hover:bg-white/5">
-                      <td className="px-4 py-3">
-                        <div className="font-medium">{i.title}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">
-                          sev {i.severity}/5 · {i.category} ·{' '}
-                          <span className={
-                            i.sentiment_label === 'negative' ? 'text-red-300'
-                              : i.sentiment_label === 'positive' ? 'text-emerald-300'
-                              : 'text-slate-400'
-                          }>
+                    <tr key={i.id} className="hover:bg-white/[0.03] transition-colors">
+                      <td className="px-5 py-4">
+                        <div className="font-medium text-white">{i.title}</div>
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                          <span className="chip text-xs">sev {i.severity}/5</span>
+                          <span className="chip text-xs">{i.category}</span>
+                          <span
+                            className={`chip text-xs ${
+                              i.sentiment_label === 'negative'
+                                ? 'bg-red-500/10 border-red-500/20 text-red-300'
+                                : i.sentiment_label === 'positive'
+                                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                                : ''
+                            }`}
+                          >
                             {i.sentiment_label}
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-xs">{i.department_name || '—'}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-4 text-xs text-slate-400">{i.department_name || '—'}</td>
+                      <td className="px-5 py-4">
                         {i.hours_remaining != null ? (
-                          <span className={`chip text-xs ${breaching ? 'bg-red-500/20 border-red-500/40 text-red-300' : 'bg-white/5'}`}>
-                            {breaching ? '⚠ overdue' : `${Math.max(0, i.hours_remaining).toFixed(1)}h left`}
+                          <span
+                            className={`chip text-xs ${
+                              breaching ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'text-slate-300'
+                            }`}
+                          >
+                            {breaching ? 'overdue' : `${Math.max(0, i.hours_remaining).toFixed(1)}h left`}
                           </span>
-                        ) : '—'}
+                        ) : (
+                          <span className="text-slate-500">—</span>
+                        )}
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="chip text-xs">{i.status?.replace('_', ' ')}</span>
+                      <td className="px-5 py-4">
+                        <span
+                          className={`chip text-xs ${
+                            i.status === 'resolved'
+                              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                              : i.status === 'in_progress'
+                              ? 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+                              : ''
+                          }`}
+                        >
+                          {i.status?.replace('_', ' ')}
+                        </span>
                       </td>
-                      <td className="px-4 py-3 text-xs">
+                      <td className="px-5 py-4 text-xs">
                         {i.assignee_name ? (
                           <span className="chip"><UserCheck className="w-3 h-3" /> {i.assignee_name}</span>
                         ) : (
                           <select
                             defaultValue=""
                             onChange={(e) => e.target.value && assign(i, e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs"
+                            className="input !py-1.5 !px-2.5 text-xs max-w-[10rem]"
                           >
                             <option value="">Assign...</option>
                             {staff.map((s) => (
@@ -184,9 +209,9 @@ export default function Admin() {
                           </select>
                         )}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-4">
                         {i.status !== 'resolved' && (
-                          <button onClick={() => resolve(i)} className="text-xs btn-ghost !px-2 !py-1">
+                          <button onClick={() => resolve(i)} className="btn-ghost text-xs !px-3 !py-1.5">
                             <CheckCircle2 className="w-3 h-3" /> Resolve
                           </button>
                         )}

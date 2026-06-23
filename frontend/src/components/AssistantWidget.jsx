@@ -51,12 +51,12 @@ export default function AssistantWidget() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(true)}
-        className={`fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-brand-400 to-accent-500 shadow-2xl shadow-accent-500/40 grid place-items-center transition ${
+        className={`fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-gradient-to-b from-brand-400 to-brand-600 shadow-[0_1px_0_0_rgba(255,255,255,0.2)_inset,0_10px_30px_-8px_rgba(6,160,238,0.55)] grid place-items-center transition ${
           open ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
       >
         <Bot className="w-6 h-6 text-white" />
-        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-[#070b18] animate-pulse" />
+        <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-[#05070f]" />
       </motion.button>
 
       <AnimatePresence>
@@ -65,21 +65,21 @@ export default function AssistantWidget() {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-[60] w-[min(420px,calc(100vw-2rem))] h-[min(640px,calc(100vh-3rem))] glass-strong rounded-3xl flex flex-col overflow-hidden"
+            className="fixed bottom-6 right-6 z-[60] w-[min(420px,calc(100vw-2rem))] h-[min(640px,calc(100vh-3rem))] glass-strong rounded-2xl flex flex-col overflow-hidden"
           >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-gradient-to-r from-brand-500/15 to-accent-500/15">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div className="icon-tile w-9 h-9 rounded-lg">
+                  <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="font-display font-semibold text-sm">Civic AI Assistant</div>
-                  <div className="text-[11px] text-emerald-300 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+                  <div className="font-display font-semibold text-sm text-white">Civic AI Assistant</div>
+                  <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Online
                   </div>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg hover:bg-white/10">
+              <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -101,7 +101,7 @@ export default function AssistantWidget() {
                   <button
                     key={s}
                     onClick={() => ask(s)}
-                    className="chip text-[11px] hover:bg-brand-500/20 hover:border-brand-400/40"
+                    className="chip text-[11px] hover:bg-white/[0.08] hover:border-white/20 transition"
                   >
                     {s}
                   </button>
@@ -137,7 +137,7 @@ function Bubble({ m }) {
   if (m.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[80%] bg-brand-500/25 border border-brand-400/30 rounded-2xl rounded-tr-md px-3.5 py-2 text-sm">
+        <div className="max-w-[80%] bg-brand-500/15 border border-brand-400/25 rounded-2xl rounded-tr-md px-3.5 py-2 text-sm text-white">
           {m.answer}
         </div>
       </div>
@@ -145,17 +145,17 @@ function Bubble({ m }) {
   }
   return (
     <div className="flex gap-2">
-      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center flex-shrink-0">
-        <Bot className="w-3.5 h-3.5 text-white" />
+      <div className="icon-tile w-7 h-7 rounded-lg flex-shrink-0">
+        <Bot className="w-3.5 h-3.5" />
       </div>
       <div className="max-w-[80%]">
-        <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-md px-3.5 py-2 text-sm whitespace-pre-wrap leading-relaxed">
+        <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-md px-3.5 py-2 text-sm whitespace-pre-wrap leading-relaxed text-slate-200">
           {renderMarkdown(m.answer)}
         </div>
         {m.citations?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {m.citations.map((c, i) => (
-              <span key={i} className="chip !text-[10px] !px-2 !py-0.5 bg-emerald-500/10 border-emerald-500/30">
+              <span key={i} className="chip !text-[10px] !px-2 !py-0.5">
                 <ExternalLink className="w-2.5 h-2.5" /> {c.label}
               </span>
             ))}

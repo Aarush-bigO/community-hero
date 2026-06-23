@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Zap, Users, Trophy, Shield } from 'lucide-react';
+import {
+  ArrowRight, Sparkles, Zap, Users, Trophy, Shield,
+  Globe2, Languages, Radio, Layers, Building2, CheckCircle2,
+} from 'lucide-react';
 import HeroScene from '../scenes/HeroScene';
 import { api } from '../utils/api';
 import { useStore } from '../store/useStore';
@@ -68,6 +71,23 @@ export default function Landing() {
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 text-xs animate-bounce">
           ↓ Scroll to explore
+        </div>
+      </section>
+
+      {/* STANDARDS / CREDIBILITY STRIP */}
+      <section className="relative border-y border-white/5 bg-white/[0.015] py-8 px-6">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-center text-[11px] uppercase tracking-[0.2em] text-slate-500 mb-6">
+            Speaks the protocols of production civic platforms
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-slate-400">
+            <Standard icon={<Building2 className="w-4 h-4" />} label="Open311 v2" />
+            <Standard icon={<Layers className="w-4 h-4" />} label="GIS Asset Layer" />
+            <Standard icon={<Radio className="w-4 h-4" />} label="Real-time SSE" />
+            <Standard icon={<Shield className="w-4 h-4" />} label="SLA Tracking" />
+            <Standard icon={<Languages className="w-4 h-4" />} label="4 Languages" />
+            <Standard icon={<Globe2 className="w-4 h-4" />} label="Multi-tenant" />
+          </div>
         </div>
       </section>
 
@@ -157,10 +177,94 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="py-10 px-6 text-center text-slate-500 text-sm">
-        <p>Built with ❤️ for stronger communities · MIT License</p>
+      {/* FOOTER */}
+      <footer className="relative border-t border-white/5 bg-[#070b18]/60 pt-16 pb-8 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+            <div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
+                  <Globe2 className="w-5 h-5 text-white" />
+                </div>
+                <span className="gradient-text font-display font-bold text-lg">Community Hero</span>
+              </div>
+              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+                A hyperlocal civic platform that turns citizen reports into resolved
+                work orders — with AI triage, community verification, and full transparency.
+              </p>
+              <div className="flex items-center gap-2 mt-4 text-xs text-emerald-300/80">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Open311-compatible · Multi-tenant
+              </div>
+            </div>
+
+            <FooterCol
+              title="Product"
+              links={[
+                ['Live Map', '/map'], ['City Pulse', '/pulse'],
+                ['Dashboard', '/dashboard'], ['Report an Issue', '/report'],
+              ]}
+            />
+            <FooterCol
+              title="Platform"
+              links={[
+                ['Admin Portal', '/admin'], ['Leaderboard', '/leaderboard'],
+                ['Open311 API', '/map'], ['Asset Layer', '/map'],
+              ]}
+            />
+            <FooterCol
+              title="Resources"
+              links={[
+                ['GitHub', 'https://github.com/Aarush-bigO/community-hero'],
+                ['Architecture', 'https://github.com/Aarush-bigO/community-hero/blob/main/docs/ARCHITECTURE.md'],
+                ['Open311 Spec', 'https://wiki.open311.org/GeoReport_v2/'],
+              ]}
+            />
+          </div>
+
+          <div className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <p>© 2026 Community Hero. Released under the MIT License.</p>
+            <p className="flex items-center gap-4">
+              <span>Built for stronger communities</span>
+              <span className="flex items-center gap-1.5 text-emerald-300/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Systems operational
+              </span>
+            </p>
+          </div>
+        </div>
       </footer>
     </main>
+  );
+}
+
+function Standard({ icon, label }) {
+  return (
+    <div className="flex items-center gap-2 text-sm font-medium text-slate-300/80 hover:text-white transition">
+      <span className="text-brand-300/80">{icon}</span>
+      {label}
+    </div>
+  );
+}
+
+function FooterCol({ title, links }) {
+  return (
+    <div>
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-4">{title}</h4>
+      <ul className="space-y-2.5">
+        {links.map(([label, href]) => (
+          <li key={label}>
+            {href.startsWith('http') ? (
+              <a href={href} target="_blank" rel="noreferrer" className="text-sm text-slate-400 hover:text-brand-300 transition">
+                {label}
+              </a>
+            ) : (
+              <Link to={href} className="text-sm text-slate-400 hover:text-brand-300 transition">
+                {label}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

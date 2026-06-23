@@ -24,27 +24,30 @@ export default function MapPage() {
   }, [filter]);
 
   return (
-    <main className="pt-24 pb-12 px-6">
-      <div className="max-w-7xl mx-auto">
+    <main className="page">
+      <div className="page-wrap">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-2">
-            Live <span className="gradient-text">Issue Map</span>
+          <span className="eyebrow">Live map</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mt-3 mb-2 text-white">
+            Issue map
           </h1>
           <p className="text-slate-400">All reports across your community, in real time.</p>
         </motion.div>
 
         <div className="flex items-center gap-2 flex-wrap mb-6">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-slate-500" />
           {CATEGORIES.map((c) => (
             <button
               key={c}
               onClick={() => setFilter(c)}
-              className={`chip transition ${
-                filter === c ? 'bg-brand-500/30 border-brand-400/50 text-white' : 'hover:bg-white/10'
+              className={`chip capitalize transition ${
+                filter === c
+                  ? 'bg-white/10 border-white/15 text-white'
+                  : 'hover:bg-white/[0.07]'
               }`}
             >
               {c}
@@ -53,7 +56,7 @@ export default function MapPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-[600px] glass rounded-2xl overflow-hidden">
+          <div className="lg:col-span-2 h-[600px] card !p-0 overflow-hidden">
             <IssueMap issues={issues} />
           </div>
           <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">

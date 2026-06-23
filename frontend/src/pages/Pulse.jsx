@@ -49,8 +49,8 @@ export default function Pulse() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
-                <Radio className="w-5 h-5 text-white" />
+              <div className="icon-tile">
+                <Radio className="w-5 h-5" />
               </div>
               <h1 className="font-display text-4xl md:text-5xl font-bold">
                 <span className="gradient-text">{t('pulse.title')}</span>
@@ -73,20 +73,10 @@ export default function Pulse() {
 
         {summary && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <SummaryTile label={t('pulse.mentions')} value={summary.total} accent="from-brand-400 to-cyan-400" />
-            <SummaryTile
-              label={t('pulse.avg')}
-              value={summary.sentiment.avg.toFixed(2)}
-              accent={
-                summary.sentiment.label === 'negative'
-                  ? 'from-red-400 to-orange-500'
-                  : summary.sentiment.label === 'positive'
-                  ? 'from-emerald-400 to-teal-500'
-                  : 'from-slate-400 to-slate-600'
-              }
-            />
-            <SummaryTile label={t('pulse.negative')} value={summary.sentiment.counts.negative} accent="from-red-500 to-rose-700" />
-            <SummaryTile label={t('pulse.positive')} value={summary.sentiment.counts.positive} accent="from-emerald-500 to-teal-700" />
+            <SummaryTile label={t('pulse.mentions')} value={summary.total} />
+            <SummaryTile label={t('pulse.avg')} value={summary.sentiment.avg.toFixed(2)} tone={summary.sentiment.label} />
+            <SummaryTile label={t('pulse.negative')} value={summary.sentiment.counts.negative} tone="negative" />
+            <SummaryTile label={t('pulse.positive')} value={summary.sentiment.counts.positive} tone="positive" />
           </div>
         )}
 
@@ -130,10 +120,12 @@ export default function Pulse() {
   );
 }
 
-function SummaryTile({ label, value, accent }) {
+function SummaryTile({ label, value, tone = 'neutral' }) {
+  const toneClass =
+    tone === 'negative' ? 'text-red-300' : tone === 'positive' ? 'text-emerald-300' : 'text-white';
   return (
-    <motion.div whileHover={{ y: -3 }} className="card">
-      <div className={`text-3xl font-bold bg-gradient-to-br ${accent} bg-clip-text text-transparent`}>{value}</div>
+    <motion.div whileHover={{ y: -3 }} className="card card-hover">
+      <div className={`stat-num text-3xl ${toneClass}`}>{value}</div>
       <div className="text-xs uppercase tracking-wide text-slate-400 mt-1">{label}</div>
     </motion.div>
   );

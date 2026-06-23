@@ -4,20 +4,20 @@ import { api, assetUrl } from '../utils/api';
 import { useStore } from '../store/useStore';
 
 const CATEGORY_META = {
-  pothole: { color: 'from-red-500/30 to-red-700/30', emoji: '🕳️' },
-  streetlight: { color: 'from-yellow-500/30 to-orange-600/30', emoji: '💡' },
-  water: { color: 'from-sky-500/30 to-blue-700/30', emoji: '💧' },
-  waste: { color: 'from-lime-500/30 to-green-700/30', emoji: '🗑️' },
-  infrastructure: { color: 'from-purple-500/30 to-fuchsia-700/30', emoji: '🏗️' },
-  other: { color: 'from-slate-500/30 to-slate-700/30', emoji: '📍' },
+  pothole: { emoji: '🕳️' },
+  streetlight: { emoji: '💡' },
+  water: { emoji: '💧' },
+  waste: { emoji: '🗑️' },
+  infrastructure: { emoji: '🏗️' },
+  other: { emoji: '📍' },
 };
 
 const STATUS_COLORS = {
-  reported: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  verified: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  in_progress: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  resolved: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  rejected: 'bg-red-500/20 text-red-300 border-red-500/30',
+  reported: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  verified: 'text-slate-300',
+  in_progress: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  resolved: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  rejected: 'bg-red-500/10 text-red-300 border-red-500/20',
 };
 
 export default function IssueCard({ issue, index = 0 }) {
@@ -44,10 +44,8 @@ export default function IssueCard({ issue, index = 0 }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
-      className="card hover:border-white/20 transition group"
+      className="card card-hover group"
     >
-      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${meta.color} opacity-0 group-hover:opacity-100 transition pointer-events-none -z-10`} />
-
       <div className="flex gap-4">
         {issue.photo_url ? (
           <img
@@ -56,15 +54,15 @@ export default function IssueCard({ issue, index = 0 }) {
             className="w-20 h-20 rounded-xl object-cover ring-1 ring-white/10"
           />
         ) : (
-          <div className={`w-20 h-20 rounded-xl bg-gradient-to-br ${meta.color} grid place-items-center text-3xl ring-1 ring-white/10`}>
+          <div className="icon-tile w-20 h-20 text-3xl">
             {meta.emoji}
           </div>
         )}
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display font-semibold text-base leading-tight">{issue.title}</h3>
-            <span className={`chip border ${STATUS_COLORS[issue.status] || ''}`}>
+            <h3 className="font-display font-semibold text-base leading-tight text-white">{issue.title}</h3>
+            <span className={`chip ${STATUS_COLORS[issue.status] || ''}`}>
               {issue.status?.replace('_', ' ')}
             </span>
           </div>
@@ -73,7 +71,7 @@ export default function IssueCard({ issue, index = 0 }) {
           )}
           <div className="flex flex-wrap items-center gap-2 mt-3 text-xs text-slate-400">
             <span className="chip">{meta.emoji} {issue.category}</span>
-            <span className="chip">⚡ Severity {issue.severity}/5</span>
+            <span className="chip">Severity {issue.severity}/5</span>
             {issue.address && (
               <span className="chip"><MapPin className="w-3 h-3" /> {issue.address}</span>
             )}
@@ -82,7 +80,7 @@ export default function IssueCard({ issue, index = 0 }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+      <div className="flex items-center justify-between mt-4 pt-4 hairline">
         <div className="text-xs text-slate-400">
           By <span className="text-slate-200">{issue.reporter_name || 'Anonymous'}</span>
         </div>

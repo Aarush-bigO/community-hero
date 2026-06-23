@@ -32,11 +32,12 @@ export default function Onboard() {
   return (
     <main className="pt-32 pb-12 px-6 max-w-md mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card">
-        <div className="text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center mx-auto mb-3 shadow-lg">
-            <Sparkles className="w-7 h-7 text-white" />
+        <div className="mb-6">
+          <div className="icon-tile mb-4">
+            <Sparkles className="w-5 h-5" />
           </div>
-          <h1 className="font-display text-2xl font-bold mb-1">Become a Hero</h1>
+          <p className="eyebrow">GET STARTED</p>
+          <h1 className="font-display text-2xl font-bold mt-2 mb-1 text-white">Become a Hero</h1>
           <p className="text-sm text-slate-400">Quick sign-in. No password. No spam.</p>
         </div>
 

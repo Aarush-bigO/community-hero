@@ -19,7 +19,7 @@ export default function Navbar() {
     <nav className="fixed top-0 inset-x-0 z-50 px-6 py-3">
       <div className="max-w-7xl mx-auto glass-strong rounded-2xl flex items-center justify-between px-4 py-2.5">
         <Link to="/" className="flex items-center gap-2.5 font-display font-bold">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center shadow-lg shadow-brand-500/40">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-b from-brand-400 to-brand-600 grid place-items-center shadow-lg shadow-brand-500/30">
             <Globe2 className="w-5 h-5 text-white" />
           </div>
           <span className="gradient-text text-lg">Community Hero</span>
@@ -77,7 +77,7 @@ export default function Navbar() {
           </Link>
           {user ? (
             <div className="hidden sm:flex items-center gap-2 chip">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-accent-500" />
+              <div className="w-6 h-6 rounded-full bg-gradient-to-b from-brand-400 to-brand-600" />
               <span className="font-medium">{user.name}</span>
               <span className="text-brand-300">L{user.level}</span>
             </div>

@@ -53,6 +53,13 @@ export const api = {
       return request(`/api/pulse${q ? '?' + q : ''}`);
     },
     summary: () => request('/api/pulse/summary'),
+    simulate: () => request('/api/pulse/simulate', { method: 'POST' }),
+  },
+  assets: {
+    roads: () => request('/api/assets/roads.json'),
+    classify: (lat, lng) => request(`/api/assets/classify?lat=${lat}&lng=${lng}`),
+    duplicates: (lat, lng, category) =>
+      request(`/api/assets/duplicates?lat=${lat}&lng=${lng}&category=${encodeURIComponent(category)}`),
   },
   admin: {
     queue: (params = {}) => {

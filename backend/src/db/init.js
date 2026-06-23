@@ -130,8 +130,23 @@ export function initDb() {
     CREATE INDEX IF NOT EXISTS idx_pulse_topic ON pulse_signals(topic);
   `);
 
+  // --- Additive migrations (GIS asset layer + i18n). Safe to run repeatedly. ---
+  ensureColumn(db, 'issues', 'road_type', "TEXT DEFAULT 'unmapped'");
+  ensureColumn(db, 'issues', 'nearest_road', 'TEXT');
+  ensureColumn(db, 'issues', 'on_private_road', 'INTEGER DEFAULT 0');
+  ensureColumn(db, 'issues', 'duplicate_of', 'TEXT');
+  ensureColumn(db, 'issues', 'lang', "TEXT DEFAULT 'en'");
+
   console.log(`📦 SQLite ready at ${DB_PATH}`);
   return db;
+}
+
+/** Add a column only if it doesn't already exist (idempotent migration). */
+function ensureColumn(db, table, column, definition) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (!cols.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition};`);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

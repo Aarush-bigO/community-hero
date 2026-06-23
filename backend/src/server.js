@@ -16,6 +16,9 @@ import open311Router from './routes/open311.js';
 import agentRouter from './routes/agent.js';
 import adminRouter from './routes/admin.js';
 import pulseRouter from './routes/pulse.js';
+import streamRouter from './routes/stream.js';
+import assetsRouter from './routes/assets.js';
+import { startPulseGenerator } from './services/pulseGenerator.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,6 +74,8 @@ app.use('/api/stats', statsRouter);
 app.use('/api/agent', agentRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/pulse', pulseRouter);
+app.use('/api/stream', streamRouter);
+app.use('/api/assets', assetsRouter);
 app.use('/open311/v2', open311Router);
 
 // --- 404 ---
@@ -85,5 +90,8 @@ app.listen(PORT, () => {
   console.log(`\n🦸 Community Hero API`);
   console.log(`   ↳ http://localhost:${PORT}`);
   console.log(`   ↳ env: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`   ↳ LLM: ${process.env.LLM_PROVIDER || 'mock'}\n`);
+  console.log(`   ↳ LLM: ${process.env.LLM_PROVIDER || 'mock'}`);
+  console.log(`   ↳ SSE stream: /api/stream`);
+  startPulseGenerator();
+  console.log('');
 });

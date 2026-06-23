@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Radio, Twitter, Newspaper, MessageSquare, TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { Radio, Twitter, Newspaper, MessageSquare, TrendingDown, TrendingUp, Minus, Zap, Plus } from 'lucide-react';
 import { api } from '../utils/api';
+import { useStore } from '../store/useStore';
+import { useT } from '../i18n';
 
 const SOURCE_ICON = {
   twitter: Twitter,
@@ -18,34 +20,62 @@ const SENT_META = {
 export default function Pulse() {
   const [signals, setSignals] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [flashId, setFlashId] = useState(null);
+  const liveSignals = useStore((s) => s.liveSignals);
+  const liveConnected = useStore((s) => s.liveConnected);
+  const t = useT();
 
   useEffect(() => {
     api.pulse.list({ limit: 200 }).then(setSignals).catch(() => {});
     api.pulse.summary().then(setSummary).catch(() => {});
   }, []);
 
+  // Drain live SSE signals into the visible feed, newest first, de-duplicated.
+  useEffect(() => {
+    if (!liveSignals.length) return;
+    setSignals((prev) => {
+      const seen = new Set(prev.map((s) => s.id));
+      const fresh = liveSignals.filter((s) => !seen.has(s.id));
+      if (fresh.length) setFlashId(fresh[0].id);
+      return [...fresh, ...prev].slice(0, 300);
+    });
+  }, [liveSignals]);
+
+  const simulate = () => api.pulse.simulate().catch(() => {});
+
   return (
     <main className="pt-24 pb-12 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
-              <Radio className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-accent-500 grid place-items-center">
+                <Radio className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="font-display text-4xl md:text-5xl font-bold">
+                <span className="gradient-text">{t('pulse.title')}</span>
+              </h1>
+              <span
+                className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                  liveConnected ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${liveConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                {liveConnected ? t('common.liveOn') : '…'}
+              </span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl font-bold">
-              City <span className="gradient-text">Pulse</span>
-            </h1>
+            <button onClick={simulate} className="btn-ghost text-sm">
+              <Zap className="w-4 h-4" /> {t('pulse.simulate')}
+            </button>
           </div>
-          <p className="text-slate-400">
-            Passive listening across social media, news, and forums — sentiment-tagged in real time.
-          </p>
+          <p className="text-slate-400">{t('pulse.subtitle')}</p>
         </motion.div>
 
         {summary && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <SummaryTile label="Mentions" value={summary.total} accent="from-brand-400 to-cyan-400" />
+            <SummaryTile label={t('pulse.mentions')} value={summary.total} accent="from-brand-400 to-cyan-400" />
             <SummaryTile
-              label="Avg Sentiment"
+              label={t('pulse.avg')}
               value={summary.sentiment.avg.toFixed(2)}
               accent={
                 summary.sentiment.label === 'negative'
@@ -55,18 +85,18 @@ export default function Pulse() {
                   : 'from-slate-400 to-slate-600'
               }
             />
-            <SummaryTile label="Negative" value={summary.sentiment.counts.negative} accent="from-red-500 to-rose-700" />
-            <SummaryTile label="Positive" value={summary.sentiment.counts.positive} accent="from-emerald-500 to-teal-700" />
+            <SummaryTile label={t('pulse.negative')} value={summary.sentiment.counts.negative} accent="from-red-500 to-rose-700" />
+            <SummaryTile label={t('pulse.positive')} value={summary.sentiment.counts.positive} accent="from-emerald-500 to-teal-700" />
           </div>
         )}
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-3">
             {signals.map((s, i) => (
-              <Signal key={s.id} s={s} index={i} />
+              <Signal key={s.id} s={s} index={i} flash={s.id === flashId} />
             ))}
             {!signals.length && (
-              <div className="card text-center text-slate-400">No pulse signals yet.</div>
+              <div className="card text-center text-slate-400">{t('pulse.empty')}</div>
             )}
           </div>
 
@@ -109,17 +139,22 @@ function SummaryTile({ label, value, accent }) {
   );
 }
 
-function Signal({ s, index }) {
+function Signal({ s, index, flash }) {
   const Icon = SOURCE_ICON[s.source] || Radio;
   const meta = SENT_META[s.sentiment_label] || SENT_META.neutral;
   const SentIcon = meta.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03 }}
-      className={`card border ${meta.color} bg-gradient-to-br`}
+      initial={{ opacity: 0, y: flash ? -10 : 10, scale: flash ? 0.98 : 1 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: flash ? 0 : Math.min(index * 0.03, 0.4) }}
+      className={`card border ${meta.color} bg-gradient-to-br ${flash ? 'ring-2 ring-brand-400/60' : ''}`}
     >
+      {flash && (
+        <span className="absolute -top-2 -right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500 text-white shadow-lg">
+          NEW
+        </span>
+      )}
       <div className="flex items-start gap-3">
         <div className="w-9 h-9 rounded-lg bg-white/5 grid place-items-center flex-shrink-0">
           <Icon className="w-4 h-4 text-slate-200" />

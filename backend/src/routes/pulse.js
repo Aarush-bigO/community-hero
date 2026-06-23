@@ -6,8 +6,15 @@ import { Router } from 'express';
 import { nanoid } from 'nanoid';
 import { getDb } from '../db/init.js';
 import { analyzeSentiment, aggregateSentiment } from '../services/sentiment.js';
+import { injectSignal } from '../services/pulseGenerator.js';
+import { publish, EVENTS } from '../services/events.js';
 
 const router = Router();
+
+// POST /api/pulse/simulate — inject one synthetic live signal on demand (demo).
+router.post('/simulate', (_req, res) => {
+  res.status(201).json(injectSignal());
+});
 
 router.get('/', (req, res) => {
   const { topic, source, limit = 100 } = req.query;
@@ -50,6 +57,7 @@ router.post('/', (req, res) => {
     `INSERT INTO pulse_signals (id, source, author, text, url, lat, lng, topic, sentiment, sentiment_label)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(id, source, author || null, text, url || null, lat || null, lng || null, topic || null, sent.score, sent.label);
+  publish(EVENTS.PULSE_SIGNAL, { id, source, author, text, topic, sentiment: sent.score, sentiment_label: sent.label });
   res.status(201).json({ id, sentiment: sent });
 });
 

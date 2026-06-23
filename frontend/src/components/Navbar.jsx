@@ -1,9 +1,14 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Globe2, Map, BarChart3, Trophy, Plus, Radio, Briefcase } from 'lucide-react';
+import { Globe2, Map, BarChart3, Trophy, Plus, Radio, Briefcase, Languages } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useT, useLang, LANGUAGES } from '../i18n';
 
 export default function Navbar() {
   const user = useStore((s) => s.user);
+  const liveConnected = useStore((s) => s.liveConnected);
+  const t = useT();
+  const lang = useLang((s) => s.lang);
+  const setLang = useLang((s) => s.setLang);
 
   const link = ({ isActive }) =>
     `flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition ${
@@ -18,29 +23,57 @@ export default function Navbar() {
             <Globe2 className="w-5 h-5 text-white" />
           </div>
           <span className="gradient-text text-lg">Community Hero</span>
+          {/* Real-time connection indicator */}
+          <span
+            title={liveConnected ? 'Live updates connected' : 'Reconnecting…'}
+            className={`hidden sm:flex items-center gap-1 ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+              liveConnected
+                ? 'bg-emerald-500/15 text-emerald-300'
+                : 'bg-slate-500/15 text-slate-400'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${liveConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+            {t('nav.live')}
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
           <NavLink to="/map" className={link}>
-            <Map className="w-4 h-4" /> Map
+            <Map className="w-4 h-4" /> {t('nav.map')}
           </NavLink>
           <NavLink to="/pulse" className={link}>
-            <Radio className="w-4 h-4" /> Pulse
+            <Radio className="w-4 h-4" /> {t('nav.pulse')}
           </NavLink>
           <NavLink to="/dashboard" className={link}>
-            <BarChart3 className="w-4 h-4" /> Dashboard
+            <BarChart3 className="w-4 h-4" /> {t('nav.dashboard')}
           </NavLink>
           <NavLink to="/leaderboard" className={link}>
-            <Trophy className="w-4 h-4" /> Heroes
+            <Trophy className="w-4 h-4" /> {t('nav.heroes')}
           </NavLink>
           <NavLink to="/admin" className={link}>
-            <Briefcase className="w-4 h-4" /> Admin
+            <Briefcase className="w-4 h-4" /> {t('nav.admin')}
           </NavLink>
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Language switcher */}
+          <div className="hidden sm:flex items-center gap-1.5 chip !py-1">
+            <Languages className="w-3.5 h-3.5 text-slate-400" />
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              className="bg-transparent text-sm text-slate-200 outline-none cursor-pointer"
+            >
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code} className="bg-slate-900">
+                  {l.flag} {l.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <Link to="/report" className="btn-primary text-sm">
-            <Plus className="w-4 h-4" /> Report Issue
+            <Plus className="w-4 h-4" /> {t('nav.report')}
           </Link>
           {user ? (
             <div className="hidden sm:flex items-center gap-2 chip">
@@ -50,7 +83,7 @@ export default function Navbar() {
             </div>
           ) : (
             <Link to="/onboard" className="btn-ghost text-sm">
-              Sign in
+              {t('nav.signin')}
             </Link>
           )}
         </div>

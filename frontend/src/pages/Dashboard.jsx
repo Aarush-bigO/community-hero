@@ -19,6 +19,18 @@ import { api } from '../utils/api';
 
 const COLORS = ['#2fbbff', '#7cc7ff', '#0080cc', '#38bdf8', '#1e6f9f', '#9fe0ff'];
 
+// Category colors mirror the map markers / globe pins for a consistent legend.
+const CATEGORY_COLORS = {
+  pothole: '#ff5a5a',
+  streetlight: '#ffc43d',
+  water: '#3bc9ff',
+  waste: '#a3e635',
+  infrastructure: '#c084fc',
+  other: '#22d3ee',
+};
+const catColor = (c, i) => CATEGORY_COLORS[c] || COLORS[i % COLORS.length];
+const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+
 const SEVERITY_COLORS = { low: '#34d399', mid: '#fbbf24', high: '#f87171' };
 
 export default function Dashboard() {
@@ -39,6 +51,8 @@ export default function Dashboard() {
       </main>
     );
   }
+
+  const catTotal = stats.byCategory.reduce((a, b) => a + b.c, 0);
 
   return (
     <main className="page">
@@ -83,23 +97,45 @@ export default function Dashboard() {
           {/* Category breakdown */}
           <div className="card">
             <h3 className="text-sm font-semibold text-white mb-5">By Category</h3>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie
-                  data={stats.byCategory}
-                  dataKey="c"
-                  nameKey="category"
-                  innerRadius={48}
-                  outerRadius={80}
-                  paddingAngle={3}
-                >
-                  {stats.byCategory.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={tooltipStyle} />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="relative">
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie
+                    data={stats.byCategory}
+                    dataKey="c"
+                    nameKey="category"
+                    innerRadius={56}
+                    outerRadius={82}
+                    paddingAngle={2}
+                    stroke="none"
+                  >
+                    {stats.byCategory.map((d, i) => (
+                      <Cell key={i} fill={catColor(d.category, i)} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CatTooltip total={catTotal} />} />
+                </PieChart>
+              </ResponsiveContainer>
+              {/* center total */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="stat-num text-2xl leading-none">{catTotal}</span>
+                <span className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Reports</span>
+              </div>
+            </div>
+            {/* legend */}
+            <div className="mt-5 space-y-2">
+              {stats.byCategory.map((d, i) => {
+                const pct = catTotal ? Math.round((d.c / catTotal) * 100) : 0;
+                return (
+                  <div key={i} className="flex items-center gap-2.5 text-sm">
+                    <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: catColor(d.category, i) }} />
+                    <span className="text-slate-300 flex-1 truncate">{cap(d.category)}</span>
+                    <span className="text-white tabular-nums font-medium">{d.c}</span>
+                    <span className="text-slate-500 tabular-nums w-9 text-right">{pct}%</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Severity */}
@@ -169,6 +205,21 @@ const tooltipStyle = {
   color: '#e2e8f0',
   fontSize: '12px',
 };
+
+function CatTooltip({ active, payload, total }) {
+  if (!active || !payload?.length) return null;
+  const p = payload[0];
+  const pct = total ? Math.round((p.value / total) * 100) : 0;
+  return (
+    <div style={{ ...tooltipStyle, padding: '8px 12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ width: 10, height: 10, borderRadius: 3, background: p.payload.fill }} />
+        <strong style={{ color: '#fff' }}>{cap(p.name)}</strong>
+        <span style={{ color: '#94a3b8' }}>· {p.value} reports · {pct}%</span>
+      </div>
+    </div>
+  );
+}
 
 function KPI({ icon, label, value }) {
   return (

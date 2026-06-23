@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import IssueMap from '../components/IssueMap';
 import IssueCard from '../components/IssueCard';
 import { api } from '../utils/api';
-import { Filter } from 'lucide-react';
+import { Filter, Activity } from 'lucide-react';
+import { useCountUp } from '../hooks/useCountUp';
 
 const CATEGORIES = ['all', 'pothole', 'streetlight', 'water', 'waste', 'infrastructure'];
 
@@ -60,6 +61,7 @@ export default function MapPage() {
             <IssueMap issues={issues} />
           </div>
           <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+            <SidePanelHeader issues={issues} filter={filter} />
             {loading ? (
               <div className="card text-center text-slate-400">Loading...</div>
             ) : issues.length ? (
@@ -73,5 +75,63 @@ export default function MapPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+// --- Live side-panel header: count-up + 7-day activity sparkline -------------
+function dailySeries(issues, days = 7) {
+  const now = Date.now();
+  const buckets = Array.from({ length: days }, () => 0);
+  for (const i of issues) {
+    const t = new Date((i.created_at || '').replace(' ', 'T') + 'Z').getTime();
+    if (Number.isNaN(t)) continue;
+    const diff = Math.floor((now - t) / 86400000);
+    if (diff >= 0 && diff < days) buckets[days - 1 - diff]++;
+  }
+  return buckets;
+}
+
+function SidePanelHeader({ issues, filter }) {
+  const n = useCountUp(issues.length);
+  const series = dailySeries(issues);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="card sticky top-0 z-10 backdrop-blur-xl"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="stat-num text-2xl">{Math.round(n)}</span>
+            <span className="flex items-center gap-1 text-[11px] text-emerald-300/80">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> live
+            </span>
+          </div>
+          <div className="text-xs text-slate-400 mt-0.5">
+            {filter === 'all' ? 'reports shown' : `${filter} reports`}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-slate-500">
+          <Activity className="w-4 h-4 text-brand-300" />
+          <div className="w-24"><Sparkline data={series} /></div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function Sparkline({ data, color = '#2fbbff', height = 30 }) {
+  if (!data?.length) return <div style={{ height }} />;
+  const max = Math.max(...data, 1);
+  const w = 100;
+  const step = data.length > 1 ? w / (data.length - 1) : w;
+  const pts = data
+    .map((v, i) => `${(i * step).toFixed(1)},${(height - (v / max) * (height - 4) - 2).toFixed(1)}`)
+    .join(' ');
+  return (
+    <svg viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
+      <polyline points={`0,${height} ${pts} ${w},${height}`} fill={`${color}1f`} stroke="none" />
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+    </svg>
   );
 }

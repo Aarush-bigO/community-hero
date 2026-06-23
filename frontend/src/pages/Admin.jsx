@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, UserCheck } from 'lucide-react';
+import { CheckCircle2, UserCheck, Building2 } from 'lucide-react';
 import { api } from '../utils/api';
 import { useStore } from '../store/useStore';
+import { useCountUp } from '../hooks/useCountUp';
 
 export default function Admin() {
   const [queue, setQueue] = useState([]);
@@ -69,30 +70,8 @@ export default function Admin() {
 
         {/* Department metrics row */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {metrics.slice(0, 4).map((m) => (
-            <div key={m.id} className="card">
-              <div className="text-xs text-slate-500 uppercase tracking-wide mb-3">{m.name}</div>
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <div className="stat-num text-2xl">{m.resolved}/{m.total}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">resolved</div>
-                </div>
-                <div className="text-right">
-                  <span
-                    className={`chip text-xs ${
-                      m.breaches > 0
-                        ? 'bg-red-500/10 border-red-500/20 text-red-300'
-                        : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-                    }`}
-                  >
-                    {m.breaches} breach{m.breaches === 1 ? '' : 'es'}
-                  </span>
-                  {m.avg_resolve_hours != null && (
-                    <div className="text-xs text-slate-500 mt-1.5">{m.avg_resolve_hours?.toFixed(1)}h avg</div>
-                  )}
-                </div>
-              </div>
-            </div>
+          {metrics.slice(0, 4).map((m, i) => (
+            <DeptCard key={m.id} m={m} i={i} />
           ))}
         </div>
 
@@ -144,10 +123,13 @@ export default function Admin() {
                   </td>
                 </tr>
               ) : (
-                queue.map((i) => {
+                queue.map((i, idx) => {
                   const breaching = (i.hours_remaining ?? 0) < 0 && i.status !== 'resolved';
                   return (
-                    <tr key={i.id} className="hover:bg-white/[0.03] transition-colors">
+                    <motion.tr key={i.id}
+                      initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: Math.min(idx * 0.03, 0.4) }}
+                      className="hover:bg-white/[0.03] transition-colors">
                       <td className="px-5 py-4">
                         <div className="font-medium text-white">{i.title}</div>
                         <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
@@ -216,7 +198,7 @@ export default function Admin() {
                           </button>
                         )}
                       </td>
-                    </tr>
+                    </motion.tr>
                   );
                 })
               )}
@@ -225,6 +207,47 @@ export default function Admin() {
         </div>
       </div>
     </main>
+  );
+}
+
+function DeptCard({ m, i }) {
+  const resolved = useCountUp(m.resolved || 0);
+  const total = useCountUp(m.total || 0);
+  const pct = m.total ? Math.round((m.resolved / m.total) * 100) : 0;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.06 }} whileHover={{ y: -3 }}
+      className="card card-hover"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="icon-tile w-9 h-9"><Building2 className="w-4 h-4" /></div>
+        <span
+          className={`chip text-xs ${
+            m.breaches > 0
+              ? 'bg-red-500/10 border-red-500/20 text-red-300'
+              : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+          }`}
+        >
+          {m.breaches} breach{m.breaches === 1 ? '' : 'es'}
+        </span>
+      </div>
+      <div className="text-xs text-slate-500 uppercase tracking-wide truncate">{m.name}</div>
+      <div className="stat-num text-2xl mt-1">
+        {Math.round(resolved)}
+        <span className="text-slate-500 text-lg">/{Math.round(total)}</span>
+      </div>
+      <div className="text-[11px] text-slate-500 mb-2.5">
+        resolved{m.avg_resolve_hours != null ? ` · ${m.avg_resolve_hours.toFixed(1)}h avg` : ''}
+      </div>
+      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <motion.div
+          className="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600"
+          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+          transition={{ delay: 0.2 + i * 0.06, duration: 0.7 }}
+        />
+      </div>
+    </motion.div>
   );
 }
 

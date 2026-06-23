@@ -4,6 +4,7 @@ import { Radio, Twitter, Newspaper, MessageSquare, TrendingDown, TrendingUp, Min
 import { api } from '../utils/api';
 import { useStore } from '../store/useStore';
 import { useT } from '../i18n';
+import { useCountUp } from '../hooks/useCountUp';
 
 const SOURCE_ICON = {
   twitter: Twitter,
@@ -74,7 +75,7 @@ export default function Pulse() {
         {summary && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <SummaryTile label={t('pulse.mentions')} value={summary.total} />
-            <SummaryTile label={t('pulse.avg')} value={summary.sentiment.avg.toFixed(2)} tone={summary.sentiment.label} />
+            <SummaryTile label={t('pulse.avg')} value={summary.sentiment.avg} tone={summary.sentiment.label} />
             <SummaryTile label={t('pulse.negative')} value={summary.sentiment.counts.negative} tone="negative" />
             <SummaryTile label={t('pulse.positive')} value={summary.sentiment.counts.positive} tone="positive" />
           </div>
@@ -123,9 +124,12 @@ export default function Pulse() {
 function SummaryTile({ label, value, tone = 'neutral' }) {
   const toneClass =
     tone === 'negative' ? 'text-red-300' : tone === 'positive' ? 'text-emerald-300' : 'text-white';
+  const isFloat = typeof value === 'number' && !Number.isInteger(value);
+  const n = useCountUp(typeof value === 'number' ? value : 0, { decimals: isFloat ? 2 : 0 });
+  const display = typeof value === 'number' ? (isFloat ? n.toFixed(2) : Math.round(n)) : value;
   return (
-    <motion.div whileHover={{ y: -3 }} className="card card-hover">
-      <div className={`stat-num text-3xl ${toneClass}`}>{value}</div>
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -3 }} className="card card-hover">
+      <div className={`stat-num text-3xl ${toneClass}`}>{display}</div>
       <div className="text-xs uppercase tracking-wide text-slate-400 mt-1">{label}</div>
     </motion.div>
   );

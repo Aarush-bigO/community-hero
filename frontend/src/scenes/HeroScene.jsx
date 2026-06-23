@@ -1,35 +1,36 @@
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Float } from '@react-three/drei';
+import * as THREE from 'three';
 import StarField from './StarField.jsx';
 import Globe from './Globe.jsx';
 
 export default function HeroScene({ issues = [] }) {
   return (
     <Canvas
-      camera={{ position: [0, 0.8, 6.4], fov: 50 }}
-      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0.6, 6.6], fov: 46 }}
+      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
       dpr={[1, 2]}
     >
-      <color attach="background" args={['#000000']} />
-      <fog attach="fog" args={['#070b18', 8, 24]} />
+      {/* Sun aligned with the globe's day/night shader (SUN_DIR ≈ 0.55,0.28,1.0) */}
+      <directionalLight position={[3.3, 1.7, 6]} intensity={2.4} color="#fff6e8" />
+      <ambientLight intensity={0.18} />
 
-      <ambientLight intensity={0.4} />
-      <pointLight position={[8, 6, 8]} intensity={1.4} color="#06a0ee" />
-      <pointLight position={[-8, -4, -6]} intensity={0.9} color="#a855f7" />
-      <directionalLight position={[5, 5, 5]} intensity={0.5} />
+      <StarField count={4200} />
 
-      <StarField count={3500} />
-
-      <Float speed={0.6} rotationIntensity={0.2} floatIntensity={0.5}>
-        <Globe issues={issues} />
-      </Float>
+      <Suspense fallback={null}>
+        <Float speed={0.5} rotationIntensity={0.12} floatIntensity={0.35}>
+          <Globe issues={issues} />
+        </Float>
+      </Suspense>
 
       <OrbitControls
         enableZoom={false}
         enablePan={false}
-        autoRotate
-        autoRotateSpeed={0.4}
-        rotateSpeed={0.4}
+        autoRotate={false}
+        rotateSpeed={0.35}
+        minPolarAngle={Math.PI / 2.6}
+        maxPolarAngle={Math.PI / 1.7}
       />
     </Canvas>
   );

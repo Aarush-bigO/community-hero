@@ -15,4 +15,8 @@ services:
         value: mock
       - key: CORS_ORIGIN
         value: "*"
+      - key: PULSE_LIVE
+        value: "true"
+      - key: PULSE_INTERVAL_MS
+        value: "15000"
     autoDeploy: true

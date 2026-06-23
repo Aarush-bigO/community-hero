@@ -35,6 +35,7 @@ export default function Leaderboard() {
               'ring-amber-300/50 text-amber-300',
               'ring-orange-300/40 text-orange-300',
             ];
+            const topBar = ['bg-slate-300/50', 'bg-amber-300/60', 'bg-orange-300/50'];
             return (
               <motion.div
                 key={rankIdx}
@@ -54,9 +55,10 @@ export default function Leaderboard() {
                   {u && <span className="chip">L{u.level}</span>}
                 </div>
                 <div
-                  className="w-full card !p-0 rounded-t-xl rounded-b-none flex items-end justify-center pb-3"
+                  className="w-full rounded-t-xl border border-b-0 border-white/[0.08] bg-gradient-to-b from-white/[0.08] to-white/[0.01] flex items-end justify-center pb-3 relative overflow-hidden"
                   style={{ height: heights[rankIdx] }}
                 >
+                  <div className={`absolute top-0 inset-x-0 h-1 ${topBar[rankIdx]}`} />
                   <span className={`stat-num text-2xl ${accents[rankIdx]}`}>#{rankIdx + 1}</span>
                 </div>
               </motion.div>

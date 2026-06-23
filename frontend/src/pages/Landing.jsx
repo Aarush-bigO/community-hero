@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight, Sparkles, Zap, Users, Trophy, Shield,
   Globe2, Languages, Radio, Layers, Building2, CheckCircle2,
+  Mail, Linkedin,
 } from 'lucide-react';
 import HeroScene from '../scenes/HeroScene';
 import { api } from '../utils/api';
@@ -188,6 +189,24 @@ export default function Landing() {
               <div className="flex items-center gap-2 mt-4 text-xs text-emerald-300/80">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Open311-compatible · Multi-tenant
               </div>
+
+              {/* Socials */}
+              <div className="mt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3">
+                  Connect with the builder
+                </p>
+                <div className="flex items-center gap-2.5">
+                  <Social href="mailto:aarushbharti2005@gmail.com" label="Email">
+                    <Mail className="w-4 h-4" />
+                  </Social>
+                  <Social href="https://x.com/Aarush52410944" label="X (Twitter)">
+                    <XLogo className="w-[15px] h-[15px]" />
+                  </Social>
+                  <Social href="https://www.linkedin.com/in/aarush-bharti-667a43324/" label="LinkedIn">
+                    <Linkedin className="w-4 h-4" />
+                  </Social>
+                </div>
+              </div>
             </div>
 
             <FooterCol
@@ -226,6 +245,32 @@ export default function Landing() {
         </div>
       </footer>
     </main>
+  );
+}
+
+function Social({ href, label, children }) {
+  const isMail = href.startsWith('mailto:');
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      title={label}
+      {...(isMail ? {} : { target: '_blank', rel: 'noreferrer' })}
+      className="grid place-items-center w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10
+                 text-slate-300 hover:text-white hover:border-brand-400/50 hover:bg-brand-500/10
+                 transition"
+    >
+      {children}
+    </a>
+  );
+}
+
+// Accurate X (formerly Twitter) glyph — lucide ships the old bird only.
+function XLogo({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
   );
 }
 

@@ -34,9 +34,12 @@ seedIfEmpty();
 
 // --- Security & basics ---
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+// CORS: "*" (or unset) → reflect any origin (works with credentials, unlike a
+// literal "*"); otherwise allow the explicit comma-separated allowlist.
+const corsEnv = process.env.CORS_ORIGIN?.trim();
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(',') || '*',
+    origin: !corsEnv || corsEnv === '*' ? true : corsEnv.split(',').map((s) => s.trim()),
     credentials: true,
   })
 );

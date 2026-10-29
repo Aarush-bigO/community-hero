@@ -111,11 +111,11 @@ def create_report():
         format_run(r, "Times New Roman", 12.5, True, False, C_BLACK)
         return p
 
-    def add_styled_table(caption, headers, rows, col_widths=None, alignments=None):
+    def add_styled_table(caption, headers, rows, col_widths=None, alignments=None, has_spacer=True, row_pad_pt=2.5):
         p_cap = doc.add_paragraph()
         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_cap.paragraph_format.space_before = Pt(10)
-        p_cap.paragraph_format.space_after = Pt(4)
+        p_cap.paragraph_format.space_before = Pt(8)
+        p_cap.paragraph_format.space_after = Pt(3)
         p_cap.paragraph_format.keep_with_next = True
         r_cap = p_cap.add_run(caption)
         format_run(r_cap, "Times New Roman", 10.5, True, False, C_BLACK)
@@ -139,8 +139,8 @@ def create_report():
             '''))
             p = cell.paragraphs[0]
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.paragraph_format.space_before = Pt(3)
-            p.paragraph_format.space_after = Pt(3)
+            p.paragraph_format.space_before = Pt(row_pad_pt + 0.5)
+            p.paragraph_format.space_after = Pt(row_pad_pt + 0.5)
             r = p.add_run(h_text)
             format_run(r, "Times New Roman", 10, True, False, RGBColor(0xFF, 0xFF, 0xFF))
 
@@ -166,8 +166,8 @@ def create_report():
                 p = cell.paragraphs[0]
                 align = alignments[col_idx] if alignments else WD_ALIGN_PARAGRAPH.LEFT
                 p.alignment = align
-                p.paragraph_format.space_before = Pt(2.5)
-                p.paragraph_format.space_after = Pt(2.5)
+                p.paragraph_format.space_before = Pt(row_pad_pt)
+                p.paragraph_format.space_after = Pt(row_pad_pt)
                 p.paragraph_format.line_spacing = 1.05
                 r = p.add_run(str(cell_value))
                 format_run(r, "Times New Roman", 9.5, False, False, C_BODY)
@@ -177,9 +177,10 @@ def create_report():
                 for idx, w in enumerate(col_widths):
                     row.cells[idx].width = Inches(w)
 
-        p_spacer = doc.add_paragraph()
-        p_spacer.paragraph_format.space_before = Pt(0)
-        p_spacer.paragraph_format.space_after = Pt(4)
+        if has_spacer:
+            p_spacer = doc.add_paragraph()
+            p_spacer.paragraph_format.space_before = Pt(0)
+            p_spacer.paragraph_format.space_after = Pt(3)
         return tbl
 
     def add_code_block(title, code_str):
@@ -483,15 +484,15 @@ def create_report():
         ("2. INTRODUCTION", "9", True),
         ("3. LITERATURE REVIEW", "11", True),
         ("4. PROBLEM DEFINITION AND OBJECTIVES", "13", True),
-        ("5. PROPOSED METHODOLOGY AND ARCHITECTURE", "15", True),
-        ("6. PROPOSED ALGORITHMS AND PSEUDOCODE", "17", True),
-        ("7. SYSTEM DIAGRAMS AND WORKFLOWS", "18", True),
-        ("8. IMPLEMENTATION AND TECHNOLOGIES", "22", True),
-        ("9. RESULTS AND TESTING", "24", True),
-        ("10. CONCLUSION AND FUTURE SCOPE", "26", True),
-        ("11. REFERENCES", "27", True),
-        ("12. LIST OF PUBLICATION", "28", True),
-        ("13. PLAGIARISM REPORT (TURNITIN)", "29", True)
+        ("5. PROPOSED METHODOLOGY AND ARCHITECTURE", "14", True),
+        ("6. PROPOSED ALGORITHMS AND PSEUDOCODE", "16", True),
+        ("7. SYSTEM DIAGRAMS AND WORKFLOWS", "17", True),
+        ("8. IMPLEMENTATION AND TECHNOLOGIES", "21", True),
+        ("9. RESULTS AND TESTING", "23", True),
+        ("10. CONCLUSION AND FUTURE SCOPE", "25", True),
+        ("11. REFERENCES", "26", True),
+        ("12. LIST OF PUBLICATION", "27", True),
+        ("13. PLAGIARISM REPORT (TURNITIN)", "28", True)
     ]
 
     for title, pno, is_major in toc_data:
@@ -521,13 +522,13 @@ def create_report():
     format_run(r_lfh, "Times New Roman", 15, True, False, C_BLACK)
 
     figs_data = [
-        ("Fig. 1. High-Level Full-Stack System Architecture of Community Hero ........................................", "18"),
-        ("Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1) ..........................................................................", "19"),
-        ("Fig. 3. Interactive 3D Virtual Earth and Incident Visualization ...........................................................", "19"),
-        ("Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline .......................................", "20"),
-        ("Fig. 5. Municipal Command Center Real-Time Dashboard ................................................................", "20"),
-        ("Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards .................................", "21"),
-        ("Fig. 7. Field Repair Work Order Tracking and Status Verification ..................................................", "21")
+        ("Fig. 1. High-Level Full-Stack System Architecture of Community Hero ........................................", "17"),
+        ("Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1) ..........................................................................", "18"),
+        ("Fig. 3. Interactive 3D Virtual Earth and Incident Visualization ...........................................................", "18"),
+        ("Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline .......................................", "19"),
+        ("Fig. 5. Municipal Command Center Real-Time Dashboard ................................................................", "19"),
+        ("Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards .................................", "20"),
+        ("Fig. 7. Field Repair Work Order Tracking and Status Verification ..................................................", "20")
     ]
 
     for ftitle, fpno in figs_data:
@@ -558,13 +559,13 @@ def create_report():
     tables_data = [
         ("Table 1. Summary of reviewed works and their relevance to this project .....................................", "12"),
         ("Table 2. System requirements and technical specifications ..............................................................", "13"),
-        ("Table 3. Primary database tables and integrity rules .........................................................................", "16"),
-        ("Table 4. Technology stack and roles in Community Hero .................................................................", "22"),
-        ("Table 5. Key REST API endpoints implemented in backend .............................................................", "23"),
-        ("Table 6. Offline NLP classification performance across five categories ......................................", "24"),
-        ("Table 7. Spatial duplicate detection accuracy across distance tests .............................................", "24"),
-        ("Table 8. Functional test cases and validation results (TC1 to TC6) .................................................", "25"),
-        ("Table 9. Server response latency benchmarks under concurrent load .............................................", "25")
+        ("Table 3. Primary database tables and integrity rules .........................................................................", "15"),
+        ("Table 4. Technology stack and roles in Community Hero .................................................................", "21"),
+        ("Table 5. Key REST API endpoints implemented in backend .............................................................", "22"),
+        ("Table 6. Offline NLP classification performance across five categories ......................................", "23"),
+        ("Table 7. Spatial duplicate detection accuracy across distance tests .............................................", "23"),
+        ("Table 8. Functional test cases and validation results (TC1 to TC6) .................................................", "24"),
+        ("Table 9. Server response latency benchmarks under concurrent load .............................................", "24")
     ]
 
     for ttitle, tpno in tables_data:
@@ -697,23 +698,17 @@ def create_report():
         bold_prefix="• Distance Formula: "
     )
     add_body_p(
-        "a = sin²(Δlat / 2) + cos(lat1) · cos(lat2) · sin²(Δlng / 2)\n"
-        "c = 2 · atan2(√a, √(1 - a))\n"
-        "d = R · c  (where R = 6,371,000 meters)",
-        line_spacing=1.15
-    )
-    add_body_p(
-        "If distance d ≤ 75.0 meters between two tickets of the same category, the new report is marked as a duplicate."
+        "a = sin²(Δlat / 2) + cos(lat1) · cos(lat2) · sin²(Δlng / 2);   c = 2 · atan2(√a, √(1 - a))\n"
+        "d = R · c   (where R = 6,371,000 meters; threshold d ≤ 75.0 m)",
+        line_spacing=1.1
     )
     add_body_p(
         "2. 3D Globe Projection: Latitude (φ) and longitude (λ) in radians are converted to 3D Cartesian coordinates (X, Y, Z) on a sphere of radius R via:",
         bold_prefix="• 3D Coordinates: "
     )
     add_body_p(
-        "X = R · cos(φ) · sin(λ)\n"
-        "Y = R · sin(φ)\n"
-        "Z = R · cos(φ) · cos(λ)",
-        line_spacing=1.15
+        "X = R · cos(φ) · sin(λ);   Y = R · sin(φ);   Z = R · cos(φ) · cos(λ)",
+        line_spacing=1.1
     )
 
     add_h2("4.3 System Specifications")
@@ -731,7 +726,8 @@ def create_report():
     ]
     add_styled_table("TABLE 2. SYSTEM REQUIREMENTS AND TECHNICAL SPECIFICATIONS",
                      table2_headers, table2_rows, col_widths=[1.6, 2.1, 2.55],
-                     alignments=[WD_ALIGN_PARAGRAPH.LEFT, WD_ALIGN_PARAGRAPH.LEFT, WD_ALIGN_PARAGRAPH.LEFT])
+                     alignments=[WD_ALIGN_PARAGRAPH.LEFT, WD_ALIGN_PARAGRAPH.LEFT, WD_ALIGN_PARAGRAPH.LEFT],
+                     has_spacer=False, row_pad_pt=1.5)
 
     # =============================================================
     # CHAPTER 5: PROPOSED METHODOLOGY AND ARCHITECTURE (PAGE 14-15)
@@ -832,45 +828,68 @@ def create_report():
 
     add_h2("7.1 System Architecture Diagram")
     add_body_p(
-        "Figure 1 illustrates the full system architecture, showing the React frontend, Express API backend, trained Python ML model, and SQLite database."
+        "Figure 1 illustrates the full-stack system architecture of Community Hero, showcasing the four primary operational tiers and their interconnections:"
     )
-    add_figure("slide_arch.png", "Fig. 1. High-Level Full-Stack System Architecture of Community Hero.", width_in=5.0)
+    add_figure("slide_arch.png", "Fig. 1. High-Level Full-Stack System Architecture of Community Hero.", width_in=4.7)
+
+    add_body_p(
+        "The architecture is organized into four decoupled layers for scalability, performance, and offline reliability:",
+        bold_prefix="Architectural Layer Breakdown: "
+    )
+    add_bullet(
+        "Client Presentation Tier: Built with React 18, Three.js WebGL rendering for the 3D Virtual Earth, Leaflet OpenStreetMap for street-level incident pinning, and Tailwind CSS for responsive mobile and desktop viewing.",
+        bold_prefix="1. Client Tier: "
+    )
+    add_bullet(
+        "Application & Telemetry Gateway: Powered by Node.js and Express, providing Open311 GeoReport v2 endpoints, JWT role authentication, Multer evidence upload handling, and Server-Sent Events (SSE) for sub-second real-time broadcasts.",
+        bold_prefix="2. API Gateway: "
+    )
+    add_bullet(
+        "Offline Intelligence Tier: A standalone Python microservice running Scikit-Learn with TF-IDF vectorization and Multinomial Naive Bayes classification, processing text reports in under 5 milliseconds without cloud API dependencies.",
+        bold_prefix="3. ML Engine: "
+    )
+    add_bullet(
+        "Persistence & Integrity Tier: An embedded SQLite 3 database operating in Write-Ahead Logging (WAL) mode, guaranteeing ACID compliance, rapid transactional writes, and automated spatial radius indexing.",
+        bold_prefix="4. Database: "
+    )
+
+    doc.add_page_break()
 
     add_h2("7.2 Data Flow Diagram (DFD Level-0 & Level-1)")
     add_body_p(
         "Figure 2 illustrates how citizen complaints are received, processed by the trained model, checked for duplicates, stored in the database, and pushed to the city dashboard."
     )
-    add_figure("slide_dfd.png", "Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1).", width_in=5.0)
+    add_figure("slide_dfd.png", "Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1).", width_in=4.5)
 
     add_h2("7.3 3D Virtual Earth Digital Twin Visualization")
     add_body_p(
         "Figure 3 showcases the interactive 3D Virtual Earth interface, featuring real-time WebGL space rendering, atmospheric day and night shaders, and live emergency telemetry pins displaying active civic incidents across the city."
     )
-    add_figure("soul_landing_retina.png", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.8)
+    add_figure("soul_landing_retina.png", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.5)
 
     add_h2("7.4 Multilingual Voice Intake Pipeline")
     add_body_p(
         "Figure 4 shows the voice intake pipeline, illustrating how callers in Hindi or English have their speech converted into structured tickets."
     )
-    add_figure("web_voice_cockpit.png", "Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline.", width_in=4.8)
+    add_figure("web_voice_cockpit.png", "Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline.", width_in=4.5)
 
     add_h2("7.5 Municipal Command Center Dashboard")
     add_body_p(
         "Figure 5 displays the live municipal dashboard where city staff monitor active tickets, dispatch repair crews, and verify resolutions."
     )
-    add_figure("web_dashboard.png", "Fig. 5. Municipal Command Center Real-Time Dashboard.", width_in=4.8)
+    add_figure("web_dashboard.png", "Fig. 5. Municipal Command Center Real-Time Dashboard.", width_in=4.5)
 
     add_h2("7.6 Citizen Hyperlocal Geospatial Map Interface")
     add_body_p(
         "Figure 6 illustrates the citizen hyperlocal geospatial incident map, displaying real-time OpenStreetMap pinning, categorical status filters, and community verified incident cards across the municipality."
     )
-    add_figure("web_globe_map.png", "Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards.", width_in=4.8)
+    add_figure("web_globe_map.png", "Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards.", width_in=4.5)
 
     add_h2("7.7 Field Repair Work Order & Resolution Lifecycle")
     add_body_p(
         "Figure 7 illustrates the field resolution workflow from initial citizen submission to municipal repair crew dispatch and photographic proof verification."
     )
-    add_figure("web_admin_console.png", "Fig. 7. Field Repair Work Order Tracking and Status Verification.", width_in=4.8)
+    add_figure("web_admin_console.png", "Fig. 7. Field Repair Work Order Tracking and Status Verification.", width_in=4.5)
 
     # =============================================================
     # CHAPTER 8: IMPLEMENTATION AND TECHNOLOGIES (PAGE 22-24)

@@ -124,6 +124,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/dispatch" element={<VoiceCockpitPage />} />
         <Route path="/cockpit" element={<VoiceCockpitPage />} />
+        <Route path="/voice" element={<VoiceCockpitPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/dashboard" element={<Dashboard />} />

@@ -28,11 +28,19 @@ yarn-error.log*
 *.swp
 .DS_Store
 
-# Backend
+# Backend & Databases
 backend/data/
+data/
+*.db
+*.db-wal
+*.db-shm
 backend/uploads/*
 !backend/uploads/.gitkeep
 
 # Coverage
 coverage/
 .nyc_output/
+
+# Temporary and unrelated documents in root
+Smart_Attendance*
+

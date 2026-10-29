@@ -84,14 +84,51 @@ status_updates
   id PK, issue_id FK, status, note, author, created_at
 ```
 
-## Security
-- Helmet sets safe headers
-- CORS allowlist via `CORS_ORIGIN`
-- Rate limit: 120 req/min per IP on `/api`
-- Multer file-type & size guards
-- Zod schema on every write endpoint
+## Bolna Voice AI & Emergency Command Architecture (v2.0)
 
-## Deploy
-Frontend → Vercel (`vercel.json`).
-Backend → Render (`render.yaml`).
-Both autodeploy on push to `main`.
+Built for the **Bolna Symphony Buildathon**, synthesizing blueprints from Dispatch AI, Aegis, OperatorAI, and BravoDispatch:
+
+```
+                                    ┌───────────────────────┐
+                                    │ Citizen Voice Call    │
+                                    │ (Hindi/English/Hing)  │
+                                    └───────────┬───────────┘
+                                                │
+                                                ▼
+                                    ┌───────────────────────┐
+                                    │ Bolna Voice Engine    │
+                                    │ (Sarvam AI STT + TTS) │
+                                    └───────────┬───────────┘
+                                                │
+               Function Calling / Webhook       │ POST /api/bolna-webhook
+         ┌──────────────────────────────────────┴──────────────────────────────────────┐
+         ▼                                                                             ▼
+┌─────────────────────────────────┐                                           ┌─────────────────────────────────┐
+│ Swarm-Surge Deduplication       │                                           │ Open311 CAD Ticket Generator    │
+│ Spatial Haversine (<500m)       │                                           │ Sub-second Work Order #311-XXXX │
+│ Auto-escalate Severity=5, Urg=10│                                           │ Multi-authority Routing         │
+└────────────────┬────────────────┘                                           └────────────────┬────────────────┘
+                 │                                                                             │
+                 ▼                                                                             ▼
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Server-Sent Events (SSE) Bus (/api/stream, /api/events)                                                        │
+│ -> NEW_VOICE_DISPATCH -> INCIDENT_CLUSTER_SURGE -> VOICE_TRANSCRIPT_CHUNK -> UNIT_DISPATCH_CONFIRMED          │
+└────────────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────────┘
+                 │                                                                             │
+                 ▼                                                                             ▼
+┌─────────────────────────────────┐                                           ┌─────────────────────────────────┐
+│ Three.js 3D Earth Cockpit       │                                           │ Closed-Loop Outbound Dispatch   │
+│ - Pulsing Emergency Beacons     │                                           │ - POST https://api.bolna.dev/call│
+│ - Expanding Shockwave Rings     │                                           │ - Ringing Field Unit (+91 98100)│
+│ - Satellite Camera Flight Interpolation                                     │ - POST /api/bolna-dispatch-confirm
+└─────────────────────────────────┘                                           └─────────────────────────────────┘
+```
+
+### Key Endpoints
+- `POST /api/bolna-webhook`: Inbound citizen triage & function call normalizer (`create_open311_ticket`).
+- `POST /api/bolna-dispatch-confirm`: Outbound officer verbal confirmation callback.
+- `POST /api/simulate-voice-call`: 1-Click high-fidelity multi-scenario simulator with live SSE chunk streaming.
+- `GET /api/voice-dispatches`: Active emergency CAD ticket feed.
+- `POST /api/voice-dispatch/:id/vision`: Multimodal vision-verification attachment hook.
+
+

@@ -123,14 +123,19 @@ export default function Pulse() {
 
 function SummaryTile({ label, value, tone = 'neutral' }) {
   const toneClass =
-    tone === 'negative' ? 'text-red-300' : tone === 'positive' ? 'text-emerald-300' : 'text-white';
+    tone === 'negative' ? 'text-rose-400' : tone === 'positive' ? 'text-emerald-400' : 'text-marigold-300';
   const isFloat = typeof value === 'number' && !Number.isInteger(value);
   const n = useCountUp(typeof value === 'number' ? value : 0, { decimals: isFloat ? 2 : 0 });
   const display = typeof value === 'number' ? (isFloat ? n.toFixed(2) : Math.round(n)) : value;
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -3 }} className="card card-hover">
-      <div className={`stat-num text-3xl ${toneClass}`}>{display}</div>
-      <div className="text-xs uppercase tracking-wide text-slate-400 mt-1">{label}</div>
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -3 }}
+      className="card card-hover border border-white/10 bg-[#0D0F14]/90 backdrop-blur-xl relative overflow-hidden"
+    >
+      <div className={`stat-num text-3xl font-black ${toneClass}`}>{display}</div>
+      <div className="text-xs uppercase tracking-wider font-mono text-silver-400 mt-1">{label}</div>
     </motion.div>
   );
 }
@@ -144,35 +149,37 @@ function Signal({ s, index, flash }) {
       initial={{ opacity: 0, y: flash ? -10 : 10, scale: flash ? 0.98 : 1 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: flash ? 0 : Math.min(index * 0.03, 0.4) }}
-      className={`card border ${meta.color} bg-gradient-to-br ${flash ? 'ring-2 ring-brand-400/60' : ''}`}
+      className={`card border ${meta.color} bg-[#0D0F14]/90 backdrop-blur-xl relative overflow-hidden ${
+        flash ? 'ring-2 ring-marigold-400/80 shadow-[0_0_25px_rgba(234,170,0,0.4)]' : ''
+      }`}
     >
       {flash && (
-        <span className="absolute -top-2 -right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500 text-white shadow-lg">
-          NEW
+        <span className="absolute -top-2 -right-2 text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full bg-marigold-400 text-[#08090C] shadow-lg animate-pulse">
+          LIVE SIGNAL
         </span>
       )}
-      <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-lg bg-white/5 grid place-items-center flex-shrink-0">
-          <Icon className="w-4 h-4 text-slate-200" />
+      <div className="flex items-start gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-[#12151D] border border-white/10 grid place-items-center flex-shrink-0 text-marigold-400">
+          <Icon className="w-4 h-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-3 mb-1">
+          <div className="flex items-center justify-between gap-3 mb-1.5 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{s.author || 'anonymous'}</span>
-              <span className="text-xs text-slate-500 capitalize">· {s.source}</span>
+              <span className="text-sm font-semibold text-silver-100">{s.author || 'Civic Observer'}</span>
+              <span className="text-xs text-silver-500 font-mono capitalize">· {s.source}</span>
             </div>
-            <span className={`chip ${meta.text} bg-white/5`}>
+            <span className={`chip py-0.5 px-2 font-mono text-[11px] font-bold ${meta.text} bg-[#12151D] border-white/10`}>
               <SentIcon className="w-3 h-3" />
               {s.sentiment_label}
             </span>
           </div>
-          <p className="text-sm text-slate-100 leading-relaxed">{s.text}</p>
-          <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
-            {s.topic && <span className="chip !text-[10px]">#{s.topic}</span>}
+          <p className="text-sm text-silver-200 leading-relaxed font-sans">{s.text}</p>
+          <div className="flex items-center gap-2 mt-2.5 text-xs text-silver-500 font-mono">
+            {s.topic && <span className="chip !text-[10px] py-0.5 px-2 bg-[#12151D] border-white/10 text-marigold-300">#{s.topic}</span>}
             <span>{timeAgo(s.created_at)}</span>
             {s.url && (
-              <a href={s.url} target="_blank" rel="noreferrer" className="text-brand-300 hover:underline">
-                source ↗
+              <a href={s.url} target="_blank" rel="noreferrer" className="text-marigold-400 hover:text-marigold-300 hover:underline">
+                verify source ↗
               </a>
             )}
           </div>

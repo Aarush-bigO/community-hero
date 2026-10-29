@@ -3,99 +3,346 @@
 @tailwind utilities;
 
 @layer base {
-  html, body, #root { height: 100%; }
-  body {
-    @apply bg-[#05070f] text-slate-100 font-sans antialiased;
-    /* Restrained, near-monochrome backdrop — one faint brand glow, no rainbow. */
-    background:
-      radial-gradient(1100px 520px at 50% -8%, rgba(47,187,255,0.10), transparent 62%),
-      radial-gradient(900px 600px at 100% 100%, rgba(47,187,255,0.05), transparent 60%),
-      #05070f;
+  html {
+    min-height: 100%;
+    background-color: #08090C; /* PURE OBSIDIAN CANVAS */
+    overflow-x: clip;
   }
-  ::selection { @apply bg-brand-500/40 text-white; }
-  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  body {
+    min-height: 100%;
+    @apply antialiased text-silver-300;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #08090C;
+    color: #DDE3E8; /* ICE SILVER */
+    overflow-x: clip;
+  }
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+  ::selection {
+    background-color: rgba(234, 170, 0, 0.32);
+    color: #FFFFFF;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Syne', 'Outfit', sans-serif;
+    @apply tracking-tight text-silver-100;
+  }
+}
+
+/* ─── ATMOSPHERIC BACKGROUND MESH (DISCIPLINED OBSIDIAN CANVAS) ────────── */
+.app-bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background:
+    radial-gradient(ellipse 80vw 45vh at 50% -10%, rgba(234, 170, 0, 0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 60vw 50vh at 85% 15%,  rgba(58, 15, 52, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 55vw 55vh at 10% 85%,  rgba(58, 15, 52, 0.06) 0%, transparent 50%),
+    #08090C;
+}
+
+.app-bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-image:
+    linear-gradient(rgba(221, 227, 232, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(221, 227, 232, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, black 35%, transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, black 35%, transparent 95%);
+}
+
+/* ─── LEAFLET MAP ISOLATION & STACKING CONTEXT CONTAINMENT ──────────────── */
+.leaflet-container {
+  z-index: 1 !important;
+  isolation: isolate;
+  background: #0D0F14 !important;
+  border-radius: 16px;
+}
+.leaflet-pane {
+  z-index: 2 !important;
+}
+.leaflet-top, .leaflet-bottom {
+  z-index: 3 !important;
+}
+.leaflet-control {
+  z-index: 4 !important;
 }
 
 @layer components {
-  /* Surfaces ---------------------------------------------------------------*/
+  /* ── SURFACES (ELEVATED OBSIDIAN GLASS + ICE SILVER HAIRLINE BORDERS) ───── */
   .glass {
-    @apply backdrop-blur-xl bg-white/[0.04] border border-white/[0.08]
-           shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_10px_40px_-12px_rgba(0,0,0,0.6)];
+    @apply backdrop-blur-xl border;
+    background: rgba(13, 15, 20, 0.75);
+    border-color: rgba(221, 227, 232, 0.08);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset, 0 16px 40px -12px rgba(0, 0, 0, 0.75);
   }
   .glass-strong {
-    @apply backdrop-blur-2xl bg-[#0a0f1e]/80 border border-white/10
-           shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_16px_50px_-12px_rgba(0,0,0,0.7)];
+    @apply backdrop-blur-2xl border;
+    background: rgba(10, 11, 16, 0.90);
+    border-color: rgba(221, 227, 232, 0.12);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 20px 50px -12px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(221, 227, 232, 0.03);
   }
   .card {
-    @apply glass rounded-xl p-5 relative transition-colors duration-200;
+    @apply glass rounded-2xl p-5 relative transition-all duration-300;
   }
   .card-hover {
-    @apply hover:border-white/[0.16] hover:bg-white/[0.055];
+    @apply hover:border-marigold-500/40 hover:bg-[#12151D];
+    &:hover {
+      box-shadow:
+        0 0 0 1px rgba(234, 170, 0, 0.20),
+        0 20px 60px -12px rgba(0, 0, 0, 0.85),
+        0 0 32px -8px rgba(234, 170, 0, 0.20);
+    }
   }
 
-  /* Buttons ----------------------------------------------------------------*/
+  /* ── BUTTONS (MARIGOLD HERO ACTION + ICE SILVER GHOST) ──────────────────── */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium
-           bg-gradient-to-b from-brand-400 to-brand-600 text-white
-           shadow-[0_1px_0_0_rgba(255,255,255,0.2)_inset,0_8px_20px_-6px_rgba(6,160,238,0.5)]
-           hover:from-brand-300 hover:to-brand-500 active:scale-[0.99]
-           transition-all duration-150;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold select-none whitespace-nowrap
+           transition-all duration-200 active:scale-[0.98];
+    background: linear-gradient(135deg, #FFC425 0%, #EAAA00 55%, #C79000 100%);
+    color: #08090C; /* HIGH CONTRAST ON MARIGOLD - WCAG AAA */
+    box-shadow: 0 4px 22px -4px rgba(234, 170, 0, 0.55), 0 1px 0 0 rgba(255, 255, 255, 0.35) inset;
+    &:hover {
+      background: linear-gradient(135deg, #FFD12E 0%, #FFC425 50%, #EAAA00 100%);
+      box-shadow: 0 6px 30px -4px rgba(234, 170, 0, 0.75), 0 1px 0 0 rgba(255, 255, 255, 0.45) inset;
+      transform: translateY(-1px);
+      color: #08090C;
+    }
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium
-           bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20
-           text-slate-100 transition;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium select-none whitespace-nowrap
+           transition-all duration-200;
+    background: rgba(221, 227, 232, 0.05);
+    border: 1px solid rgba(221, 227, 232, 0.14);
+    color: #DDE3E8;
+    &:hover {
+      background: rgba(221, 227, 232, 0.10);
+      border-color: rgba(234, 170, 0, 0.45);
+      color: #FFFFFF;
+      box-shadow: 0 0 18px -4px rgba(234, 170, 0, 0.25);
+    }
   }
 
-  /* Bits -------------------------------------------------------------------*/
+  /* ── CHIPS (ICE SILVER & AUBERGINE) ─────────────────────────────────────── */
   .chip {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-           bg-white/[0.04] border border-white/10 text-slate-300;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-silver-300;
+    background: rgba(221, 227, 232, 0.05);
+    border: 1px solid rgba(221, 227, 232, 0.12);
   }
-  /* Unified icon tile — single accent, replaces all rainbow gradients. */
+
+  /* ── ICON TILES (WARM MARIGOLD ACCENTS) ─────────────────────────────────── */
   .icon-tile {
-    @apply grid place-items-center w-11 h-11 rounded-xl
-           bg-brand-500/10 border border-brand-400/20 text-brand-300;
+    @apply grid place-items-center w-11 h-11 rounded-xl text-marigold-400;
+    background: rgba(234, 170, 0, 0.09);
+    border: 1px solid rgba(234, 170, 0, 0.24);
   }
+
+  /* ── TYPOGRAPHY ─────────────────────────────────────────────────────────── */
   .eyebrow {
-    @apply inline-block text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300/80;
+    @apply inline-block text-[11px] font-semibold uppercase tracking-[0.22em];
+    color: #EAAA00; /* MARIGOLD */
   }
   .gradient-text {
-    /* restrained: white → brand only, no purple */
-    @apply bg-gradient-to-r from-white to-brand-300 bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #DDE3E8 0%, #FFF3D6 45%, #EAAA00 100%);
   }
   .stat-num {
-    @apply font-display font-bold tabular-nums text-white;
+    @apply font-display font-bold tabular-nums text-silver-100;
   }
+
+  /* ── FORM INPUTS ────────────────────────────────────────────────────────── */
   .input {
-    @apply w-full px-4 py-2.5 rounded-lg bg-white/[0.04] border border-white/10
-           text-white placeholder:text-slate-500 outline-none
-           focus:border-brand-400/60 focus:bg-white/[0.07] transition;
+    @apply w-full px-4 py-2.5 rounded-xl text-silver-100 placeholder:text-silver-500 outline-none transition-all duration-200;
+    background: rgba(221, 227, 232, 0.04);
+    border: 1px solid rgba(221, 227, 232, 0.12);
+    &:focus {
+      border-color: rgba(234, 170, 0, 0.6);
+      background: rgba(234, 170, 0, 0.05);
+      box-shadow: 0 0 0 3px rgba(234, 170, 0, 0.16);
+    }
   }
-  .hairline { @apply border-t border-white/[0.07]; }
+  .hairline { border-top: 1px solid rgba(221, 227, 232, 0.08); }
 }
 
-/* Page section rhythm */
-.page { @apply pt-28 pb-16 px-6; }
+/* ─── PAGE RHYTHM ───────────────────────────────────────────────────────── */
+.page { @apply pt-28 pb-20 px-6 flex-1 w-full; }
 .page-wrap { @apply max-w-7xl mx-auto; }
 
-/* Subtle shine kept for the single hero badge only */
+/* ─── SHINE (HERO BADGE ONLY) ───────────────────────────────────────────── */
 .shine { position: relative; overflow: hidden; }
 .shine::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.12) 50%, transparent 65%);
-  transform: translateX(-100%);
-  animation: shine 4s ease-in-out infinite;
+  background: linear-gradient(120deg, transparent 30%, rgba(221, 227, 232, 0.22) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: shine 3.5s ease-in-out infinite;
   pointer-events: none;
 }
-@keyframes shine { to { transform: translateX(100%); } }
+@keyframes shine { to { transform: translateX(120%); } }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+/* ─── GLOW PULSE ─────────────────────────────────────────────────────────── */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.04); }
+}
+.glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
 
-/* Leaflet dark fix */
-.leaflet-container { background: #0a0e1c !important; border-radius: 14px; }
-.leaflet-tile { filter: brightness(0.62) invert(1) contrast(0.92) hue-rotate(196deg) saturate(0.55); }
+/* ─── FLOATING ──────────────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.float-anim { animation: float 6s ease-in-out infinite; }
+
+/* ─── NEON BORDERS & GLOWS ──────────────────────────────────────────────── */
+.neon-border {
+  border: 1px solid rgba(234, 170, 0, 0.35);
+  box-shadow: 0 0 18px -3px rgba(234, 170, 0, 0.28), inset 0 0 15px -8px rgba(234, 170, 0, 0.15);
+}
+.neon-border-aubergine {
+  border: 1px solid rgba(123, 34, 113, 0.45);
+  box-shadow: 0 0 18px -3px rgba(123, 34, 113, 0.35), inset 0 0 15px -8px rgba(123, 34, 113, 0.15);
+}
+.neon-border-silver {
+  border: 1px solid rgba(221, 227, 232, 0.3);
+  box-shadow: 0 0 18px -3px rgba(221, 227, 232, 0.25), inset 0 0 15px -8px rgba(221, 227, 232, 0.1);
+}
+
+/* ─── FEATURE CARD ACCENT LINES ─────────────────────────────────────────── */
+.feature-card-marigold { border-top: 2px solid rgba(234, 170, 0, 0.75) !important; }
+.feature-card-aubergine{ border-top: 2px solid rgba(170, 76, 159, 0.75) !important; }
+.feature-card-silver   { border-top: 2px solid rgba(221, 227, 232, 0.75) !important; }
+.feature-card-cyan     { border-top: 2px solid rgba(234, 170, 0, 0.75) !important; }
+.feature-card-violet   { border-top: 2px solid rgba(170, 76, 159, 0.75) !important; }
+.feature-card-emerald  { border-top: 2px solid rgba(52, 211, 153, 0.75) !important; }
+.feature-card-amber    { border-top: 2px solid rgba(234, 170, 0, 0.75) !important; }
+
+/* ─── SCROLLBAR & OVERFLOW UTILITIES ────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(221, 227, 232, 0.15); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(234, 170, 0, 0.45); }
+
+.custom-scrollbar {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(234, 170, 0, 0.40) rgba(255, 255, 255, 0.04);
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(234, 170, 0, 0.38);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 170, 0, 0.75);
+}
+
+/* ─── LEAFLET DARK MAP (OBSIDIAN & MARIGOLD ATMOSPHERE) ─────────────────── */
+.leaflet-container { background: #0D0F14 !important; border-radius: 14px; }
+.leaflet-tile {
+  filter: brightness(0.68) invert(1) contrast(0.95) hue-rotate(280deg) saturate(0.65);
+}
+
+/* ─── STAT CARD NUMBER COUNTER GLOW ────────────────────────────────────── */
+.stat-num {
+  text-shadow: 0 0 22px rgba(234, 170, 0, 0.35);
+}
+
+/* ─── HERO BADGE GLOW ───────────────────────────────────────────────────── */
+.hero-badge {
+  background: linear-gradient(135deg, rgba(234, 170, 0, 0.15), rgba(58, 15, 52, 0.35));
+  border: 1px solid rgba(234, 170, 0, 0.35);
+  box-shadow: 0 0 22px -5px rgba(234, 170, 0, 0.35);
+}
+
+/* ─── STANDARDS STRIP MARQUEE ───────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 24s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ─── LEAFLET DARK POPUPS & CONTROLS ────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: rgba(13, 15, 20, 0.96) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(234, 170, 0, 0.38) !important;
+  border-radius: 16px !important;
+  color: #DDE3E8 !important;
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.95), 0 0 24px -4px rgba(234, 170, 0, 0.25) !important;
+  padding: 4px !important;
+}
+.leaflet-popup-tip {
+  background: rgba(13, 15, 20, 0.96) !important;
+  border: 1px solid rgba(234, 170, 0, 0.38) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
+}
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.45 !important;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: #9DA9B4 !important;
+  top: 8px !important;
+  right: 10px !important;
+  padding: 4px !important;
+}
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #EAAA00 !important;
+}
+.leaflet-bar a {
+  background-color: rgba(18, 21, 29, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(221, 227, 232, 0.14) !important;
+  color: #DDE3E8 !important;
+}
+.leaflet-bar a:hover {
+  background-color: rgba(234, 170, 0, 0.22) !important;
+  color: #EAAA00 !important;
+}
+
+/* ─── CYBER AURA GLOWS ──────────────────────────────────────────────────── */
+.glow-gold, .glow-cyan {
+  box-shadow: 0 0 35px -5px rgba(234, 170, 0, 0.40), inset 0 0 15px -5px rgba(234, 170, 0, 0.22);
+}
+.glow-silver {
+  box-shadow: 0 0 30px -5px rgba(221, 227, 232, 0.35), inset 0 0 15px -5px rgba(221, 227, 232, 0.18);
+}
+.glow-bronze, .glow-aubergine {
+  box-shadow: 0 0 30px -5px rgba(123, 34, 113, 0.40), inset 0 0 15px -5px rgba(123, 34, 113, 0.20);
+}
+
+/* ─── RADAR SWEEP ────────────────────────────────────────────────────────── */
+@keyframes radarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.radar-sweep {
+  animation: radarSweep 4s linear infinite;
+}

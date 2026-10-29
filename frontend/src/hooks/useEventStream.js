@@ -21,6 +21,9 @@ export function useEventStream(onEvent) {
     const types = [
       'issue.created', 'issue.status', 'issue.assigned',
       'issue.resolved', 'issue.duplicate', 'pulse.signal', 'sla.breach',
+      'NEW_VOICE_DISPATCH', 'INCIDENT_CLUSTER_SURGE',
+      'UNIT_DISPATCH_ALERT', 'UNIT_DISPATCH_CONFIRMED',
+      'VOICE_TRANSCRIPT_CHUNK', 'VISION_VERIFIED',
     ];
 
     es.addEventListener('hello', () => setConnected(true));

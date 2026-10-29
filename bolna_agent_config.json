@@ -1,0 +1,116 @@
+{
+  "$schema": "https://bolna.ai/schemas/agent-config.v1.json",
+  "project": "Community Hero — Autonomous Closed-Loop Voice AI Civic & Emergency Command Center",
+  "buildathon": "Bolna Symphony Buildathon",
+  "version": "2.0.0",
+  "inbound_agent": {
+    "agent_name": "Community Hero Triage Agent",
+    "description": "Bilingual (Hindi / English / Hinglish) emergency & civic intake agent powered by Bolna and Sarvam AI",
+    "language": "hi-en",
+    "stt_provider": "sarvam_ai",
+    "stt_model": "saarika:v2",
+    "llm_provider": "groq",
+    "llm_model": "llama-3.3-70b-versatile",
+    "tts_provider": "sarvam_ai",
+    "tts_model": "bulbul:v1",
+    "tts_voice": "hi-IN-kavya",
+    "temperature": 0.2,
+    "system_prompt": "You are 'Hero Dispatch', the autonomous voice AI emergency & civic response officer for the municipal command center.\n\nOBJECTIVE:\nCalmly, rapidly, and professionally triage incoming phone calls from citizens reporting emergencies (gas leaks, fires, water main ruptures, electrical hazards) or civic issues (potholes, streetlights, sanitation).\n\nLANGUAGE CAPABILITIES:\n- You fluently understand and speak Hindi, English, and conversational Hinglish.\n- Respond in the language the citizen speaks. If they speak Hindi, reply in clean conversational Hindi (e.g., 'नमस्ते, हम आपकी मदद के लिए यहाँ हैं।'). If they speak English, reply in English. If they mix both (Hinglish), adapt naturally.\n\nTRIAGE PROTOCOL:\n1. IMMEDIATE IDENTIFICATION: Ask what the emergency or issue is.\n2. EXACT LOCATION: Ask for the street name, landmark, or block (e.g., 'कनॉट प्लेस ब्लॉक B' or 'Barakhamba Metro Gate 3').\n3. THREAT ASSESSMENT: Quickly determine if there is immediate life, fire, or explosion danger.\n4. EXECUTE FUNCTION CALL: Call `create_open311_ticket` immediately once you have the hazard and location. DO NOT delay.\n5. DEDUPLICATION / SWARM SURGE HANDLING:\n   - If the function returns `status: \"clustered\"`, immediately reassure the caller:\n     'We have already logged this incident from multiple nearby citizens under Ticket #[TICKET_ID]. Rapid Response Unit 4 is already en route with sirens.'\n   - If `status: \"created\"`, reassure the caller:\n     'Your Emergency Work Order #[TICKET_ID] has been created and transmitted to the nearest rapid field crew.'\n\nTONE:\nEmpathetic, decisive, urgent, and concise. Keep responses under 2 sentences during high-panic reports.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_open311_ticket",
+          "description": "Create an Open311 municipal emergency work order or deduplicate into an active swarm surge cluster.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "incident_type": {
+                "type": "string",
+                "description": "Type of incident (e.g., gas_leak, fire_hazard, water_main_rupture, electrical_hazard, pothole, streetlight_out, waste_hazard)"
+              },
+              "location": {
+                "type": "string",
+                "description": "Exact street address, intersection, or landmark reported by the caller"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+                "description": "Assessed emergency severity level"
+              },
+              "urgency_score": {
+                "type": "number",
+                "description": "Caller panic/urgency rating from 1.0 (calm) to 10.0 (extreme immediate danger)"
+              },
+              "caller_language": {
+                "type": "string",
+                "description": "Language used by the citizen (Hindi, English, or Hinglish)"
+              },
+              "summary": {
+                "type": "string",
+                "description": "One sentence summary of the hazard and risk"
+              },
+              "transcript": {
+                "type": "string",
+                "description": "Brief transcript excerpt of the citizen's exact description"
+              },
+              "caller_phone": {
+                "type": "string",
+                "description": "Citizen phone number if available from caller ID"
+              }
+            },
+            "required": ["incident_type", "location", "severity", "urgency_score"]
+          }
+        }
+      }
+    ],
+    "webhook_url": "https://<YOUR_DEPLOYED_BACKEND_URL>/api/bolna-webhook",
+    "webhook_method": "POST"
+  },
+  "outbound_agent": {
+    "agent_name": "Community Hero Field Officer Dispatcher",
+    "description": "Autonomous outbound voice AI agent that dials on-duty municipal field units, briefs them on the ticket, and logs verbal confirmation",
+    "language": "en",
+    "stt_provider": "deepgram",
+    "stt_model": "nova-2",
+    "llm_provider": "groq",
+    "llm_model": "llama-3.3-70b-versatile",
+    "tts_provider": "elevenlabs",
+    "tts_voice": "Rachel",
+    "temperature": 0.1,
+    "system_prompt": "You are the Autonomous Municipal Field Unit Dispatcher. You are calling on-duty Officer R. Sharma regarding an escalated high-priority emergency.\n\nSCRIPT:\n'Officer Sharma, this is Municipal Emergency Dispatch. Priority Ticket #[TICKET_ID] has been escalated to Critical. Hazard: [INCIDENT_TYPE] at [LOCATION]. Urgency rating is [URGENCY_SCORE] out of 10. Please verbally confirm dispatch now by saying Accepted.'\n\nON VERBAL ACCEPTANCE ('Accepted', 'Confirmed', 'Unit 4 rolling', 'En route'):\nImmediately call `confirm_dispatch` with ticket_id and verbal_note. Then state: 'Dispatch confirmed. CAD updated to Unit En Route. Proceed with sirens.'",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "confirm_dispatch",
+          "description": "Confirm that the municipal field officer has acknowledged and is en route to the incident coordinates.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "Open311 ticket ID"
+              },
+              "officer_name": {
+                "type": "string",
+                "description": "Name of confirming field officer"
+              },
+              "eta": {
+                "type": "string",
+                "description": "Estimated time of arrival (e.g., 4 MIN)"
+              },
+              "verbal_note": {
+                "type": "string",
+                "description": "Exact verbal confirmation spoken by the officer"
+              }
+            },
+            "required": ["ticket_id"]
+          }
+        }
+      }
+    ],
+    "webhook_url": "https://<YOUR_DEPLOYED_BACKEND_URL>/api/bolna-dispatch-confirm",
+    "webhook_method": "POST"
+  }
+}

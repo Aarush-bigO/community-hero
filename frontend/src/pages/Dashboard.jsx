@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { api } from '../utils/api';
 import { useCountUp } from '../hooks/useCountUp';
+import { useT, useLang, LANGUAGES } from '../i18n';
 
 const COLORS = ['#2fbbff', '#7cc7ff', '#0080cc', '#38bdf8', '#1e6f9f', '#9fe0ff'];
 const CATEGORY_COLORS = {
@@ -20,18 +21,22 @@ const CATEGORY_COLORS = {
 const catColor = (c, i) => CATEGORY_COLORS[c] || COLORS[i % COLORS.length];
 const cap = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 const SEVERITY_COLORS = { 1: '#34d399', 2: '#a3e635', 3: '#fbbf24', 4: '#fb923c', 5: '#f87171' };
-const STATUS_META = {
-  reported: { label: 'Reported', color: '#2fbbff' },
-  verified: { label: 'Verified', color: '#38bdf8' },
-  in_progress: { label: 'In Progress', color: '#fbbf24' },
-  resolved: { label: 'Resolved', color: '#34d399' },
-};
 
 export default function Dashboard() {
+  const t = useT();
+  const lang = useLang((s) => s.lang);
+  const setLang = useLang((s) => s.setLang);
   const [stats, setStats] = useState(null);
   const [hotspots, setHotspots] = useState([]);
   const [range, setRange] = useState('30d');
   const [refreshing, setRefreshing] = useState(false);
+
+  const STATUS_META = {
+    reported: { label: t('dash.chart.reported'), color: '#38bdf8' },
+    verified: { label: t('dash.chart.verified'), color: '#818cf8' },
+    in_progress: { label: t('dash.chart.inProgress'), color: '#fbbf24' },
+    resolved: { label: t('dash.chart.resolved'), color: '#34d399' },
+  };
 
   const load = (silent) => {
     if (!silent) setRefreshing(true);
@@ -71,27 +76,27 @@ export default function Dashboard() {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <p className="eyebrow">ANALYTICS</p>
+            <p className="eyebrow">{t('dash.eyebrow')}</p>
             <h1 className="font-display text-4xl md:text-5xl font-bold mb-2 text-white">
-              Impact <span className="gradient-text">Dashboard</span>
+              {t('dash.title1')} <span className="gradient-text">{t('dash.title2')}</span>
             </h1>
-            <p className="text-slate-400">Real-time view of community action.</p>
+            <p className="text-slate-400">{t('dash.sub')}</p>
           </div>
           <div className="flex items-center gap-2 chip">
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-brand-300' : 'text-emerald-300'}`} />
-            <span className="text-xs">{refreshing ? 'Syncing…' : 'Live · auto-refresh'}</span>
+            <span className="text-xs">{refreshing ? t('dash.syncing') : t('dash.live')}</span>
           </div>
         </motion.div>
 
         {/* KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <KPI i={0} icon={<TrendingUp className="w-5 h-5" />} label="Total Reports"
+          <KPI i={0} icon={<TrendingUp className="w-5 h-5" />} label={t('dash.kpi.reports')}
             value={stats.total} delta={stats.deltas.reports} spark={sparkReported} sparkColor="#2fbbff" />
-          <KPI i={1} icon={<CheckCircle2 className="w-5 h-5" />} label="Resolution Rate"
+          <KPI i={1} icon={<CheckCircle2 className="w-5 h-5" />} label={t('dash.kpi.resolution')}
             value={stats.resolutionRate} suffix="%" delta={stats.deltas.resolved} spark={sparkResolved} sparkColor="#34d399" />
-          <KPI i={2} icon={<Clock className="w-5 h-5" />} label="Avg Resolution"
+          <KPI i={2} icon={<Clock className="w-5 h-5" />} label={t('dash.kpi.avgRes')}
             value={stats.avgResolutionHours} suffix="h" decimals={1} />
-          <KPI i={3} icon={<ShieldCheck className="w-5 h-5" />} label="SLA Compliance"
+          <KPI i={3} icon={<ShieldCheck className="w-5 h-5" />} label={t('dash.kpi.sla')}
             value={stats.slaCompliance} suffix="%" tone={stats.slaCompliance >= 80 ? 'good' : 'warn'} />
         </div>
 
@@ -99,10 +104,10 @@ export default function Dashboard() {
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card lg:col-span-2">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-sm font-semibold text-white">Reports vs Resolutions</h3>
+              <h3 className="text-sm font-semibold text-white">{t('dash.chart.repVsRes')}</h3>
               <div className="flex items-center gap-3">
-                <Legend2 color="#2fbbff" label="Reported" />
-                <Legend2 color="#34d399" label="Resolved" />
+                <Legend2 color="#2fbbff" label={t('dash.chart.reported')} />
+                <Legend2 color="#34d399" label={t('dash.chart.resolved')} />
                 <div className="flex bg-white/[0.04] rounded-lg p-0.5 ml-2">
                   {['7d', '30d'].map((r) => (
                     <button key={r} onClick={() => setRange(r)}
@@ -137,7 +142,7 @@ export default function Dashboard() {
 
           {/* Category donut */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="card">
-            <h3 className="text-sm font-semibold text-white mb-5">By Category</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">{t('dash.chart.byCategory')}</h3>
             <div className="relative">
               <ResponsiveContainer width="100%" height={170}>
                 <PieChart>
@@ -149,7 +154,7 @@ export default function Dashboard() {
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="stat-num text-2xl leading-none">{catTotal}</span>
-                <span className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Reports</span>
+                <span className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">{t('dash.chart.reports')}</span>
               </div>
             </div>
             <div className="mt-5 space-y-2">
@@ -172,7 +177,7 @@ export default function Dashboard() {
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
           {/* Status funnel */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card">
-            <h3 className="text-sm font-semibold text-white mb-5">Resolution Funnel</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">{t('dash.chart.funnel')}</h3>
             <div className="space-y-4">
               {stats.statusFunnel.map((s, i) => {
                 const meta = STATUS_META[s.status] || { label: s.status, color: '#2fbbff' };
@@ -196,7 +201,7 @@ export default function Dashboard() {
 
           {/* Severity */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="card">
-            <h3 className="text-sm font-semibold text-white mb-5">Severity Distribution</h3>
+            <h3 className="text-sm font-semibold text-white mb-5">{t('dash.chart.severity')}</h3>
             <ResponsiveContainer width="100%" height={210}>
               <BarChart data={stats.bySeverity}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
@@ -212,7 +217,7 @@ export default function Dashboard() {
 
           {/* Operations health */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="card">
-            <h3 className="text-sm font-semibold text-white mb-3">Operations Health</h3>
+            <h3 className="text-sm font-semibold text-white mb-3">{t('dash.chart.health')}</h3>
             <div className="relative">
               <ResponsiveContainer width="100%" height={150}>
                 <RadialBarChart innerRadius="72%" outerRadius="100%" data={[{ value: stats.slaCompliance, fill: stats.slaCompliance >= 80 ? '#34d399' : '#fbbf24' }]}
@@ -222,44 +227,93 @@ export default function Dashboard() {
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="stat-num text-2xl">{stats.slaCompliance}%</span>
-                <span className="text-[10px] uppercase tracking-widest text-slate-500">SLA met</span>
+                <span className="text-[10px] uppercase tracking-widest text-slate-500">{t('dash.chart.slaMet')}</span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2 mt-2 text-center">
-              <Mini label="Breaches" value={stats.breaches} tone={stats.breaches ? 'warn' : 'good'} />
-              <Mini label="Sentiment" value={stats.sentiment.avg} tone={stats.sentiment.avg < 0 ? 'warn' : 'good'} />
-              <Mini label="Heroes" value={stats.reporters} />
+              <Mini label={t('dash.chart.breaches')} value={stats.breaches} tone={stats.breaches ? 'warn' : 'good'} />
+              <Mini label={t('dash.chart.sentiment')} value={stats.sentiment.avg} tone={stats.sentiment.avg < 0 ? 'warn' : 'good'} />
+              <Mini label={t('dash.chart.heroes')} value={stats.reporters} />
             </div>
           </motion.div>
         </div>
 
         {/* Hotspots */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="card">
-          <h3 className="text-sm font-semibold text-white mb-5 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-brand-300" /> Predictive Hotspots
-          </h3>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="card border-t-2 border-brand-400/40">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-brand-400" /> {t('dash.hotspots.title')}
+            </h3>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-brand-300/80 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-400/20">
+              AI Cluster Analysis
+            </span>
+          </div>
+
           {hotspots.length === 0 ? (
-            <p className="text-sm text-slate-400">Not enough data yet. Hotspots appear when 2+ issues cluster in an area.</p>
+            <p className="text-sm text-slate-400">{t('dash.hotspots.empty')}</p>
           ) : (
-            <div className="grid md:grid-cols-2 gap-3">
-              {hotspots.map((h, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                  <div>
-                    <div className="font-mono text-xs text-slate-300">{h.lat.toFixed(3)}, {h.lng.toFixed(3)}</div>
-                    <div className="text-xs text-slate-500">{h.count} reports clustered</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-28 h-2 rounded-full bg-white/10 overflow-hidden">
-                      <motion.div className="h-full bg-gradient-to-r from-brand-400 to-brand-600"
-                        initial={{ width: 0 }} animate={{ width: `${h.risk * 100}%` }}
-                        transition={{ delay: 0.4 + i * 0.05, duration: 0.6 }} />
+            <div className="grid md:grid-cols-2 gap-3.5">
+              {hotspots.map((h, i) => {
+                const riskPct = Math.round(h.risk * 100);
+                const isHigh = riskPct >= 50;
+                return (
+                  <div key={i} className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-marigold-400/30 transition">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-semibold text-silver-100">{h.lat.toFixed(3)}, {h.lng.toFixed(3)}</span>
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${isHigh ? 'bg-marigold-500/20 text-marigold-300 border border-marigold-400/40' : 'bg-silver-400/15 text-silver-200 border border-silver-400/30'}`}>
+                          {isHigh ? 'HIGH DENSITY' : 'ELEVATED'}
+                        </span>
+                      </div>
+                      <div className="text-xs text-silver-400 mt-1">{h.count} {t('dash.hotspots.clustered')}</div>
                     </div>
-                    <span className="text-xs font-mono text-slate-300 w-9 text-right">{Math.round(h.risk * 100)}%</span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-28 h-2.5 rounded-full bg-white/10 overflow-hidden">
+                        <motion.div className="h-full bg-gradient-to-r from-aubergine-400 via-marigold-400 to-[#FFD12E]"
+                          initial={{ width: 0 }} animate={{ width: `${riskPct}%` }}
+                          transition={{ delay: 0.4 + i * 0.05, duration: 0.6 }} />
+                      </div>
+                      <span className="text-xs font-mono font-semibold text-silver-100 w-9 text-right">{riskPct}%</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
+        </motion.div>
+
+        {/* 4-Language System Selector Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-10 p-5 rounded-2xl glass border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-marigold-500/10 border border-marigold-400/20 grid place-items-center text-marigold-400">
+              <span className="text-sm">🌐</span>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-silver-100">System Language • भाषा • Idioma • Langue</p>
+              <p className="text-[11px] text-silver-400">Instantly translates all metrics, navigation, reports, and AI dispatch</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {LANGUAGES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setLang(l.code)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
+                  lang === l.code
+                    ? 'bg-gradient-to-r from-marigold-500/25 to-aubergine-600/30 text-silver-100 border border-marigold-400/50 shadow-[0_0_15px_rgba(234,170,0,0.3)]'
+                    : 'bg-white/[0.04] text-silver-400 border border-white/5 hover:text-white hover:bg-white/[0.08]'
+                }`}
+              >
+                <span>{l.flag}</span>
+                <span>{l.label}</span>
+              </button>
+            ))}
+          </div>
         </motion.div>
       </div>
     </main>
@@ -267,8 +321,8 @@ export default function Dashboard() {
 }
 
 const tooltipStyle = {
-  background: '#0a0f1e', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: '10px', color: '#e2e8f0', fontSize: '12px',
+  background: '#1c071a', border: '1px solid rgba(221,227,232,0.15)',
+  borderRadius: '10px', color: '#DDE3E8', fontSize: '12px',
 };
 
 function CatTooltip({ active, payload, total }) {
@@ -319,7 +373,7 @@ function KPI({ i, icon, label, value, suffix = '', decimals = 0, delta, spark, s
         {typeof delta === 'number' && <Delta v={delta} />}
         {tone && !delta && (
           <span className={`text-xs font-medium ${tone === 'good' ? 'text-emerald-300' : 'text-amber-300'}`}>
-            {tone === 'good' ? 'Healthy' : 'Watch'}
+            {tone === 'good' ? '✓' : '⚠'}
           </span>
         )}
       </div>

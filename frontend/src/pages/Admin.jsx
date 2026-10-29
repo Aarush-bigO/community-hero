@@ -4,8 +4,10 @@ import { CheckCircle2, UserCheck, Building2 } from 'lucide-react';
 import { api } from '../utils/api';
 import { useStore } from '../store/useStore';
 import { useCountUp } from '../hooks/useCountUp';
+import { useT } from '../i18n';
 
 export default function Admin() {
+  const t = useT();
   const [queue, setQueue] = useState([]);
   const [staff, setStaff] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -61,11 +63,11 @@ export default function Admin() {
     <main className="page">
       <div className="page-wrap">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <p className="eyebrow">OPERATIONS</p>
+          <p className="eyebrow">{t('admin.eyebrow')}</p>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-2 text-white">
-            Admin <span className="gradient-text">Portal</span>
+            {t('admin.title')}
           </h1>
-          <p className="text-slate-400 mt-2">Work-order queue, SLA tracking, department metrics.</p>
+          <p className="text-slate-400 mt-2">{t('admin.sub')}</p>
         </motion.div>
 
         {/* Department metrics row */}
@@ -76,21 +78,21 @@ export default function Admin() {
         </div>
 
         {/* Filters — segmented control */}
-        <div className="inline-flex flex-wrap gap-1 bg-white/[0.03] p-1 rounded-xl mb-5">
+        <div className="inline-flex flex-wrap gap-1.5 bg-slate-900/90 border border-slate-800 p-1.5 rounded-xl mb-6">
           {[
-            { id: 'open', label: 'Open' },
+            { id: 'open', label: 'Open Queue' },
             { id: 'in_progress', label: 'In Progress' },
             { id: 'resolved', label: 'Resolved' },
-            { id: 'breach', label: 'SLA Breach' },
-            { id: 'all', label: 'All' },
+            { id: 'breach', label: 'SLA Breaches' },
+            { id: 'all', label: 'All Records' },
           ].map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all ${
                 filter === f.id
-                  ? 'bg-white/10 text-white border border-white/15'
-                  : 'text-slate-400 hover:text-white border border-transparent'
+                  ? 'bg-marigold-500/20 text-marigold-300 border border-marigold-400/60 shadow-[0_0_15px_rgba(234,170,0,0.3)]'
+                  : 'text-silver-400 hover:text-white border border-transparent'
               }`}
             >
               {f.label}
@@ -99,19 +101,19 @@ export default function Admin() {
         </div>
 
         {/* Queue — enterprise data table */}
-        <div className="card !p-0 overflow-hidden">
+        <div className="card !p-0 overflow-hidden border border-white/10 bg-[#0D0F14]/90 shadow-2xl backdrop-blur-2xl rounded-2xl">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
-                <th className="px-5 py-3.5 font-medium">Issue</th>
-                <th className="px-5 py-3.5 font-medium">Dept</th>
-                <th className="px-5 py-3.5 font-medium">SLA</th>
-                <th className="px-5 py-3.5 font-medium">Status</th>
-                <th className="px-5 py-3.5 font-medium">Assignee</th>
-                <th className="px-5 py-3.5 font-medium">Actions</th>
+            <thead className="bg-[#12151D]/90 border-b border-white/10">
+              <tr className="text-left text-xs uppercase tracking-wider text-silver-400 font-mono">
+                <th className="px-5 py-3.5 font-semibold">Incident &amp; AI Triage</th>
+                <th className="px-5 py-3.5 font-semibold">Department</th>
+                <th className="px-5 py-3.5 font-semibold">SLA Window</th>
+                <th className="px-5 py-3.5 font-semibold">Status</th>
+                <th className="px-5 py-3.5 font-semibold">Assignee</th>
+                <th className="px-5 py-3.5 font-semibold">Triage Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-5 py-12 text-center text-slate-400">Loading...</td>
@@ -214,36 +216,42 @@ function DeptCard({ m, i }) {
   const resolved = useCountUp(m.resolved || 0);
   const total = useCountUp(m.total || 0);
   const pct = m.total ? Math.round((m.resolved / m.total) * 100) : 0;
+  const accents = ['feature-card-marigold', 'feature-card-aubergine', 'feature-card-silver', 'feature-card-marigold'];
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.06 }} whileHover={{ y: -3 }}
-      className="card card-hover"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.06 }}
+      whileHover={{ y: -3 }}
+      className={`card card-hover border border-white/10 bg-[#0D0F14]/90 backdrop-blur-xl relative overflow-hidden ${accents[i % accents.length]}`}
     >
       <div className="flex items-center justify-between mb-3">
-        <div className="icon-tile w-9 h-9"><Building2 className="w-4 h-4" /></div>
+        <div className="icon-tile w-9 h-9 bg-[#12151D] border-white/10 text-marigold-400">
+          <Building2 className="w-4 h-4" />
+        </div>
         <span
-          className={`chip text-xs ${
+          className={`chip text-[11px] font-mono font-bold ${
             m.breaches > 0
-              ? 'bg-red-500/10 border-red-500/20 text-red-300'
-              : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+              ? 'bg-rose-500/15 border-rose-500/30 text-rose-300'
+              : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
           }`}
         >
           {m.breaches} breach{m.breaches === 1 ? '' : 'es'}
         </span>
       </div>
-      <div className="text-xs text-slate-500 uppercase tracking-wide truncate">{m.name}</div>
-      <div className="stat-num text-2xl mt-1">
+      <div className="text-xs text-silver-400 font-mono uppercase tracking-wider truncate">{m.name}</div>
+      <div className="stat-num text-2xl font-black text-silver-100 mt-1">
         {Math.round(resolved)}
-        <span className="text-slate-500 text-lg">/{Math.round(total)}</span>
+        <span className="text-silver-500 text-lg font-normal">/{Math.round(total)}</span>
       </div>
-      <div className="text-[11px] text-slate-500 mb-2.5">
-        resolved{m.avg_resolve_hours != null ? ` · ${m.avg_resolve_hours.toFixed(1)}h avg` : ''}
+      <div className="text-[11px] text-silver-400 font-mono mb-2.5">
+        resolved{m.avg_resolve_hours != null ? ` · ${m.avg_resolve_hours.toFixed(1)}h SLA avg` : ''}
       </div>
-      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+      <div className="h-2 rounded-full bg-[#08090C] border border-white/10 overflow-hidden">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600"
-          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+          className="h-full rounded-full bg-gradient-to-r from-aubergine-400 via-marigold-400 to-[#FFD12E]"
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
           transition={{ delay: 0.2 + i * 0.06, duration: 0.7 }}
         />
       </div>

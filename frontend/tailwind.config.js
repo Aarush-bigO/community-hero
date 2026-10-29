@@ -4,22 +4,73 @@ export default {
   theme: {
     extend: {
       colors: {
+        // User Swatch 1: ICE SILVER (#DDE3E8)
+        silver: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E9EFF4',
+          300: '#DDE3E8', // USER SWATCH "ICE SILVER"
+          400: '#C2CBD2',
+          500: '#9DA9B4',
+          600: '#667584',
+          700: '#475461',
+          800: '#2E3842',
+          900: '#1A2127',
+        },
+        // User Swatch 2: DEEP AUBERGINE (#3A0F34)
+        aubergine: {
+          50: '#FBF5FA',
+          100: '#F4E5F2',
+          200: '#E6C4E1',
+          300: '#D297CB',
+          400: '#AA4C9F',
+          500: '#7B2271',
+          600: '#55174E',
+          700: '#3A0F34', // USER SWATCH "DEEP AUBERGINE"
+          800: '#290A25',
+          850: '#1F071C',
+          900: '#160413',
+          950: '#0E030D', // DEEP AUBERGINE VOID
+        },
+        // User Swatch 3: MARIGOLD (#EAAA00)
+        marigold: {
+          50: '#FFFDF0',
+          100: '#FFF9D6',
+          200: '#FFF1A8',
+          300: '#FFE26B',
+          400: '#FFD12E',
+          500: '#EAAA00', // USER SWATCH "MARIGOLD"
+          600: '#C79000',
+          700: '#9E7200',
+          800: '#755400',
+          900: '#4D3700',
+        },
+        // Primary brand maps to Marigold for energetic, human warmth
         brand: {
-          50: '#eef9ff',
-          100: '#dcf2ff',
-          200: '#b3e6ff',
-          300: '#75d3ff',
-          400: '#2fbbff',
-          500: '#06a0ee',
-          600: '#0080cc',
-          700: '#0967a3',
-          800: '#0e5786',
-          900: '#114a70',
+          50: '#FFFDF0',
+          100: '#FFF9D6',
+          200: '#FFF1A8',
+          300: '#FFE26B',
+          400: '#FFD12E',
+          500: '#EAAA00', // USER SWATCH "MARIGOLD"
+          600: '#C79000',
+          700: '#9E7200',
+          800: '#755400',
+          900: '#4D3700',
         },
         accent: {
-          400: '#a855f7',
-          500: '#9333ea',
-          600: '#7e22ce',
+          300: '#D297CB',
+          400: '#AA4C9F',
+          500: '#7B2271',
+          600: '#3A0F34', // USER SWATCH "DEEP AUBERGINE"
+        },
+        obsidian: {
+          950: '#050608',
+          900: '#08090C', // PURE LUXURY OBSIDIAN CANVAS
+          850: '#0D0F14', // LIFTED SURFACE
+          800: '#12151D', // ELEVATED CARDS
+          750: '#171B26', // CHIPS / INPUTS
+          700: '#1F2433', // BORDER SUBTLE
         },
       },
       fontFamily: {

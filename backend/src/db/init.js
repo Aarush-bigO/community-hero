@@ -129,14 +129,52 @@ export function initDb() {
     CREATE INDEX IF NOT EXISTS idx_verifications_issue ON verifications(issue_id);
     CREATE INDEX IF NOT EXISTS idx_pulse_muni ON pulse_signals(municipality_id);
     CREATE INDEX IF NOT EXISTS idx_pulse_topic ON pulse_signals(topic);
+
+    CREATE TABLE IF NOT EXISTS voice_dispatches (
+      id TEXT PRIMARY KEY,
+      ticket_id TEXT NOT NULL,
+      caller_phone TEXT,
+      caller_language TEXT DEFAULT 'en',
+      incident_type TEXT NOT NULL,
+      location TEXT,
+      lat REAL,
+      lng REAL,
+      severity TEXT DEFAULT 'MEDIUM',
+      urgency_score REAL DEFAULT 5,
+      summary TEXT,
+      transcript TEXT,
+      cluster_id TEXT,
+      report_count INTEGER DEFAULT 1,
+      dispatch_status TEXT DEFAULT 'PENDING',
+      outbound_call_id TEXT,
+      field_officer_phone TEXT,
+      field_officer_name TEXT,
+      confirmed_at TEXT,
+      vision_verified INTEGER DEFAULT 0,
+      vision_confidence REAL DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_voice_ticket ON voice_dispatches(ticket_id);
   `);
 
-  // --- Additive migrations (GIS asset layer + i18n). Safe to run repeatedly. ---
+  // --- Additive migrations (GIS asset layer + i18n + Voice AI & Emergency Dispatch). Safe to run repeatedly. ---
   ensureColumn(db, 'issues', 'road_type', "TEXT DEFAULT 'unmapped'");
   ensureColumn(db, 'issues', 'nearest_road', 'TEXT');
   ensureColumn(db, 'issues', 'on_private_road', 'INTEGER DEFAULT 0');
   ensureColumn(db, 'issues', 'duplicate_of', 'TEXT');
   ensureColumn(db, 'issues', 'lang', "TEXT DEFAULT 'en'");
+  ensureColumn(db, 'issues', 'urgency_score', 'REAL DEFAULT 3');
+  ensureColumn(db, 'issues', 'report_count', 'INTEGER DEFAULT 1');
+  ensureColumn(db, 'issues', 'dispatch_status', "TEXT DEFAULT 'PENDING'");
+  ensureColumn(db, 'issues', 'caller_phone', 'TEXT');
+  ensureColumn(db, 'issues', 'caller_language', "TEXT DEFAULT 'en'");
+  ensureColumn(db, 'issues', 'voice_transcript', 'TEXT');
+  ensureColumn(db, 'issues', 'is_voice_dispatch', 'INTEGER DEFAULT 0');
+  ensureColumn(db, 'issues', 'vision_verified', 'INTEGER DEFAULT 0');
+  ensureColumn(db, 'issues', 'vision_confidence', 'REAL DEFAULT 0');
+  ensureColumn(db, 'issues', 'outbound_call_id', 'TEXT');
+  ensureColumn(db, 'issues', 'cluster_id', 'TEXT');
 
   console.log(`📦 SQLite ready at ${DB_PATH}`);
   return db;

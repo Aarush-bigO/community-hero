@@ -14,7 +14,7 @@ const CreateSchema = z.object({
 
 router.get('/', (_req, res) => {
   const db = getDb();
-  const rows = db.prepare('SELECT * FROM users ORDER BY xp DESC LIMIT 200').all();
+  const rows = db.prepare('SELECT * FROM users ORDER BY xp DESC LIMIT 300').all();
   res.json(rows.map(decodeUser));
 });
 
@@ -25,7 +25,7 @@ router.get('/leaderboard', (_req, res) => {
       `SELECT u.id, u.name, u.avatar_url, u.xp, u.level, u.badges,
        (SELECT COUNT(*) FROM issues WHERE reporter_id = u.id) AS reports,
        (SELECT COUNT(*) FROM verifications WHERE user_id = u.id) AS verifications
-       FROM users u ORDER BY u.xp DESC LIMIT 50`
+       FROM users u ORDER BY u.xp DESC LIMIT 250`
     )
     .all();
   res.json(rows.map(decodeUser));

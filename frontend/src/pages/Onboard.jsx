@@ -44,7 +44,7 @@ export default function Onboard() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="text-sm font-medium block mb-2">Name</label>
-            <input className="input" placeholder="Aarush Bharti" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input className="input" placeholder="e.g. Arjun Sharma" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
           <div>
             <label className="text-sm font-medium block mb-2">Email (optional)</label>

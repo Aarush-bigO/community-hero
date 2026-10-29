@@ -83,6 +83,30 @@ export const api = {
       request(`/api/admin/issues/${id}/resolve`, { method: 'POST', body: formData }),
   },
   stats: () => request('/api/stats'),
+  voice: {
+    dispatches: () => request('/api/voice-dispatches'),
+    liveCall: (payload) =>
+      request('/api/voice/live-call', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    webhook: (payload) => request('/api/bolna-webhook', { method: 'POST', body: JSON.stringify(payload) }),
+    simulate: (scenario = 'gas_leak', lang = 'en') =>
+      request('/api/simulate-voice-call', {
+        method: 'POST',
+        body: JSON.stringify({ scenario, lang }),
+      }),
+    confirmDispatch: (payload) =>
+      request('/api/bolna-dispatch-confirm', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    visionVerify: (id, payload) =>
+      request(`/api/voice-dispatch/${id}/vision`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+  },
 };
 
 export const assetUrl = (p) => (p?.startsWith('http') ? p : `${BASE}${p}`);

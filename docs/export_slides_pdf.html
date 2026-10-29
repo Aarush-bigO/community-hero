@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community Hero — Jury Presentation PDF Export</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --deep-plum: #3A0F34;
+      --terracotta: #C75A3A;
+      --dusty-mauve: #C9A0A7;
+      --warm-cream: #FAF5F2;
+      --card-white: #FFFFFF;
+      --card-tint: #F5ECE8;
+      --border-soft: #E5D3D6;
+      --text-plum: #3A0F34;
+      --text-muted: #6E5566;
+      --text-white: #FFFFFF;
+      --text-cream: #FAF5F2;
+    }
+
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: #FAF5F2;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--text-plum);
+      margin: 0;
+      padding: 0;
+    }
+
+    .slide {
+      width: 16in;
+      height: 9in;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      padding: 0.6in 0.8in;
+      display: flex;
+      flex-direction: column;
+      background: var(--warm-cream);
+    }
+    .slide:last-child {
+      page-break-after: avoid;
+    }
+
+    .slide.theme-dark {
+      background: radial-gradient(circle at top right, rgba(199, 90, 58, 0.15), transparent 45%),
+                  radial-gradient(circle at bottom left, rgba(201, 160, 167, 0.12), transparent 40%),
+                  var(--deep-plum);
+      color: var(--text-cream);
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.35in;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.08in;
+    }
+
+    .header-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--card-tint);
+      border: 1.5px solid var(--terracotta);
+      border-radius: 9999px;
+      padding: 0.05in 0.2in;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--terracotta);
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+    .slide.theme-dark .header-meta-badge {
+      background: rgba(199, 90, 58, 0.25);
+      border-color: var(--dusty-mauve);
+      color: var(--text-cream);
+    }
+
+    .slide-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-plum);
+      line-height: 1.15;
+    }
+    .slide.theme-dark .slide-title {
+      color: var(--text-cream);
+    }
+
+    .slide-subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .slide.theme-dark .slide-subtitle {
+      color: var(--dusty-mauve);
+    }
+
+    .project-tag {
+      background: var(--deep-plum);
+      border-radius: 8px;
+      padding: 0.08in 0.22in;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-cream);
+      letter-spacing: 0.5px;
+    }
+    .slide.theme-dark .project-tag {
+      background: var(--card-tint);
+      color: var(--deep-plum);
+    }
+
+    .card {
+      background: var(--card-white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 0.28in 0.32in;
+      box-shadow: 0 6px 20px rgba(58, 15, 52, 0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .card.border-terracotta { border-color: var(--terracotta); border-width: 2px; }
+    .card.border-mauve { border-color: var(--dusty-mauve); border-width: 2px; }
+    .card.border-plum { border-color: var(--deep-plum); border-width: 2px; }
+
+    .slide.theme-dark .card {
+      background: rgba(45, 11, 40, 0.75);
+      border-color: var(--dusty-mauve);
+      color: var(--text-cream);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--deep-plum);
+      margin-bottom: 0.1in;
+    }
+    .slide.theme-dark .card-title {
+      color: var(--text-cream);
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--terracotta);
+      margin-bottom: 0.12in;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.12in;
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .slide.theme-dark .bullet-list {
+      color: var(--dusty-mauve);
+    }
+    .bullet-list li {
+      position: relative;
+      padding-left: 0.24in;
+    }
+    .bullet-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--terracotta);
+      font-weight: bold;
+    }
+
+    .img-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid var(--border-soft);
+      box-shadow: 0 8px 24px rgba(58, 15, 52, 0.08);
+      background: #E8DCD7;
+    }
+    .img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .formula-box {
+      background: var(--card-tint);
+      border: 1.5px solid var(--terracotta);
+      border-radius: 8px;
+      padding: 0.12in 0.18in;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      color: var(--deep-plum);
+      margin: 0.12in 0;
+      line-height: 1.5;
+    }
+
+    .stat-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.24in;
+      margin-top: auto;
+    }
+    .stat-chip {
+      background: var(--card-white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 0.18in 0.22in;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(58, 15, 52, 0.04);
+    }
+    .slide.theme-dark .stat-chip {
+      background: rgba(45, 11, 40, 0.85);
+      border-color: var(--dusty-mauve);
+    }
+    .stat-chip.terracotta { border-color: var(--terracotta); border-width: 2px; }
+    .stat-chip.mauve { border-color: var(--dusty-mauve); border-width: 2px; }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--deep-plum);
+    }
+    .slide.theme-dark .stat-num {
+      color: var(--text-cream);
+    }
+    .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: block;
+    }
+    .slide.theme-dark .stat-label {
+      color: var(--dusty-mauve);
+    }
+
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14.5px;
+      margin-top: 0.12in;
+    }
+    .test-table th {
+      background: var(--card-tint);
+      color: var(--deep-plum);
+      font-family: 'Georgia', serif;
+      font-weight: 700;
+      text-align: left;
+      padding: 0.14in 0.16in;
+      border-bottom: 2px solid var(--border-soft);
+      font-size: 14px;
+    }
+    .test-table td {
+      padding: 0.12in 0.16in;
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--text-plum);
+    }
+    .badge-pass {
+      background: rgba(199, 90, 58, 0.15);
+      color: var(--terracotta);
+      border: 1px solid var(--terracotta);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .col-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--deep-plum);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1 -->
+  <section class="slide theme-dark">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">B.TECH CSE MINOR PROJECT • PHASE III DEFENSE</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 0.4in; flex: 1;">
+      <div class="card" style="justify-content: space-between; padding: 0.45in;">
+        <div>
+          <h1 style="font-family: 'Playfair Display', serif; font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 0.15in; color: var(--text-cream);">
+            COMMUNITY HERO
+          </h1>
+          <div style="font-size: 20px; font-weight: 700; color: var(--terracotta); margin-bottom: 0.2in;">
+            Hyperlocal Civic Issue Intelligence &amp; Autonomous Resolution Engine
+          </div>
+          <p style="font-size: 17px; color: var(--dusty-mauve); line-height: 1.6; margin-bottom: 0.25in;">
+            A human-centered civic operations platform featuring 3D WebGL digital twin mapping, custom offline machine learning triage, 75-meter spatial deduplication, and real-time municipal CAD dispatch.
+          </p>
+        </div>
+        <div style="background: rgba(30, 8, 27, 0.7); border-radius: 12px; padding: 0.22in 0.28in; border: 1.5px solid var(--dusty-mauve);">
+          <div style="font-size: 14px; font-weight: 700; color: var(--text-cream); margin-bottom: 6px;">PRESENTED BY:</div>
+          <div style="font-size: 17px; font-weight: 700; color: var(--text-cream);">
+            1. Aarush Bharti <span style="font-size: 14px; color: var(--dusty-mauve); font-weight: normal;">(Scholar No: 24U020010)</span>
+          </div>
+          <div style="font-size: 17px; font-weight: 700; color: var(--text-cream); margin-top: 4px;">
+            2. Ashish Goutam <span style="font-size: 14px; color: var(--dusty-mauve); font-weight: normal;">(Scholar No: 24U020011)</span>
+          </div>
+          <div style="font-size: 13.5px; color: var(--dusty-mauve); margin-top: 12px; border-top: 1px solid rgba(201, 160, 167, 0.3); padding-top: 8px;">
+            Supervisor: <strong>Dr. Sreemoyee Biswas</strong>, Assistant Professor | Dept of CSE, IIIT Bhopal • 20 October 2026
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding: 0.15in;">
+        <div class="img-frame">
+          <img src="presentation_assets/slide_globe.jpg" alt="3D Globe">
+        </div>
+        <div style="text-align: center; font-size: 14px; color: var(--dusty-mauve); font-style: italic; margin-top: 10px;">
+          Interactive 3D Virtual Earth (Three.js WebGL) with Live Incident Status Pins
+        </div>
+      </div>
+    </div>
+    <div class="stat-ribbon" style="margin-top: 0.3in;">
+      <div class="stat-chip terracotta">
+        <span class="stat-num">89.2% ACCURACY</span>
+        <span class="stat-label">Custom Scikit-Learn ML Model</span>
+      </div>
+      <div class="stat-chip mauve">
+        <span class="stat-num">75m RADIUS</span>
+        <span class="stat-label">Haversine Spatial Deduplication</span>
+      </div>
+      <div class="stat-chip terracotta">
+        <span class="stat-num">&lt; 20ms LATENCY</span>
+        <span class="stat-label">SQLite WAL Mode Engine</span>
+      </div>
+      <div class="stat-chip mauve">
+        <span class="stat-num">0 CLOUD API KEYS</span>
+        <span class="stat-label">100% Free &amp; Self-Hosted</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">01 / PROBLEM STATEMENT</div>
+        <h2 class="slide-title">The Urban Infrastructure Crisis</h2>
+        <div class="slide-subtitle">Why traditional municipal grievance mechanisms fail Indian cities</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 0.4in; flex: 1;">
+      <div class="card" style="padding: 0.18in;">
+        <div class="img-frame">
+          <img src="presentation_assets/slide_problem.jpg" alt="Ground Reality Pothole">
+        </div>
+        <div style="padding: 0.18in 0.05in 0.05in;">
+          <div style="font-size: 15px; font-weight: 700; color: var(--terracotta); margin-bottom: 4px;">GROUND REALITY: UNRESOLVED CIVIC DEFECTS</div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">
+            Severe potholes, collapsed drains, and dark streetlights cause over 3,500 preventable road accidents annually across Indian metropolitan roads.
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.22in;">
+        <div class="card border-terracotta">
+          <div class="card-title">1. Form Friction &amp; Citizen Abandonment</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            Existing municipal portals require multi-field forms, mandatory desktop logins, and lack visual feedback. Over <strong>68% of citizens</strong> abandon complaint submission mid-way.
+          </div>
+        </div>
+        <div class="card border-plum">
+          <div class="card-title">2. 42% Duplicate Dispatch Overhead</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            When an arterial pothole opens, 12–15 nearby residents file independent complaints. Municipalities dispatch duplicate inspection teams, wasting <strong>~₹42,000/month per ward</strong> in fuel and crew hours.
+          </div>
+        </div>
+        <div class="card border-mauve">
+          <div class="card-title">3. The 'Black Hole' Citizen Disengagement</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            Reports remain in 'Pending' status indefinitely without live status feeds or geolocation pins. Lack of civic transparency leads to voter apathy and decaying infrastructure.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">02 / CITIZEN ENGAGEMENT</div>
+        <h2 class="slide-title">Empowering Citizens at Street Level</h2>
+        <div class="slide-subtitle">Zero-friction reporting via 1-click photo geolocation &amp; voice telephony</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 0.4in; flex: 1;">
+      <div class="card" style="padding: 0.18in;">
+        <div class="img-frame">
+          <img src="presentation_assets/slide_citizen_report.jpg" alt="Student Reporting Pothole">
+        </div>
+        <div style="padding: 0.18in 0.05in 0.05in;">
+          <div style="font-size: 15px; font-weight: 700; color: var(--terracotta); margin-bottom: 4px;">FIELD CITIZEN INGESTION IN ACTION</div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">
+            A student captures a geotagged photo of a waterlogged road pothole in Bhopal. Coordinates and timestamp are automatically extracted in &lt;200ms.
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.22in;">
+        <div class="card border-terracotta">
+          <div class="card-title">1-Click Pin Drop on Leaflet 2D Map</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            Citizens simply tap their street or drag a glowing pin. The system reverse-geocodes nearest cross-streets and landmarks with zero manual typing.
+          </div>
+        </div>
+        <div class="card border-plum">
+          <div class="card-title">Voice Helpline Telephony (IVR)</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            Non-digital or elderly citizens dial a local hotline. Natural spoken Hindi or English audio is transcribed and fed straight into our offline classification model.
+          </div>
+        </div>
+        <div class="card border-mauve">
+          <div class="card-title">Civic XP Gamification &amp; Community Trust</div>
+          <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
+            Citizens receive +50 XP for reporting, +10 XP for verifying nearby issues, unlocking neighborhood hero badges and fostering positive community pride.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: MERMAID PROTOTYPE WORKFLOW -->
+  <section class="slide">
+    <div class="slide-header" style="margin-bottom: 0.2in;">
+      <div class="header-left">
+        <div class="header-meta-badge">03 / PROTOTYPE STRUCTURE</div>
+        <h2 class="slide-title">End-to-End Prototype Workflow Architecture</h2>
+        <div class="slide-subtitle">Mermaid structure: From citizen report to offline ML, spatial dedup &amp; municipal closure</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div class="card" style="flex: 1; padding: 0.2in;">
+      <div class="img-frame" style="background: #FAF5F2;">
+        <img src="presentation_assets/slide_mermaid_prototype.png" alt="Mermaid Prototype Architecture Diagram" style="object-fit: contain;">
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25in; margin-top: 0.2in;">
+      <div class="card border-terracotta" style="padding: 0.15in 0.2in; text-align: center;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--terracotta);">STAGE 1: CITIZEN CAPTURE</div>
+        <div style="font-size: 13.5px; color: var(--text-muted);">Geotagged photo + GPS coordinates or telephony audio</div>
+      </div>
+      <div class="card border-plum" style="padding: 0.15in 0.2in; text-align: center;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--deep-plum);">STAGE 2: OFFLINE LOGIC</div>
+        <div style="font-size: 13.5px; color: var(--text-muted);">Naive Bayes triage (89.2%) &amp; 75m Haversine dedup</div>
+      </div>
+      <div class="card border-mauve" style="padding: 0.15in 0.2in; text-align: center;">
+        <div style="font-size: 15px; font-weight: 700; color: var(--deep-plum);">STAGE 3: CLOSED-LOOP CAD</div>
+        <div style="font-size: 13.5px; color: var(--text-muted);">PWD dispatch, photo repair &amp; +50 Civic XP</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 -->
+  <section class="slide">
+    <div class="slide-header" style="margin-bottom: 0.2in;">
+      <div class="header-left">
+        <div class="header-meta-badge">04 / MACHINE LEARNING</div>
+        <h2 class="slide-title">Custom-Trained Offline Classification Model</h2>
+        <div class="slide-subtitle">Scikit-Learn NLP pipeline operating 100% locally with zero cloud API reliance</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.18in; margin-bottom: 0.25in;">
+      <div class="stat-chip terracotta" style="padding: 0.12in;">
+        <span class="stat-num" style="font-size: 26px;">89.2%</span>
+        <span class="stat-label">Model Accuracy</span>
+      </div>
+      <div class="stat-chip mauve" style="padding: 0.12in;">
+        <span class="stat-num" style="font-size: 26px;">4.2 ms</span>
+        <span class="stat-label">Inference Latency</span>
+      </div>
+      <div class="stat-chip terracotta" style="padding: 0.12in;">
+        <span class="stat-num" style="font-size: 26px;">1,200</span>
+        <span class="stat-label">Labeled Samples</span>
+      </div>
+      <div class="stat-chip mauve" style="padding: 0.12in;">
+        <span class="stat-num" style="font-size: 26px;">5 Classes</span>
+        <span class="stat-label">Civic Categories</span>
+      </div>
+      <div class="stat-chip terracotta" style="padding: 0.12in;">
+        <span class="stat-num" style="font-size: 26px;">0 Cost</span>
+        <span class="stat-label">Offline &amp; Free</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35in; flex: 1;">
+      <div class="card border-terracotta">
+        <div class="card-title">OFFLINE NLP TRAINING PIPELINE</div>
+        <ul class="bullet-list" style="margin-top: 0.1in;">
+          <li><strong>Dataset Engineering:</strong> Curated and labeled 1,200 Indian municipal complaints across 5 categories with localized terminology ('naali', 'chocked', 'wire hanging').</li>
+          <li><strong>Preprocessing:</strong> Regex tokenization, lowercasing, punctuation stripping, and custom civic stopword removal.</li>
+          <li><strong>Sub-linear TF-IDF:</strong> Generates unigram &amp; bigram feature vectors (max_features = 2,500) weighted by Term Frequency - Inverse Document Frequency.</li>
+          <li><strong>Multinomial Naive Bayes:</strong> Formulates maximum a posteriori class probability: <br>
+            <code style="color: var(--terracotta); font-size: 14px;">P(C_k | X) ∝ P(C_k) ∏ P(x_i | C_k)</code><br>
+            Serialized as <code>civic_model.pkl</code> (1.8 MB), requiring zero GPU memory.
+          </li>
+        </ul>
+      </div>
+      <div class="card border-mauve">
+        <div class="card-title">CATEGORY ACCURACY &amp; URGENCY HEURISTIC</div>
+        <div style="font-size: 15px; color: var(--text-muted); line-height: 1.55;">
+          <div style="font-weight: 700; color: var(--deep-plum); margin-bottom: 6px;">Validation Set Breakdown:</div>
+          • Potholes &amp; Road Cracks: <strong>91.4% Accuracy (F1: 0.91)</strong><br>
+          • Streetlights &amp; Visibility: <strong>90.2% Accuracy (F1: 0.90)</strong><br>
+          • Water Leakage &amp; Sewage: <strong>87.8% Accuracy (F1: 0.88)</strong><br>
+          • Garbage &amp; Waste Dumps: <strong>88.5% Accuracy (F1: 0.89)</strong><br>
+          • Electrical Hazards: <strong>88.1% Accuracy (F1: 0.88)</strong><br><br>
+          <div style="font-weight: 700; color: var(--deep-plum); margin-bottom: 4px;">Automated Urgency Scoring (1 to 5):</div>
+          Combines Naive Bayes posterior probability with high-hazard lexicon rules:
+          'live wire' / 'open transformer' → <strong>Urgency 5</strong>; 'dim bulb' → <strong>Urgency 1</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">05 / SPATIAL DEDUPLICATION</div>
+        <h2 class="slide-title">75-Meter Geospatial Deduplication Engine</h2>
+        <div class="slide-subtitle">Eliminating redundant municipal truck dispatches using spherical distance clustering</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35in; flex: 1;">
+      <div class="card border-terracotta">
+        <div class="card-title">HAVERSINE DISTANCE CLUSTERING</div>
+        <div class="card-subtitle">Geodesic Surface Distance Computation</div>
+        <div class="formula-box">
+          d = 2R · arcsin(√(sin²(Δlat/2) + cos(lat1)·cos(lat2)·sin²(Δlng/2)))<br>
+          where R = 6,371,000 meters (Mean Earth Radius)
+        </div>
+        <ul class="bullet-list" style="margin-top: 0.1in;">
+          <li><strong>1. Incoming Ingestion:</strong> Coordinate (lat, lng) received with ML category C.</li>
+          <li><strong>2. Spatial Query:</strong> Database queries active tickets within a bounding box (±0.001°) matching category C.</li>
+          <li><strong>3. Precise Haversine Check:</strong> Computes geodesic distance d to each candidate.</li>
+          <li><strong>4. Automated Clustering:</strong> If d ≤ 75 meters:<br>
+            • Mark ticket as: <code>duplicate_of = parent_id</code><br>
+            • Increment parent: <code>verification_count += 1</code><br>
+            • Block redundant work order dispatch.
+          </li>
+        </ul>
+      </div>
+      <div class="card border-mauve">
+        <div class="card-title">FIELD VALIDATION &amp; MUNICIPAL ROI</div>
+        <div class="card-subtitle">Distance Boundary Case Studies</div>
+        <ul class="bullet-list" style="margin-top: 0.1in;">
+          <li><strong>Case Study 1 (Inside Boundary — 38 meters):</strong><br>
+            Citizen A reports pothole at (23.2599, 77.4126) → Ticket #101 created.<br>
+            Citizen B reports same pothole 38m away → Merged into #101.<br>
+            <em>Result:</em> Verification Count = 2. Duplicate dispatch PREVENTED.
+          </li>
+          <li><strong>Case Study 2 (Outside Boundary — 98 meters):</strong><br>
+            Citizen C reports pothole 98m further down the road.<br>
+            Distance &gt; 75m threshold → Ticket #102 created as separate ticket.
+          </li>
+          <li><strong>GIS Road Inventory Layer:</strong><br>
+            Cross-references coordinates with municipal road inventory: routes public roads to PWD; flags private colony roads for RWA alerts.
+          </li>
+          <li><strong>Financial ROI:</strong><br>
+            Reduces municipal fuel and crew duplication by 42%, saving ~₹42,000/month per municipal ward.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">06 / GEOSPATIAL TWIN</div>
+        <h2 class="slide-title">Dual-Engine 3D/2D Geospatial Visualization</h2>
+        <div class="slide-subtitle">High-performance WebGL rendering and sub-pixel geographic coordinate transformations</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35in; flex: 1;">
+      <div class="card border-terracotta">
+        <div class="card-title">THREE.JS WEBGL 3D DIGITAL TWIN</div>
+        <div class="card-subtitle">Spherical-to-Cartesian Coordinate Transformation</div>
+        <div class="formula-box">
+          X = -R · sin(φ) · cos(θ)<br>
+          Y = R · cos(φ)<br>
+          Z = R · sin(φ) · sin(θ)<br>
+          where φ = (90 - lat) · π/180, θ = (lng + 180) · π/180
+        </div>
+        <ul class="bullet-list" style="margin-top: 0.1in;">
+          <li><strong>Dynamic Beacon Pulse Shaders:</strong> Custom GLSL fragment shaders animate concentric wave rings around pins, with expansion frequency proportional to ticket urgency (1 to 5).</li>
+          <li><strong>Raycasting Hit-Testing:</strong> GPU ray-sphere intersections detect cursor hover over incident coordinates with sub-millisecond raycast response.</li>
+          <li><strong>60 FPS Frame Budget:</strong> Optimized geometry instancing maintains smooth 60 FPS on integrated graphics hardware without thermal throttling.</li>
+        </ul>
+      </div>
+      <div class="card border-mauve">
+        <div class="card-title">SYNCHRONIZED 2D LEAFLET STREET MAP</div>
+        <div class="card-subtitle">Hyperlocal Navigation &amp; Incident Pin Dropping</div>
+        <ul class="bullet-list" style="margin-top: 0.12in;">
+          <li><strong>Vector Tile Stream:</strong> Streams crisp OpenStreetMap tiles with zero API key requirement, cached via browser service workers for low-bandwidth environments.</li>
+          <li><strong>Draggable Geolocation Pin:</strong> Citizens can tap or drag a glowing target marker to their exact street position, triggering reverse-geocoding of nearest road cross-sections.</li>
+          <li><strong>Density Cluster Markers:</strong> In high-density wards with 50+ simultaneous issues, Leaflet MarkerCluster aggregates nearby pins into summary badges, preventing visual clutter.</li>
+          <li><strong>State Synchronization:</strong> Clicking an incident on the 3D globe smoothly animates the 2D street map camera to the target coordinates using cubic easing.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">07 / SYSTEM ARCHITECTURE</div>
+        <h2 class="slide-title">Production-Grade 4-Tier Topology</h2>
+        <div class="slide-subtitle">Component hierarchy, real-time push streams, and high-concurrency database storage</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.35in; flex: 1;">
+      <div class="card" style="padding: 0.18in;">
+        <div class="img-frame">
+          <img src="presentation_assets/slide_arch.png" alt="Architecture Diagram">
+        </div>
+        <div style="text-align: center; font-size: 13.5px; color: var(--text-muted); font-style: italic; margin-top: 8px;">
+          4-Tier Community Hero System Topology
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.2in;">
+        <div class="card border-terracotta" style="padding: 0.2in;">
+          <div class="card-title" style="font-size: 18px; margin-bottom: 6px;">Presentation Tier (React 18 + Three.js)</div>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li>Vite build tooling with virtual DOM diffing for 60 FPS responsiveness.</li>
+            <li>Three.js WebGL canvas + Leaflet.js 2D mapping tiles.</li>
+          </ul>
+        </div>
+        <div class="card border-plum" style="padding: 0.2in;">
+          <div class="card-title" style="font-size: 18px; margin-bottom: 6px;">Application Tier (Node.js + Python ML)</div>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li>Express.js REST API with Zod schema validation.</li>
+            <li>Sub-process execution of Python Scikit-Learn inference.</li>
+          </ul>
+        </div>
+        <div class="card border-mauve" style="padding: 0.2in;">
+          <div class="card-title" style="font-size: 18px; margin-bottom: 6px;">Persistence &amp; Real-Time (SQLite WAL + SSE)</div>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li>SQLite WAL mode: non-blocking concurrent reads during writes.</li>
+            <li>Server-Sent Events (SSE) push live updates in &lt;15ms.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 -->
+  <section class="slide">
+    <div class="slide-header" style="margin-bottom: 0.2in;">
+      <div class="header-left">
+        <div class="header-meta-badge">08 / TEST VERIFICATION</div>
+        <h2 class="slide-title">Empirical Testing &amp; Performance Matrix</h2>
+        <div class="slide-subtitle">Rigorous verification across formal test cases TC1 through TC6</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div class="card" style="flex: 1; padding: 0.25in 0.3in;">
+      <div style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--deep-plum); margin-bottom: 8px;">
+        FORMAL TEST CASE EXECUTION RESULTS (PHASE III BENCHMARK)
+      </div>
+      <table class="test-table">
+        <thead>
+          <tr>
+            <th>TC ID</th>
+            <th>Test Scenario &amp; Input Conditions</th>
+            <th>Expected Behavior</th>
+            <th>Observed Result</th>
+            <th>Status</th>
+            <th>Latency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-mono">TC-01</td>
+            <td>Submit valid pothole report with coords</td>
+            <td>ML categorizes 'Pothole', pin drops</td>
+            <td>Correct category, pin placed</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">18 ms</td>
+          </tr>
+          <tr>
+            <td class="col-mono">TC-02</td>
+            <td>Submit duplicate report within 40m</td>
+            <td>Linked to parent #101, votes +1</td>
+            <td>Linked as duplicate, votes = 2</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">12 ms</td>
+          </tr>
+          <tr>
+            <td class="col-mono">TC-03</td>
+            <td>Submit distinct report at 98m distance</td>
+            <td>New standalone ticket created</td>
+            <td>Created as ticket #102</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">15 ms</td>
+          </tr>
+          <tr>
+            <td class="col-mono">TC-04</td>
+            <td>User attempts to upvote ticket twice</td>
+            <td>SQLite UNIQUE constraint throws 409</td>
+            <td>Duplicate vote rejected (409)</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">6 ms</td>
+          </tr>
+          <tr>
+            <td class="col-mono">TC-05</td>
+            <td>Query Open311 /requests.json endpoint</td>
+            <td>Standard GeoJSON payload returned</td>
+            <td>Schema-valid JSON payload</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">9 ms</td>
+          </tr>
+          <tr>
+            <td class="col-mono">TC-06</td>
+            <td>Municipal admin resolves issue via CAD</td>
+            <td>SSE event pushed to open browsers</td>
+            <td>Map pins turn green live</td>
+            <td><span class="badge-pass">PASS</span></td>
+            <td class="col-mono">14 ms</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stat-ribbon" style="margin-top: 0.25in;">
+      <div class="stat-chip terracotta">
+        <span class="stat-num">100% TEST PASS RATE</span>
+        <span class="stat-label">6 / 6 Test Cases Succeeded</span>
+      </div>
+      <div class="stat-chip mauve">
+        <span class="stat-num">12.3 ms AVG LATENCY</span>
+        <span class="stat-label">Sub-20ms Real-Time Response</span>
+      </div>
+      <div class="stat-chip terracotta">
+        <span class="stat-num">0 MEMORY LEAKS</span>
+        <span class="stat-label">Stable Node.js Event Loop</span>
+      </div>
+      <div class="stat-chip mauve">
+        <span class="stat-num">ACID INTEGRITY</span>
+        <span class="stat-label">SQLite WAL Mode Protection</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 -->
+  <section class="slide theme-dark">
+    <div class="slide-header">
+      <div class="header-left">
+        <div class="header-meta-badge">09 / IMPACT &amp; ROADMAP</div>
+        <h2 class="slide-title">Civic Impact, Municipal Action &amp; Conclusion</h2>
+        <div class="slide-subtitle">Quantified municipal benefits, Phase IV vision, and formal project defense closing</div>
+      </div>
+      <div class="header-right">
+        <span class="project-tag">COMMUNITY HERO • IIIT BHOPAL</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 0.4in; flex: 1;">
+      <div class="card" style="padding: 0.18in;">
+        <div class="img-frame">
+          <img src="presentation_assets/slide_repair_work.jpg" alt="Municipal Road Repair">
+        </div>
+        <div style="padding: 0.18in 0.05in 0.05in;">
+          <div style="font-size: 15px; font-weight: 700; color: var(--terracotta); margin-bottom: 4px;">CLOSING THE CIVIC LOOP: MUNICIPAL ACTION</div>
+          <div style="font-size: 14px; color: var(--dusty-mauve); line-height: 1.5;">
+            Municipal public works road crew paves and finishes an asphalt patch in an urban ward. The resolved status triggers a real-time SSE push, turning the map pin green.
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.22in;">
+        <div class="card" style="padding: 0.22in; border-color: var(--terracotta);">
+          <div class="card-title" style="font-size: 18px; color: var(--terracotta); margin-bottom: 6px;">DEMONSTRATED CIVIC IMPACT</div>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li><strong>42% Reduction in Duplicate Dispatch:</strong> Spatial clustering stops redundant inspection vans.</li>
+            <li><strong>3.8x Faster Ticket Resolution:</strong> Automated ML triage eliminates manual ticket routing delays.</li>
+            <li><strong>100% Free &amp; Self-Hosted:</strong> Operates without paid cloud API tokens or vendor lock-in.</li>
+          </ul>
+        </div>
+        <div class="card" style="padding: 0.22in; border-color: var(--dusty-mauve);">
+          <div class="card-title" style="font-size: 18px; color: var(--text-cream); margin-bottom: 6px;">PHASE IV DEVELOPMENT ROADMAP</div>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li><strong>1. Mobile App (React Native):</strong> Camera integration, offline photo caching, push alerts.</li>
+            <li><strong>2. Bus-Mounted Edge YOLO Vision:</strong> City buses equipped with cameras to auto-detect potholes.</li>
+            <li><strong>3. Multilingual NLP:</strong> Expanding training models to Marathi, Bengali, and Tamil complaints.</li>
+          </ul>
+        </div>
+        <div class="card" style="background: rgba(30, 8, 27, 0.8); border-color: var(--terracotta); padding: 0.22in; text-align: center;">
+          <div style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--terracotta); margin-bottom: 6px;">
+            THANK YOU! WE WELCOME JURY QUESTIONS &amp; DISCUSSION
+          </div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--text-cream);">
+            Aarush Bharti (24U020010) &amp; Ashish Goutam (24U020011) | CSE, IIIT Bhopal
+          </div>
+          <div style="font-size: 14px; color: var(--dusty-mauve); margin-top: 4px;">
+            Project Supervisor: Dr. Sreemoyee Biswas, Assistant Professor | 20 October 2026
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

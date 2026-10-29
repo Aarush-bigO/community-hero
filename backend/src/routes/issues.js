@@ -59,6 +59,41 @@ router.get('/', (req, res) => {
   res.json(rows.map(decodeIssue));
 });
 
+// GET /api/issues/geojson — Standard GIS GeoJSON FeatureCollection
+router.get('/geojson', (_req, res) => {
+  const db = getDb();
+  const rows = db.prepare('SELECT * FROM issues ORDER BY created_at DESC').all();
+  const featureCollection = {
+    type: 'FeatureCollection',
+    metadata: {
+      generated_at: new Date().toISOString(),
+      count: rows.length,
+      crs: 'urn:ogc:def:crs:OGC:1.3:CRS84',
+    },
+    features: rows.map((i) => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [i.lng, i.lat],
+      },
+      properties: {
+        id: i.id,
+        title: i.title,
+        description: i.description,
+        category: i.category,
+        severity: i.severity,
+        status: i.status,
+        address: i.address,
+        photo_url: i.photo_url,
+        urgency_score: i.urgency_score,
+        created_at: i.created_at,
+        sla_due_at: i.sla_due_at,
+      },
+    })),
+  };
+  res.json(featureCollection);
+});
+
 // GET /api/issues/:id
 router.get('/:id', (req, res) => {
   const db = getDb();
@@ -92,9 +127,17 @@ router.post('/', upload.single('photo'), async (req, res, next) => {
     // GIS asset layer: classify location + detect nearby duplicate reports.
     const geo = classifyLocation(parsed.lat, parsed.lng);
     const dupes = findDuplicates(parsed.lat, parsed.lng, ai.category);
-    const duplicate_of = dupes[0]?.id || null;
+    const duplicate_of = (dupes && dupes.length > 0) ? dupes[0].id : null;
+    const DEFAULT_CATEGORY_PHOTOS = {
+      pothole: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&auto=format&fit=crop&q=80',
+      streetlight: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=800&auto=format&fit=crop&q=80',
+      water: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800&auto=format&fit=crop&q=80',
+      waste: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&auto=format&fit=crop&q=80',
+      infrastructure: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=800&auto=format&fit=crop&q=80',
+      other: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80',
+    };
 
-    const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const photo_url = req.file ? `/uploads/${req.file.filename}` : (DEFAULT_CATEGORY_PHOTOS[ai.category] || DEFAULT_CATEGORY_PHOTOS.other);
 
     const db = getDb();
     db.prepare(

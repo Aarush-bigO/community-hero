@@ -489,16 +489,16 @@ def create_report():
         ("1. ABSTRACT", "8", True),
         ("2. INTRODUCTION", "9", True),
         ("3. LITERATURE REVIEW", "11", True),
-        ("4. PROBLEM DEFINITION AND OBJECTIVES", "12", True),
-        ("5. PROPOSED METHODOLOGY AND ARCHITECTURE", "14", True),
-        ("6. PROPOSED ALGORITHMS AND PSEUDOCODE", "16", True),
-        ("7. SYSTEM DIAGRAMS AND WORKFLOWS", "17", True),
-        ("8. IMPLEMENTATION AND TECHNOLOGIES", "21", True),
-        ("9. RESULTS AND TESTING", "23", True),
-        ("10. CONCLUSION AND FUTURE SCOPE", "25", True),
-        ("11. REFERENCES", "26", True),
-        ("12. LIST OF PUBLICATION", "27", True),
-        ("13. PLAGIARISM REPORT (TURNITIN)", "28", True)
+        ("4. PROBLEM DEFINITION AND OBJECTIVES", "13", True),
+        ("5. PROPOSED METHODOLOGY AND ARCHITECTURE", "15", True),
+        ("6. PROPOSED ALGORITHMS AND PSEUDOCODE", "17", True),
+        ("7. SYSTEM DIAGRAMS AND WORKFLOWS", "18", True),
+        ("8. IMPLEMENTATION AND TECHNOLOGIES", "22", True),
+        ("9. RESULTS AND TESTING", "24", True),
+        ("10. CONCLUSION AND FUTURE SCOPE", "26", True),
+        ("11. REFERENCES", "27", True),
+        ("12. LIST OF PUBLICATION", "28", True),
+        ("13. PLAGIARISM REPORT (TURNITIN)", "29", True)
     ]
 
     for title, pno, is_major in toc_data:
@@ -528,13 +528,13 @@ def create_report():
     format_run(r_lfh, "Times New Roman", 15, True, False, C_BLACK)
 
     figs_data = [
-        ("Fig. 1. High-Level Full-Stack System Architecture of Community Hero ........................................", "17"),
-        ("Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1) ..........................................................................", "18"),
-        ("Fig. 3. Interactive 3D Virtual Earth and Incident Visualization ...........................................................", "18"),
-        ("Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline .......................................", "19"),
-        ("Fig. 5. Municipal Command Center Real-Time Dashboard ................................................................", "19"),
-        ("Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning ................................................", "20"),
-        ("Fig. 7. Field Repair Work Order Tracking and Status Verification ..................................................", "20")
+        ("Fig. 1. High-Level Full-Stack System Architecture of Community Hero ........................................", "18"),
+        ("Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1) ..........................................................................", "19"),
+        ("Fig. 3. Interactive 3D Virtual Earth and Incident Visualization ...........................................................", "19"),
+        ("Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline .......................................", "20"),
+        ("Fig. 5. Municipal Command Center Real-Time Dashboard ................................................................", "20"),
+        ("Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning ................................................", "21"),
+        ("Fig. 7. Field Repair Work Order Tracking and Status Verification ..................................................", "21")
     ]
 
     for ftitle, fpno in figs_data:
@@ -563,15 +563,15 @@ def create_report():
     format_run(r_lth, "Times New Roman", 15, True, False, C_BLACK)
 
     tables_data = [
-        ("Table 1. Summary of reviewed works and their relevance to this project .....................................", "11"),
-        ("Table 2. System requirements and technical specifications ..............................................................", "12"),
-        ("Table 3. Primary database tables and integrity rules .........................................................................", "15"),
-        ("Table 4. Technology stack and roles in Community Hero .................................................................", "21"),
-        ("Table 5. Key REST API endpoints implemented in backend .............................................................", "22"),
-        ("Table 6. Offline NLP classification performance across five categories ......................................", "23"),
-        ("Table 7. Spatial duplicate detection accuracy across distance tests .............................................", "23"),
-        ("Table 8. Functional test cases and validation results (TC1 to TC6) .................................................", "24"),
-        ("Table 9. Server response latency benchmarks under concurrent load .............................................", "24")
+        ("Table 1. Summary of reviewed works and their relevance to this project .....................................", "12"),
+        ("Table 2. System requirements and technical specifications ..............................................................", "13"),
+        ("Table 3. Primary database tables and integrity rules .........................................................................", "16"),
+        ("Table 4. Technology stack and roles in Community Hero .................................................................", "22"),
+        ("Table 5. Key REST API endpoints implemented in backend .............................................................", "23"),
+        ("Table 6. Offline NLP classification performance across five categories ......................................", "24"),
+        ("Table 7. Spatial duplicate detection accuracy across distance tests .............................................", "24"),
+        ("Table 8. Functional test cases and validation results (TC1 to TC6) .................................................", "25"),
+        ("Table 9. Server response latency benchmarks under concurrent load .............................................", "25")
     ]
 
     for ttitle, tpno in tables_data:
@@ -593,7 +593,7 @@ def create_report():
     add_h1("1. ABSTRACT")
 
     add_body_p(
-        "Reporting everyday civic problems—like potholes, broken streetlights, water pipeline leaks, overflowing garbage bins, and sparking electrical wires—is often slow and frustrating. Most municipal portals use plain text forms that leave citizens without status updates. At the same time, municipal offices receive hundreds of duplicate complaints for the exact same issue, wasting repair budgets and manpower. To solve these everyday challenges, we developed Community Hero, a modern, student-built civic platform that makes reporting and fixing local problems simple, visual, and transparent."
+        "Reporting everyday civic problems, such as potholes, broken streetlights, water pipeline leaks, overflowing garbage bins, and sparking electrical wires, is often slow and frustrating. Most municipal portals use plain text forms that leave citizens without status updates. At the same time, municipal offices receive hundreds of duplicate complaints for the exact same issue, wasting repair budgets and manpower. To solve these everyday challenges, we developed Community Hero, a modern, student-built civic platform that makes reporting and fixing local problems simple, visual, and transparent."
     )
     add_body_p(
         "The frontend is built using React 18 and Three.js. It features an interactive 3D virtual Earth where reported issues appear as glowing color-coded pins, alongside a 2D Leaflet street map that lets residents drop a pin at their exact location with a photo and description. The backend uses Node.js and Express connected to a lightweight SQLite database."
@@ -615,7 +615,7 @@ def create_report():
 
     add_h2("2.1 Background and Real-World Context")
     add_body_p(
-        "In Indian cities, public infrastructure issues like broken roads, dark streets, leaking water pipes, open drains, and garbage dumps create daily inconvenience and safety hazards. Traditional methods for reporting these issues—such as visiting municipal offices in person, calling busy helplines, or filling out long web forms—are slow and rarely provide updates to the citizen."
+        "In Indian cities, public infrastructure issues like broken roads, dark streets, leaking water pipes, open drains, and garbage dumps create daily inconvenience and safety hazards. Traditional methods for reporting these issues, such as visiting municipal offices in person, calling busy helplines, or filling out long web forms, are slow and rarely provide updates to the citizen."
     )
     add_body_p(
         "From the city administration's side, receiving hundreds of unorganized complaints every day creates a major problem. During heavy rain or storms, multiple residents often submit separate complaints for the exact same fallen tree or road crater. Without an automatic way to detect nearby reports, municipal staff end up sending repair teams to the same spot multiple times, wasting time and fuel."
@@ -648,20 +648,30 @@ def create_report():
 
     add_h2("3.1 Existing Civic Complaint Systems")
     add_body_p(
-        "Platforms like FixMyStreet (UK) and SeeClickFix (USA) showed that letting citizens pin issues on a map speeds up repairs. However, these systems rely mainly on 2D form inputs, do not offer interactive 3D visualization, lack voice reporting in regional languages, and do not include automated spatial duplicate grouping."
+        "Platforms like FixMyStreet in the United Kingdom and SeeClickFix in North America demonstrated that allowing citizens to report local issues directly on maps speeds up municipal repairs [1], [3]. These initiatives established open frameworks that helped shape the Open311 GeoReport v2 standard [2]. However, these systems rely primarily on 2D form inputs, do not offer interactive 3D visualizations, lack voice reporting in regional languages, and do not include automated spatial duplicate grouping."
     )
 
     add_h2("3.2 Machine Learning in Text Classification")
     add_body_p(
-        "Text classification is a well-established area in Natural Language Processing. Algorithms like Multinomial Naive Bayes combined with TF-IDF feature extraction are fast, lightweight, and effective for sorting short text messages. Training our model on local civic complaints allows the system to classify tickets instantly without any external cloud fees or internet dependencies."
+        "Text classification is an established area in Natural Language Processing. Machine learning algorithms such as Multinomial Naive Bayes and Support Vector Machines, when combined with Term Frequency-Inverse Document Frequency (TF-IDF) feature extraction, offer high classification accuracy with low compute requirements [6], [16]. Training our model locally on labeled municipal records avoids external cloud API expenses and provides instant, privacy-preserving classification on the local server [6]."
     )
 
-    add_h2("3.3 3D Graphics on the Web (Three.js)")
+    add_h2("3.3 3D Graphics and Geospatial Digital Twins")
     add_body_p(
-        "With WebGL and Three.js, web browsers can render hardware-accelerated 3D graphics smoothly. Research shows that 3D spatial representations improve user engagement and help people understand citywide patterns better than flat maps. In Community Hero, Three.js renders a 3D Earth model with color-coded pins for active issues."
+        "Modern web browsers can render hardware-accelerated 3D graphics smoothly using WebGL and Three.js without requiring third-party plugins [4], [9]. Research by Biljecki et al. indicates that 3D city models improve user engagement and cognitive understanding of spatial clusters compared to flat 2D maps [5]. Combining a 3D Earth digital twin with a 2D Leaflet street map [10] provides both a citywide overview and street-level precision."
     )
 
-    add_h2("3.4 Summary and Research Gap")
+    add_h2("3.4 Multilingual Voice Telephony in Civic Reporting")
+    add_body_p(
+        "Voice intake removes barriers for citizens who find typing in English difficult [3]. Modern web standards such as the W3C Web Speech API [13] and conversational telephony frameworks like Bolna [14] allow spoken words in Hindi and English to be converted into structured data. In combination with Server-Sent Events [7], the system pushes real-time updates directly to administrative dashboards."
+    )
+
+    add_h2("3.5 Spatial Duplicate Detection and Clustering")
+    add_body_p(
+        "The Haversine formula, originally documented by Sinnott [15], provides an efficient method to calculate great-circle distances between GPS coordinates. Using a 75-meter threshold allows municipal systems to cluster duplicate citizen reports automatically, avoiding redundant work orders."
+    )
+
+    add_h2("3.6 Summary and Research Gap")
     add_body_p(
         "Table 1 summarizes the existing systems studied, their methods, and the gaps addressed by Community Hero."
     )
@@ -961,10 +971,10 @@ def create_report():
 
     table7_headers = ["Distance Interval", "Test Cases", "Expected Result", "System Decision", "Accuracy"]
     table7_rows = [
-        ["10m – 35m", "15", "Mark as Duplicate", "15 Duplicates", "100.0%"],
-        ["36m – 74m", "10", "Mark as Duplicate", "10 Duplicates", "100.0%"],
-        ["76m – 100m", "15", "Create New Ticket", "15 New Tickets", "100.0%"],
-        ["101m – 150m", "10", "Create New Ticket", "10 New Tickets", "100.0%"]
+        ["10m to 35m", "15", "Mark as Duplicate", "15 Duplicates", "100.0%"],
+        ["36m to 74m", "10", "Mark as Duplicate", "10 Duplicates", "100.0%"],
+        ["76m to 100m", "15", "Create New Ticket", "15 New Tickets", "100.0%"],
+        ["101m to 150m", "10", "Create New Ticket", "10 New Tickets", "100.0%"]
     ]
     add_styled_table("TABLE 7. SPATIAL DUPLICATE DETECTION ACCURACY ACROSS DISTANCE TESTS",
                      table7_headers, table7_rows, col_widths=[1.4, 1.0, 1.6, 1.4, 0.85],
@@ -1038,7 +1048,11 @@ def create_report():
         "[9] Three.js Authors, \"Three.js JavaScript 3D Library Documentation,\" 2024. [Online]. Available: https://threejs.org.",
         "[10] Leaflet Development Team, \"Leaflet: An Open-Source JavaScript Library for Interactive Maps,\" 2024. [Online]. Available: https://leafletjs.com.",
         "[11] D. R. Hipp, \"SQLite: Small, Fast, Reliable SQL Database Engine,\" SQLite Consortium, 2024. [Online]. Available: https://www.sqlite.org.",
-        "[12] Express.js Authors, \"Express: Fast, Minimalist Web Framework for Node.js,\" 2024. [Online]. Available: https://expressjs.com."
+        "[12] Express.js Authors, \"Express: Fast, Minimalist Web Framework for Node.js,\" 2024. [Online]. Available: https://expressjs.com.",
+        "[13] W3C Voice Browser Working Group, \"Web Speech API Specification,\" W3C Community Draft, 2023.",
+        "[14] Bolna AI, \"Conversational Voice AI Agent Framework Documentation,\" 2026. [Online]. Available: https://bolna.ai.",
+        "[15] R. W. Sinnott, \"Virtues of the Haversine,\" Sky and Telescope, vol. 68, no. 2, p. 159, 1984.",
+        "[16] T. Joachims, \"Text categorization with support vector machines: Learning with many relevant features,\" European Conference on Machine Learning (ECML), Springer, 1998, pp. 137-142."
     ]
 
     for ref in references:

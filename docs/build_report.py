@@ -853,31 +853,31 @@ def create_report():
     add_body_p(
         "Figure 3 shows the interactive 3D Virtual Earth interface where reported civic issues appear as color-coded pins."
     )
-    add_figure("slide_globe.jpg", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.8)
+    add_figure("web_globe_map.png", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.8)
 
     add_h2("7.4 Multilingual Voice Intake Pipeline")
     add_body_p(
         "Figure 4 shows the voice intake pipeline, illustrating how callers in Hindi or English have their speech converted into structured tickets."
     )
-    add_figure("slide_voice.png", "Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline.", width_in=4.8)
+    add_figure("web_voice_cockpit.png", "Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline.", width_in=4.8)
 
     add_h2("7.5 Municipal Command Center Dashboard")
     add_body_p(
         "Figure 5 displays the live municipal dashboard where city staff monitor active tickets, dispatch repair crews, and verify resolutions."
     )
-    add_figure("slide_command.jpg", "Fig. 5. Municipal Command Center Real-Time Dashboard.", width_in=4.8)
+    add_figure("web_dashboard.png", "Fig. 5. Municipal Command Center Real-Time Dashboard.", width_in=4.8)
 
     add_h2("7.6 Citizen Hyperlocal Reporting Interface")
     add_body_p(
         "Figure 6 shows the citizen report submission interface featuring 2D street map pinning, photo evidence upload, and XP gamification."
     )
-    add_figure("slide_citizen_report.jpg", "Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning.", width_in=4.8)
+    add_figure("web_citizen_report.png", "Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning.", width_in=4.8)
 
     add_h2("7.7 Field Repair Work Order & Resolution Lifecycle")
     add_body_p(
         "Figure 7 illustrates the field resolution workflow from initial citizen submission to municipal repair crew dispatch and photographic proof verification."
     )
-    add_figure("slide_repair_work.jpg", "Fig. 7. Field Repair Work Order Tracking and Status Verification.", width_in=4.8)
+    add_figure("web_admin_console.png", "Fig. 7. Field Repair Work Order Tracking and Status Verification.", width_in=4.8)
 
     # =============================================================
     # CHAPTER 8: IMPLEMENTATION AND TECHNOLOGIES (PAGE 22-24)

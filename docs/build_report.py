@@ -533,7 +533,7 @@ def create_report():
         ("Fig. 3. Interactive 3D Virtual Earth and Incident Visualization ...........................................................", "19"),
         ("Fig. 4. Multilingual Voice Intake & Automated Ticket Dispatch Pipeline .......................................", "20"),
         ("Fig. 5. Municipal Command Center Real-Time Dashboard ................................................................", "20"),
-        ("Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning ................................................", "21"),
+        ("Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards .................................", "21"),
         ("Fig. 7. Field Repair Work Order Tracking and Status Verification ..................................................", "21")
     ]
 
@@ -867,11 +867,11 @@ def create_report():
     )
     add_figure("web_dashboard.png", "Fig. 5. Municipal Command Center Real-Time Dashboard.", width_in=4.8)
 
-    add_h2("7.6 Citizen Hyperlocal Reporting Interface")
+    add_h2("7.6 Citizen Hyperlocal Geospatial Map Interface")
     add_body_p(
-        "Figure 6 shows the citizen report submission interface featuring 2D street map pinning, photo evidence upload, and XP gamification."
+        "Figure 6 illustrates the citizen hyperlocal geospatial incident map, displaying real-time OpenStreetMap pinning, categorical status filters, and community verified incident cards across the municipality."
     )
-    add_figure("web_citizen_report.png", "Fig. 6. Citizen Hyperlocal Reporting Interface with 2D/3D Pinning.", width_in=4.8)
+    add_figure("web_globe_map.png", "Fig. 6. Citizen Hyperlocal Geospatial Incident Map and Community Cards.", width_in=4.8)
 
     add_h2("7.7 Field Repair Work Order & Resolution Lifecycle")
     add_body_p(

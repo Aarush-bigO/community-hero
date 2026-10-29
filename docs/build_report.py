@@ -1058,30 +1058,12 @@ def create_report():
         format_run(r_ref, "Times New Roman", 10, False, False, C_BODY)
 
     # =============================================================
-    # CHAPTER 12: LIST OF PUBLICATION (PAGE 30)
+    # CHAPTER 12: LIST OF PUBLICATION (PAGE 28)
     # =============================================================
     add_h1("12. LIST OF PUBLICATION")
 
-    add_body_p(
-        "Based on the implementation and results of Phase III of Community Hero, a conference paper has been prepared:",
-        bold_prefix="Conference Paper Target: "
-    )
-    add_body_p(
-        "\"Community Hero: A Hyperlocal Smart City Incident Resolution Framework Integrating WebGL 3D Digital Twins, Trained Machine Learning Classification, and Open311 Real-Time Telemetry.\"",
-        bold_prefix="Title: "
-    )
-    add_body_p(
-        "Aarush Bharti, Ashish Goutam, and Dr. Sreemoyee Biswas.",
-        bold_prefix="Authors: "
-    )
-    add_body_p(
-        "Targeted for submission to the IEEE International Smart Cities Conference (ISC2) / IEEE SMARTCOMP, 2027.",
-        bold_prefix="Target Venue: "
-    )
-    add_body_p(
-        "The paper describes the system architecture, 3D WebGL pin mapping, offline trained ML classification pipeline, and the 75-meter spatial duplicate detection algorithm.",
-        bold_prefix="Summary: "
-    )
+    add_body_p("Accepted / Submitted / Published (if any):")
+    add_body_p("No publications at the time of submission.")
 
     # =============================================================
     # CHAPTER 13: PLAGIARISM REPORT (PAGE 30)

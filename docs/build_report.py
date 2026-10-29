@@ -392,7 +392,7 @@ def create_report():
     p_sigs.paragraph_format.space_before = Pt(36)
     p_sigs.paragraph_format.space_after = Pt(0)
     r_sg = p_sigs.add_run(
-        "Dr. Sreemoyee Biswas\t\t\t\t\tDr. Rahul Chourasia\n"
+        "Dr. Sreemoyee Biswas\t\t\t\t\tDr. Rahul Chaurasia\n"
         "Assistant Professor\t\t\t\t\tDepartment of CSE,\n"
         "(CSE)\t\t\t\t\t\t\tIIIT Bhopal (M.P.)\n"
         "IIIT Bhopal (M.P.)"
@@ -469,7 +469,7 @@ def create_report():
         "We are deeply grateful to our Project Guide, Dr. Sreemoyee Biswas, Assistant Professor, Department of Computer Science and Engineering, for her constant guidance, valuable suggestions, and expert advice. Her insights helped us refine our technical concepts, algorithmic formulations, and improve our system design, while her support kept us motivated throughout challenging phases."
     )
     add_body_p(
-        "Our sincere thanks to the Department Coordinator, Dr. Rahul Chourasia, for the support and encouragement provided during the completion of the project. We also thank all the faculty members of the CSE department for clarifying our doubts and providing continuous direction."
+        "Our sincere thanks to the Department Coordinator, Dr. Rahul Chaurasia, for the support and encouragement provided during the completion of the project. We also thank all the faculty members of the CSE department for clarifying our doubts and providing continuous direction."
     )
     add_body_p(
         "A special thanks to our batchmates and friends for their continuous support, code review suggestions, and active participation in user-testing the 3D web interface and multilingual voice dispatch system. Last but not least, we express our deepest gratitude to our parents and family members for their unconditional love, patience, and moral support throughout our undergraduate coursework."

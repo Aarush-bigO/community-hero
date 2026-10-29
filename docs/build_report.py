@@ -441,7 +441,7 @@ def create_report():
     p_decsigs.paragraph_format.space_after = Pt(0)
     r_dsg = p_decsigs.add_run(
         "Aarush Bharti (24U020010)\n"
-        "Atharv Dalal / Ashish Goutam (24U020011)\n"
+        "Ashish Goutam (24U020011)\n"
         "5th Semester, Department of CSE\n"
         "Indian Institute of Information Technology, Bhopal"
     )

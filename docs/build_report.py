@@ -326,13 +326,6 @@ def create_report():
     r_si = p_supinfo.add_run("Dr. Sreemoyee Biswas\nAssistant Professor\n(CSE)")
     format_run(r_si, "Times New Roman", 11.5, False, False, C_BODY)
 
-    p_date = doc.add_paragraph()
-    p_date.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_date.paragraph_format.space_before = Pt(8)
-    p_date.paragraph_format.space_after = Pt(0)
-    r_dt = p_date.add_run("October 2026")
-    format_run(r_dt, "Times New Roman", 12, True, False, C_BLACK)
-
     # =============================================================
     # 2. CERTIFICATE (PAGE 2)
     # =============================================================

@@ -849,11 +849,11 @@ def create_report():
     )
     add_figure("slide_dfd.png", "Fig. 2. Data Flow Diagram (DFD Level-0 & Level-1).", width_in=5.0)
 
-    add_h2("7.3 3D Virtual Earth Visualization")
+    add_h2("7.3 3D Virtual Earth Digital Twin Visualization")
     add_body_p(
-        "Figure 3 shows the interactive 3D Virtual Earth interface where reported civic issues appear as color-coded pins."
+        "Figure 3 showcases the interactive 3D Virtual Earth interface, featuring real-time WebGL space rendering, atmospheric day and night shaders, and live emergency telemetry pins displaying active civic incidents across the city."
     )
-    add_figure("web_globe_map.png", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.8)
+    add_figure("soul_landing_retina.png", "Fig. 3. Interactive 3D Virtual Earth and Incident Visualization.", width_in=4.8)
 
     add_h2("7.4 Multilingual Voice Intake Pipeline")
     add_body_p(

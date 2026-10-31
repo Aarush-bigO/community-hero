@@ -13,6 +13,7 @@ import { useLang } from '../i18n';
 import { api, assetUrl } from '../utils/api';
 import WaveformPlayer from './WaveformPlayer';
 import VoiceTelephonyModal from './VoiceTelephonyModal';
+import { speakClear, stopClearSpeech } from '../utils/speech';
 
 const SCENARIOS = [
   {
@@ -301,15 +302,15 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
       setAgentState('speaking');
 
-      // Real Audible Voice Response via SpeechSynthesis
-      if (audioFeedbackOn && 'speechSynthesis' in window && res.agent_response) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(res.agent_response);
-        utter.lang = res.language === 'hi' ? 'hi-IN' : 'en-US';
-        utter.rate = 1.02;
-        utter.pitch = 1.0;
-        utter.onend = () => setAgentState('listening');
-        window.speechSynthesis.speak(utter);
+      // Real Audible Voice Response via Crystal-Clear Speech Engine
+      if (audioFeedbackOn && res.agent_response) {
+        speakClear(res.agent_response, {
+          language: res.language || (isHindi ? 'hi' : 'en'),
+          rate: 0.94,
+          volume: 1.0,
+          playChime: true,
+          onEnd: () => setAgentState('listening'),
+        });
       } else {
         setTimeout(() => setAgentState('listening'), 2500);
       }
@@ -357,13 +358,14 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     setOperatorSpeechInput('');
 
     // Audible speech synthesis for operator's voice
-    if (audioFeedbackOn && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = isHindi ? 'hi-IN' : 'en-US';
-      utter.rate = 1.05;
-      utter.pitch = 0.95;
-      window.speechSynthesis.speak(utter);
+    if (audioFeedbackOn) {
+      speakClear(text, {
+        language: isHindi ? 'hi' : 'en',
+        rate: 0.94,
+        pitch: 0.95,
+        volume: 1.0,
+        playChime: true,
+      });
     }
 
     try {
@@ -484,6 +486,23 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
           ? `🎙️ वॉयस डिस्पैच: ${selected.shortLabel}`
           : `🎙️ Voice Dispatch: ${selected.shortLabel}`,
       });
+
+      // Crystal-clear audible voice response for simulation
+      if (audioFeedbackOn) {
+        const spokenSim = isHindi
+          ? `आपातकालीन कार्य आदेश दर्ज कर लिया गया है। नजदीकी त्वरित प्रतिक्रिया टीम को तुरंत रवाना कर दिया गया है।`
+          : `Emergency Work Order logged for ${selected.shortLabel}. Rapid Response Hazard Unit 4 has been dispatched with sirens.`;
+
+        setTimeout(() => {
+          speakClear(spokenSim, {
+            language: isHindi ? 'hi' : 'en',
+            rate: 0.94,
+            volume: 1.0,
+            playChime: true,
+            onEnd: () => setAgentState('listening'),
+          });
+        }, 1200);
+      }
     } catch {
       showToast({ type: 'live', message: 'Simulation triggered' });
     } finally {
@@ -608,7 +627,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
             {/* TTS Audio Mute/Unmute Toggle */}
             <button
-              onClick={() => setAudioFeedbackOn(!audioFeedbackOn)}
+              onClick={() => {
+                if (audioFeedbackOn) stopClearSpeech();
+                setAudioFeedbackOn(!audioFeedbackOn);
+              }}
               className={`p-1.5 rounded-xl border transition ${
                 audioFeedbackOn
                   ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20'

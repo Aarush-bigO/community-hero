@@ -82,3 +82,4 @@
 2. **Let the voice AI speak**: When the AI speaks, pause for 2–3 seconds so the judges clearly hear the audio quality.
 3. **Keep the mouse smooth**: Avoid frantic cursor shaking; point cleanly to the buttons you click.
 4. **Resolution**: 1080p full screen with your Chrome browser maximized gives the sharpest presentation.
+

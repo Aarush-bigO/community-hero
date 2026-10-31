@@ -78,3 +78,4 @@
 | 4. Telephony & Intercom | 25s | 48 words | 2s |
 | 5. 3D Twin & Outro | 20s | 42 words | 0s |
 | **Total** | **120s (2:00)** | **232 words** | **9s pauses** |
+

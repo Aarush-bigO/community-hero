@@ -162,6 +162,8 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const [isProcessingLiveCall, setIsProcessingLiveCall] = useState(false);
   const [customInput, setCustomInput] = useState('');
   const [audioFeedbackOn, setAudioFeedbackOn] = useState(true);
+  const [micVolume, setMicVolume] = useState(0);
+  const lastVolRef = useRef(0);
 
   // Operator Takeover & Say-on-call State
   const [operatorSpeechInput, setOperatorSpeechInput] = useState('');
@@ -430,6 +432,16 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         const bufferLength = analyserRef.current.frequencyBinCount;
         realAudioData = new Uint8Array(bufferLength);
         analyserRef.current.getByteFrequencyData(realAudioData);
+
+        let sum = 0;
+        for (let j = 0; j < bufferLength; j++) {
+          sum += realAudioData[j];
+        }
+        const pct = Math.min(100, Math.round((sum / (bufferLength * 255)) * 180));
+        if (Math.abs(pct - lastVolRef.current) > 3) {
+          lastVolRef.current = pct;
+          setMicVolume(pct);
+        }
       }
 
       for (let i = 0; i < bars; i++) {
@@ -704,19 +716,27 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500" />
               </span>
-              <span className="text-xs font-bold text-rose-300 shrink-0">
-                {isProcessingLiveCall
-                  ? 'Transmitting to CAD Triage Engine…'
-                  : isListening
-                  ? '🎙️ Listening (Speak or edit):'
-                  : 'Emergency Description:'}
-              </span>
+
+              {/* Live Audio Level VU Meter */}
+              {isListening && (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-black/60 border border-rose-500/30 text-[10.5px] font-mono text-rose-300 shrink-0">
+                  <Activity className="w-3 h-3 text-rose-400 animate-pulse" />
+                  <span>Mic: {micVolume}%</span>
+                  <span className="w-12 h-1.5 bg-slate-800 rounded-full overflow-hidden inline-block ml-0.5">
+                    <span
+                      className="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 block transition-all duration-75"
+                      style={{ width: `${Math.max(8, micVolume)}%` }}
+                    />
+                  </span>
+                </span>
+              )}
+
               <input
                 type="text"
                 value={liveSpokenText}
                 onChange={(e) => setLiveSpokenText(e.target.value)}
-                placeholder={isListening ? (isHindi ? 'सुन रहे हैं... या यहाँ टाइप करें' : 'Listening to mic... or type emergency here') : 'Enter emergency…'}
-                className="text-xs text-white bg-black/60 px-3 py-1.5 rounded-xl border border-rose-500/30 flex-1 min-w-[240px] focus:outline-none focus:border-rose-400 font-mono shadow-inner"
+                placeholder={isListening ? (isHindi ? 'सुन रहे हैं... बोलें या यहाँ लिखें' : 'Listening to mic... Speak now or type here') : 'Enter emergency…'}
+                className="text-xs text-white bg-black/60 px-3 py-1.5 rounded-xl border border-rose-500/30 flex-1 min-w-[220px] focus:outline-none focus:border-rose-400 font-mono shadow-inner"
               />
             </div>
 

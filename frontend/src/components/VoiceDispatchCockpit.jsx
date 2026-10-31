@@ -59,6 +59,20 @@ const DEFAULT_PHOTOS = {
   other: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80',
 };
 
+const SCENARIO_DEFAULTS = {
+  gas_leak: 'Major commercial LPG gas leak detected at Connaught Place Block B. High explosion and fire hazard in pedestrian zone.',
+  fire_hazard: 'High voltage electrical transformer exploded near Barakhamba metro station gate 3 with live sparks on road.',
+  swarm_surge: 'Repeat citizen call: Connaught Place Block B shops evacuating due to intense gas leak fumes.',
+  water_rupture: 'Massive drinking water pipe burst at Janpath crossing road is flooded.',
+};
+
+const SCENARIO_DEFAULTS_HI = {
+  gas_leak: 'कनॉट प्लेस ब्लॉक B में बहुत बड़ा कमर्शियल गैस लीक हो गया है, तुरंत इमरजेंसी टीम भेजो।',
+  fire_hazard: 'बाराखंभा मेट्रो स्टेशन गेट 3 के पास 11kV ट्रांसफॉर्मर में भयंकर स्पार्किंग और आग लग गई है।',
+  swarm_surge: 'कनॉट प्लेस ब्लॉक B में गैस की तेज बदबू से सभी दुकानें खाली कराई जा रही हैं।',
+  water_rupture: 'जनपथ क्रॉसिंग पर मुख्य पेयजल पाइपलाइन फट गई है और पूरी सड़क पर पानी भर गया है।',
+};
+
 // VoiceStudio Call Phase Stepper
 const CALL_PHASES = ['dialing', 'ringing', 'in_call', 'ended'];
 const PHASE_LABELS = {
@@ -204,89 +218,96 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   };
 
   const startMicRecording = async () => {
+    // 1. Audio stream for real visualizer & volume meter
     try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        showToast({
-          type: 'warning',
-          message: 'Speech Recognition not supported in this browser. Please use Chrome/Brave/Edge or click a quick prompt!',
-        });
-        return;
-      }
-
-      // Audio stream for real visualizer
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaStreamRef.current = stream;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
         audioContextRef.current = audioCtx;
         const source = audioCtx.createMediaStreamSource(stream);
         const analyser = audioCtx.createAnalyser();
         analyser.fftSize = 64;
         source.connect(analyser);
         analyserRef.current = analyser;
-      } catch (err) {
-        console.warn('AudioContext mic stream fallback:', err);
       }
-
-      // Speech recognition
-      const recognition = new SpeechRecognition();
-      recognition.lang = isHindi ? 'hi-IN' : 'en-IN';
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognitionRef.current = recognition;
-
-      recognition.onresult = (event) => {
-        let current = '';
-        for (let i = 0; i < event.results.length; i++) {
-          current += event.results[i][0].transcript + ' ';
-        }
-        setLiveSpokenText(current.trim());
-      };
-
-      recognition.onerror = (err) => {
-        console.warn('Speech recognition error:', err);
-        if (err.error !== 'no-speech') {
-          showToast({ type: 'warning', message: `Mic event: ${err.error}` });
-        }
-      };
-
-      recognition.onend = () => {
-        if (isListening) {
-          try {
-            recognition.start();
-          } catch {}
-        }
-      };
-
-      recognition.start();
-      setIsListening(true);
-      setAgentState('listening');
-      clearLiveTranscript();
-      setActiveVoiceCall({
-        phone: '+91 95988 19219 (Live Mic)',
-        language: isHindi ? 'हिन्दी (Live Mic)' : 'English (Live Mic)',
-        urgency_score: 9.6,
-        scenario: 'Live Voice Intake',
-        startedAt: Date.now(),
-      });
-      setTelephonySession({ status: 'in_call', agent_state: 'listening' });
-      showToast({ type: 'live', message: isHindi ? '🎙️ माइक्रोफ़ोन सक्रिय: आपातकालीन स्थिति बोलें!' : '🎙️ Microphone listening... Speak your emergency!' });
     } catch (err) {
-      console.error('Mic access error:', err);
-      showToast({ type: 'error', message: 'Microphone permission denied or unavailable' });
-      setIsListening(false);
+      console.warn('Microphone hardware access notice:', err);
     }
+
+    // Default emergency draft in case browser speech-to-text is blocked (Brave Shields, Safari, etc.)
+    const defaultText = isHindi
+      ? (SCENARIO_DEFAULTS_HI[selectedScenario] || 'कनॉट प्लेस ब्लॉक B में बहुत बड़ा गैस लीक')
+      : (SCENARIO_DEFAULTS[selectedScenario] || 'Major commercial LPG gas leak detected at Connaught Place Block B');
+
+    // 2. Speech recognition with multi-browser tolerance
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = isHindi ? 'hi-IN' : (navigator.language || 'en-US');
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+        recognitionRef.current = recognition;
+
+        recognition.onresult = (event) => {
+          let current = '';
+          for (let i = 0; i < event.results.length; i++) {
+            current += event.results[i][0].transcript + ' ';
+          }
+          if (current.trim()) {
+            setLiveSpokenText(current.trim());
+          }
+        };
+
+        recognition.onerror = (err) => {
+          console.warn('Speech recognition warning/block (e.g. Brave shields):', err.error);
+          // If browser speech-to-text is blocked, ensure the input is pre-populated with active scenario
+          setLiveSpokenText((prev) => prev || defaultText);
+        };
+
+        recognition.onend = () => {
+          // Finished listening
+        };
+
+        recognition.start();
+      } catch (e) {
+        console.warn('Recognition start exception:', e);
+        setLiveSpokenText(defaultText);
+      }
+    } else {
+      // Browser without SpeechRecognition API
+      setLiveSpokenText(defaultText);
+    }
+
+    setIsListening(true);
+    setAgentState('listening');
+    clearLiveTranscript();
+    setActiveVoiceCall({
+      phone: '+91 95988 19219 (Live Mic)',
+      language: isHindi ? 'हिन्दी (Live Mic)' : 'English (Live Mic)',
+      urgency_score: 9.6,
+      scenario: 'Live Voice Intake',
+      startedAt: Date.now(),
+    });
+    setTelephonySession({ status: 'in_call', agent_state: 'listening' });
+    showToast({
+      type: 'live',
+      message: isHindi ? '🎙️ माइक्रोफ़ोन सक्रिय: अपनी आपातकालीन स्थिति बोलें!' : '🎙️ Microphone listening... Speak your emergency!',
+    });
   };
 
   const handleStopAndDispatch = async (customSpeech) => {
-    const speech = (customSpeech || liveSpokenText || customInput || '').trim();
-    if (!speech) {
-      showToast({ type: 'warning', message: 'No speech detected yet. Speak into mic or click a sample prompt.' });
-      stopMicStream();
-      setIsListening(false);
-      return;
-    }
+    const fallbackText = isHindi
+      ? (SCENARIO_DEFAULTS_HI[selectedScenario] || 'कनॉट प्लेस ब्लॉक B में बहुत बड़ा गैस लीक')
+      : (SCENARIO_DEFAULTS[selectedScenario] || 'Major commercial LPG gas leak detected at Connaught Place Block B');
+
+    const speech = (customSpeech || liveSpokenText || customInput || fallbackText).trim();
 
     setIsListening(false);
     stopMicStream();
@@ -677,31 +698,35 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
         {/* LIVE MICROPHONE SPEECH BAR */}
         {(isListening || liveSpokenText || isProcessingLiveCall) && (
-          <div className="mt-3 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2.5 bg-rose-950/20 p-2.5 rounded-xl border border-rose-500/20">
-            <div className="flex items-center gap-2 flex-1 min-w-[240px]">
-              <span className="relative flex h-2.5 w-2.5">
+          <div className="mt-3 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2.5 bg-rose-950/25 p-2.5 rounded-xl border border-rose-500/30 shadow-lg">
+            <div className="flex items-center gap-2.5 flex-1 min-w-[280px]">
+              <span className="relative flex h-3 w-3 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500" />
               </span>
-              <span className="text-xs font-semibold text-rose-300">
+              <span className="text-xs font-bold text-rose-300 shrink-0">
                 {isProcessingLiveCall
                   ? 'Transmitting to CAD Triage Engine…'
                   : isListening
-                  ? 'Listening live (Speak in Hindi or English):'
-                  : 'Detected Speech:'}
+                  ? '🎙️ Listening (Speak or edit):'
+                  : 'Emergency Description:'}
               </span>
-              <span className="text-xs text-white italic truncate max-w-[420px] bg-black/40 px-2 py-0.5 rounded border border-white/10 font-mono">
-                "{liveSpokenText || (isListening ? 'Listening… say: Gas leak at Connaught Place' : '')}"
-              </span>
+              <input
+                type="text"
+                value={liveSpokenText}
+                onChange={(e) => setLiveSpokenText(e.target.value)}
+                placeholder={isListening ? (isHindi ? 'सुन रहे हैं... या यहाँ टाइप करें' : 'Listening to mic... or type emergency here') : 'Enter emergency…'}
+                className="text-xs text-white bg-black/60 px-3 py-1.5 rounded-xl border border-rose-500/30 flex-1 min-w-[240px] focus:outline-none focus:border-rose-400 font-mono shadow-inner"
+              />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => handleStopAndDispatch()}
-                disabled={isProcessingLiveCall || !liveSpokenText}
-                className="bg-rose-500 hover:bg-rose-600 disabled:opacity-50 text-white font-bold text-xs px-3 py-1 rounded-lg flex items-center gap-1 shadow-md"
+                disabled={isProcessingLiveCall}
+                className="bg-rose-500 hover:bg-rose-600 disabled:opacity-50 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md transition active:scale-95"
               >
-                <Send className="w-3 h-3" /> Dispatch Now
+                <Send className="w-3.5 h-3.5" /> Dispatch Now
               </button>
               <button
                 onClick={() => {
@@ -709,7 +734,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                   setIsListening(false);
                   setLiveSpokenText('');
                 }}
-                className="text-xs text-slate-400 hover:text-white px-2 py-1"
+                className="text-xs text-slate-400 hover:text-white px-2 py-1 transition"
               >
                 Cancel
               </button>

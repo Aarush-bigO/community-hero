@@ -95,7 +95,7 @@ export function extractEmergencyDetails(speechText = '', userLang = 'en') {
   // Detect Hindi speech patterns
   const isHindiText =
     /[\u0900-\u097F]/.test(text) ||
-    /\b(kripya|jaldi|aag|paani|bhi|hai|hain|mein|se|aur|madad|batao|gaddha|sadak|bijli|batti|dhuan|khatra|aapatkal)\b/i.test(lower);
+    /\b(kripya|jaldi|aag|paani|bhi|hai|hain|mein|se|aur|madad|batao|gaddha|sadak|bijli|batti|dhuan|khatra|aapatkal|turant|bhejo)\b/i.test(lower);
   const detectedLang = isHindiText || userLang === 'hi' ? 'hi' : 'en';
 
   // Incident & Urgency Classification
@@ -103,18 +103,26 @@ export function extractEmergencyDetails(speechText = '', userLang = 'en') {
   let severity = 'HIGH';
   let urgency = 8.5;
 
-  if (/\b(gas|lpg|cylinder|leak|odor|badbu|smell|risav|fumes)\b/i.test(lower)) {
+  if (/\b(repeat|evacuat|swarm|surge|multiple callers|fumes.*shops|shops.*evacuat)\b/i.test(lower)) {
+    incidentType = 'swarm_surge';
+    severity = 'CRITICAL';
+    urgency = 10.0;
+  } else if (/\b(gas|lpg|cylinder|gas leak|odor|badbu|smell|risav|fumes)\b/i.test(lower)) {
     incidentType = 'gas_leak';
     severity = 'CRITICAL';
     urgency = 9.8;
-  } else if (/\b(fire|transformer|spark|flame|explosion|blast|electric|wire|chalta|aag|chingari|dhamaka|short circuit)\b/i.test(lower)) {
+  } else if (/\b(fire|transformer|spark|flame|explosion|blast|11kv|aag|chingari|dhamaka|short circuit)\b/i.test(lower)) {
     incidentType = 'fire_hazard';
     severity = 'CRITICAL';
     urgency = 9.5;
-  } else if (/\b(water|pipe|rupture|flood|leak|overflow|drain|paani|jal|burst|nal)\b/i.test(lower)) {
+  } else if (/\b(water|pipe|rupture|flood|drain|paani|jal|burst|nal|mainline|pipeline)\b/i.test(lower)) {
     incidentType = 'water_main_rupture';
     severity = 'HIGH';
     urgency = 8.8;
+  } else if (/\b(lalit ashok|bengaluru|bangalore|wire|cable|snapped|high tension|electric shock)\b/i.test(lower)) {
+    incidentType = 'electrical_hazard';
+    severity = 'CRITICAL';
+    urgency = 9.6;
   } else if (/\b(pothole|gaddha|crack|road|asphalt|accident|sadak|khadda)\b/i.test(lower)) {
     incidentType = 'pothole';
     severity = 'MEDIUM';
@@ -130,7 +138,7 @@ export function extractEmergencyDetails(speechText = '', userLang = 'en') {
   }
 
   // Extract Landmark / City from speech
-  let resolvedAddress = 'Connaught Place Block B';
+  let resolvedAddress = 'Connaught Place Block B, New Delhi';
   for (const item of LANDMARK_COORDS) {
     if (item.match.test(lower)) {
       resolvedAddress = item.address;
@@ -150,7 +158,7 @@ export function extractEmergencyDetails(speechText = '', userLang = 'en') {
 
 /**
  * FEATURE 2: Swarm-Surge Deduplication & Cluster Escalation (Inspired by Aegis)
- * Checks if another active report of similar category exists within 500 meters.
+ * Checks if another active report of similar category exists within physical radius.
  */
 export function checkSwarmSurgeCluster({ lat, lng, category, incidentType }) {
   const db = getDb();
@@ -165,9 +173,21 @@ export function checkSwarmSurgeCluster({ lat, lng, category, incidentType }) {
 
   for (const issue of activeIssues) {
     const dist = calculateDistanceMeters(lat, lng, issue.lat, issue.lng);
-    // Swarm-Surge Threshold: within 500 meters and similar category/hazard
-    const catMatch = issue.category === category || issue.category === 'infrastructure';
-    if (dist <= 500 && catMatch) {
+    const issueType = (issue.category || '').toLowerCase();
+    const issueTitle = (issue.title || '').toLowerCase();
+
+    // Swarm-Surge Threshold:
+    // Only cluster if explicitly a swarm surge scenario, OR if the SAME hazard type is within 80 meters!
+    // A fire at Barakhamba or water rupture at Janpath should NEVER cluster to a CP gas leak!
+    const isExplicitSurge = incidentType === 'swarm_surge';
+    const isSameType =
+      issueType === incidentType ||
+      issueTitle.includes(incidentType.replace(/_/g, ' '));
+    const isSamePhysicalArea = dist <= 80;
+
+    const shouldCluster = isExplicitSurge || (isSameType && isSamePhysicalArea);
+
+    if (shouldCluster) {
       const newCount = (issue.report_count || 1) + 1;
       const escalatedSeverity = 5; // CRITICAL
       const escalatedUrgency = 10; // Max Panic/Urgency

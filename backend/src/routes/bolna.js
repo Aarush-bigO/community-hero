@@ -38,6 +38,58 @@ let currentTelephonySession = {
   ended_at: null,
 };
 
+// Helper to generate distinct, realistic emergency voice and transcript responses for each incident
+function getScenarioCadResponse(incidentType, location, ticketId, detectedLang = 'en', status = '') {
+  const cleanTicket = (ticketId || '311-CAD').replace(/^311-/, '');
+
+  if (status === 'clustered' || incidentType === 'swarm_surge') {
+    return {
+      en: `High-density Swarm Surge confirmed for ${location}. Multiple citizen reports cross-verified under Work Order number ${cleanTicket}. Incident escalated to Critical Severity. NDMC Disaster Response and 3 ambulances dispatched with sirens.`,
+      hi: `${location} के लिए स्वाम सर्च आपातकाल की पुष्टि हुई। कई नागरिकों की रिपोर्ट कार्य आदेश नंबर ${cleanTicket} में सत्यापित की गई। एनडीएमसी आपदा राहत दल और 3 एम्बुलेंस सायरन के साथ रवाना हो चुकी हैं।`,
+    };
+  }
+
+  switch (incidentType) {
+    case 'gas_leak':
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. Commercial L.P.G. gas leak confirmed. Hazardous Materials Unit 4 and perimeter evacuation team dispatched with sirens. Evacuate 100 meters immediately.`,
+        hi: `${location} में कमर्शियल एलपीजी गैस रिसाव का आपातकालीन कार्य आदेश नंबर ${cleanTicket} दर्ज हो गया है। हैजमैट यूनिट 4 और फायर ब्रिगेड सायरन के साथ रवाना कर दी गई हैं। कृपया इलाके से दूर रहें।`,
+      };
+
+    case 'fire_hazard':
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. 11 kilo-volt electrical transformer explosion and live sparking confirmed. Grid power cutoff requested and Fire Engine 7 is en route with sirens.`,
+        hi: `${location} पर 11 केवी ट्रांसफॉर्मर ब्लास्ट और आग का कार्य आदेश नंबर ${cleanTicket} दर्ज कर लिया गया है। विद्युत ग्रिड सप्लाई बंद करने का आदेश दिया गया है और फायर इंजन 7 सायरन के साथ रवाना है।`,
+      };
+
+    case 'water_main_rupture':
+    case 'water_rupture':
+    case 'water':
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. High-pressure drinking water main rupture with street flooding confirmed. Delhi Jal Board emergency repair crew and traffic diversions dispatched.`,
+        hi: `${location} पर मुख्य पेयजल पाइपलाइन फटने का आपातकालीन कार्य आदेश नंबर ${cleanTicket} दर्ज हो गया है। दिल्ली जल बोर्ड आपातकालीन दल और जल निकासी टीम को तुरंत मौके पर रवाना कर दिया गया है।`,
+      };
+
+    case 'electrical_hazard':
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. Snapped high-tension electrical wire over roadway confirmed. BESCOM high voltage squad and police safety perimeter dispatched with sirens. Stand clear of fallen cables.`,
+        hi: `${location} पर हाई-टेंशन बिजली का तार सड़क पर गिरने का कार्य आदेश नंबर ${cleanTicket} दर्ज हुआ। तकनीकी बिजली दस्ता और पुलिस सुरक्षा बल तुरंत रवाना कर दिया गया है। तारों के पास न जाएं।`,
+      };
+
+    case 'pothole':
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. Severe road cave-in and asphalt crater hazard confirmed. Municipal road engineering crew assigned with emergency hazard reflectors and 4-hour SLA.`,
+        hi: `${location} पर सड़क धंसने और गहरे गड्ढे का कार्य आदेश नंबर ${cleanTicket} दर्ज हुआ। नगर निगम रोड मेंटेनेंस टीम को तुरंत मरम्मत हेतु निर्देशित किया गया है।`,
+      };
+
+    default:
+      return {
+        en: `Emergency Work Order number ${cleanTicket} logged for ${location}. Hazardous incident verified and nearest rapid response field crew has been dispatched with sirens.`,
+        hi: `${location} के लिए आपातकालीन कार्य आदेश नंबर ${cleanTicket} दर्ज हुआ। त्वरित प्रतिक्रिया राहत दल को तुरंत सायरन के साथ रवाना कर दिया गया है।`,
+      };
+  }
+}
+
 // --- 1. Real Live Microphone Voice Call Intake ---
 router.post(['/voice/live-call', '/voice-live-call'], async (req, res, next) => {
   try {
@@ -74,20 +126,19 @@ router.post(['/voice/live-call', '/voice-live-call'], async (req, res, next) => 
     });
 
     // 4. Formulate localized spoken verbal response for Text-To-Speech (TTS)
-    let agentResponse = '';
     const ticketId = result.ticket_id || result.service_request_id || '311-CAD';
 
-    const agentResponseEn =
-      result.status === 'clustered'
-        ? `We have already logged this incident from multiple nearby citizens under Ticket #${ticketId}. Rapid Response Unit 4 is already en route with sirens.`
-        : `Emergency Work Order #${ticketId} has been created and transmitted to the nearest rapid field crew.`;
+    const responses = getScenarioCadResponse(
+      details.incidentType,
+      details.location,
+      ticketId,
+      details.detectedLang,
+      result.status
+    );
 
-    const agentResponseHi =
-      result.status === 'clustered'
-        ? `हमने इस आपातकाल को पहले ही कई नागरिकों की सूचना के आधार पर टिकट #${ticketId} में दर्ज कर लिया है। आपातकालीन दस्ता सायरन के साथ पहले से रवाना है।`
-        : `आपातकालीन कार्य आदेश #${ticketId} दर्ज कर लिया गया है। नजदीकी त्वरित प्रतिक्रिया टीम को तुरंत रवाना कर दिया गया है।`;
-
-    agentResponse = details.detectedLang === 'hi' ? agentResponseHi : agentResponseEn;
+    const agentResponseEn = responses.en;
+    const agentResponseHi = responses.hi;
+    const agentResponse = details.detectedLang === 'hi' ? agentResponseHi : agentResponseEn;
 
     // 5. Stream agent's transcript chunk to SSE
     setTimeout(() => {

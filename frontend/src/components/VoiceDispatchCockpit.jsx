@@ -143,6 +143,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const activeVoiceCall = useStore((s) => s.activeVoiceCall);
   const setActiveVoiceCall = useStore((s) => s.setActiveVoiceCall);
   const clearLiveTranscript = useStore((s) => s.clearLiveTranscript);
+  const appendTranscriptChunk = useStore((s) => s.appendTranscriptChunk);
   const setFocusCoords = useStore((s) => s.setFocusCoords);
   const showToast = useStore((s) => s.showToast);
   const lang = useLang((s) => s.lang);
@@ -313,6 +314,16 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
     const speech = (customSpeech || liveSpokenText || customInput || fallbackText).trim();
 
+    // 1. Clear previous transcript so every incident has its own dedicated dialogue
+    clearLiveTranscript();
+
+    // 2. Immediately append the citizen caller's chunk to the transcript
+    appendTranscriptChunk({
+      speaker: 'caller',
+      text: speech,
+      timestamp: new Date().toISOString(),
+    });
+
     setIsListening(false);
     stopMicStream();
     setIsProcessingLiveCall(true);
@@ -327,7 +338,36 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
       setAgentState('speaking');
 
-      // Real Audible Voice Response via Crystal-Clear Human Speech Engine
+      // 3. Immediately append the agent's unique, problem-specific chunk to the transcript
+      const agentText = isHindi
+        ? (res.agent_response_hi || res.agent_response)
+        : (res.agent_response_en || res.agent_response);
+
+      appendTranscriptChunk({
+        speaker: 'agent',
+        text: agentText,
+        text_en: res.agent_response_en,
+        text_hi: res.agent_response_hi,
+        timestamp: new Date().toISOString(),
+      });
+
+      // 4. Update the active call card with the specific problem name and location
+      setActiveVoiceCall({
+        phone: '+91 95988 19219',
+        language: isHindi ? 'हिन्दी (Sarvam AI)' : 'English (Bolna AI)',
+        urgency_score: res.urgency_score || 9.5,
+        scenario: res.incident_type ? res.incident_type.replace(/_/g, ' ') : selectedScenario,
+        startedAt: Date.now(),
+      });
+
+      setTelephonySession({
+        caller_location: res.location || 'Connaught Place Block B',
+        caller_phone: '+91 95988 19219',
+        status: 'in_call',
+        agent_state: 'speaking',
+      });
+
+      // 5. Real Audible Voice Response via Crystal-Clear Human Speech Engine
       if (audioFeedbackOn) {
         const spokenText = res.agent_response || res.voice_response || res.message;
         const englishFallback = res.agent_response_en || res.voice_response || res.message;
@@ -527,16 +567,35 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
           : `🎙️ Voice Dispatch: ${selected.shortLabel}`,
       });
 
-      // Crystal-clear audible voice response for simulation
+      // Distinct, scenario-specific audible voice response for simulation
       if (audioFeedbackOn) {
-        const spokenSim = isHindi
-          ? `आपातकालीन कार्य आदेश दर्ज कर लिया गया है। नजदीकी त्वरित प्रतिक्रिया टीम को तुरंत रवाना कर दिया गया है।`
-          : `Emergency Work Order logged for ${selected.shortLabel}. Rapid Response Hazard Unit 4 has been dispatched with sirens.`;
+        const SIM_VOICES = {
+          gas_leak: {
+            en: 'Emergency Work Order logged for Connaught Place Block B. Commercial L.P.G. gas leak confirmed. Hazardous Materials Unit 4 and perimeter evacuation team dispatched with sirens.',
+            hi: 'कनॉट प्लेस ब्लॉक B के लिए कमर्शियल एलपीजी गैस रिसाव का आपातकालीन कार्य आदेश दर्ज हो गया है। हैजमैट दस्ता और फायर ब्रिगेड सायरन के साथ रवाना हो चुकी है।',
+          },
+          fire_hazard: {
+            en: 'Emergency Work Order logged for Barakhamba Road Metro Station. 11 kilo-volt electrical transformer fire confirmed. Grid power cutoff requested and Fire Engine 7 is en route with sirens.',
+            hi: 'बाराखंभा मेट्रो स्टेशन गेट 3 पर 11kV ट्रांसफॉर्मर ब्लास्ट और आग का कार्य आदेश दर्ज हुआ। विद्युत ग्रिड सप्लाई बंद करा दी गई है और फायर इंजन 7 सायरन के साथ रवाना है।',
+          },
+          swarm_surge: {
+            en: 'High-density Swarm Surge confirmed for Connaught Place. 14 citizen calls cross-verified. Incident escalated to Critical. NDMC Disaster Response and 3 ambulances dispatched with sirens.',
+            hi: 'कनॉट प्लेस ब्लॉक B के लिए स्वाम सर्च आपातकाल की पुष्टि हुई। 14 नागरिकों की रिपोर्ट सत्यापित की गई। एनडीएमसी आपदा राहत दल और 3 एम्बुलेंस सायरन के साथ रवाना हो चुकी हैं।',
+          },
+          water_rupture: {
+            en: 'Emergency Work Order logged for Janpath and Tolstoy Marg. High-pressure drinking water main rupture confirmed. Delhi Jal Board emergency engineering team and traffic diversions dispatched.',
+            hi: 'जनपथ और टॉलस्टॉय मार्ग पर मुख्य पेयजल पाइपलाइन फटने का कार्य आदेश दर्ज हुआ। दिल्ली जल बोर्ड आपातकालीन दल और जल निकासी टीम को तुरंत मौके पर रवाना कर दिया गया है।',
+          },
+        };
+
+        const chosenSim = SIM_VOICES[scenarioId] || SIM_VOICES.gas_leak;
+        const spokenSim = isHindi ? chosenSim.hi : chosenSim.en;
 
         setTimeout(() => {
           speakClear(spokenSim, {
             persona: voicePersona,
             language: isHindi ? 'hi' : 'en',
+            englishFallback: chosenSim.en,
             role: 'agent',
             volume: 1.0,
             playChime: true,

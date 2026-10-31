@@ -1,15 +1,14 @@
 /**
  * High-Definition Speech Synthesis & Emergency Radio Audio Engine
- * Provides crystal-clear voice articulation, Indic voice selection, and tactical radio cues.
+ * Provides crystal-clear voice articulation, Indic voice selection, role-based acoustics, and tactical radio cues.
  */
 
-// Global voice cache
 let cachedVoices = [];
 
 function loadVoices() {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
   const voices = window.speechSynthesis.getVoices();
-  if (voices.length > 0) {
+  if (voices && voices.length > 0) {
     cachedVoices = voices;
   }
   return cachedVoices;
@@ -47,7 +46,7 @@ export function playRadioChime() {
     osc2.frequency.setValueAtTime(660, now + 0.05);
 
     gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
     osc1.connect(gain);
@@ -68,52 +67,80 @@ export function playRadioChime() {
 }
 
 /**
- * Select the highest quality, most natural voice available on the device
+ * Select the highest quality, most natural human voice available on the device
  */
-export function pickClearVoice(lang = 'en') {
+export function pickClearVoice(lang = 'en', role = 'agent') {
   const voices = cachedVoices.length > 0 ? cachedVoices : loadVoices();
   if (!voices || voices.length === 0) return null;
 
   const isHindi = lang === 'hi' || lang === 'hi-IN';
 
-  // Novelty/low-quality robotic voices to avoid on macOS/Windows
-  const bannedNames = /bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|deranged/i;
+  // Novelty/robotic/low-quality voices to strictly avoid on all OSes
+  const bannedNames = /bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|deranged|albert|fred|junior|ralph/i;
 
   if (isHindi) {
-    // 1. Look for native Hindi voices (Lekha, Google हिन्दी, etc.)
+    // 1. Dedicated natural Hindi voices
     const hindiVoice = voices.find(
       (v) => (v.lang.startsWith('hi') || /hindi|lekha/i.test(v.name)) && !bannedNames.test(v.name)
     );
     if (hindiVoice) return hindiVoice;
 
-    // 2. Look for Indian English voice (Rishi, Aman, Google en-IN) which handles Indic phrasing cleanly
+    // 2. Indian English voice (Rishi / Aman / Veena) which articulates Indic words naturally
     const indianVoice = voices.find(
       (v) => (v.lang.includes('IN') || /rishi|aman|veena|india/i.test(v.name)) && !bannedNames.test(v.name)
     );
     if (indianVoice) return indianVoice;
   }
 
-  // English: Look for premium natural/enhanced voices
-  const preferredEnglishNames = [
+  // Role-specific natural voice matching:
+  if (role === 'caller') {
+    // Citizen Caller: expressive, warm, everyday conversational human voice
+    const callerMatches = [
+      /rishi/i,
+      /daniel/i,
+      /karen/i,
+      /google uk english male/i,
+      /google us english/i,
+      /samantha/i,
+    ];
+    for (const regex of callerMatches) {
+      const match = voices.find((v) => regex.test(v.name) && !bannedNames.test(v.name));
+      if (match) return match;
+    }
+  } else if (role === 'operator') {
+    // Human Command Center Supervisor: calm, deep, authoritative
+    const operatorMatches = [
+      /aman/i,
+      /daniel/i,
+      /reed/i,
+      /rocko/i,
+      /google uk english male/i,
+      /samantha/i,
+    ];
+    for (const regex of operatorMatches) {
+      const match = voices.find((v) => regex.test(v.name) && !bannedNames.test(v.name));
+      if (match) return match;
+    }
+  }
+
+  // Default Agent (CAD AI Dispatcher): crystal-clear, modern high-fidelity voice
+  const agentMatches = [
+    /google us english/i,
+    /google uk english female/i,
     /samantha/i,
-    /rishi/i,
-    /daniel/i,
     /karen/i,
     /serena/i,
-    /google.*us.*english/i,
-    /google.*uk.*english/i,
+    /victoria/i,
+    /rishi/i,
     /natural/i,
-    /flo/i,
-    /reed/i,
-    /rocko/i,
   ];
 
-  for (const regex of preferredEnglishNames) {
+  for (const regex of agentMatches) {
     const match = voices.find((v) => regex.test(v.name) && !bannedNames.test(v.name));
     if (match) return match;
   }
 
-  // Fallback to first decent English voice
+  // Fallback to highest quality English voice available
   return voices.find((v) => v.lang.startsWith('en') && !bannedNames.test(v.name)) || voices[0];
 }
 
@@ -122,8 +149,9 @@ export function pickClearVoice(lang = 'en') {
  */
 export function speakClear(text, {
   language = 'en',
-  rate = 0.95,
-  pitch = 1.0,
+  role = 'agent',
+  rate,
+  pitch,
   volume = 1.0,
   playChime = true,
   onStart,
@@ -135,7 +163,8 @@ export function speakClear(text, {
   try {
     window.speechSynthesis.cancel();
 
-    if (playChime) {
+    // Only play radio chime for dispatch transmissions (agent and operator)
+    if (playChime && role !== 'caller') {
       playRadioChime();
     }
 
@@ -143,8 +172,8 @@ export function speakClear(text, {
     const utter = new SpeechSynthesisUtterance(cleanText);
     const isHindi = language === 'hi' || language === 'hi-IN';
 
-    // Pick best voice
-    const bestVoice = pickClearVoice(isHindi ? 'hi' : 'en');
+    // Pick best natural voice tailored to role and language
+    const bestVoice = pickClearVoice(isHindi ? 'hi' : 'en', role);
     if (bestVoice) {
       utter.voice = bestVoice;
       utter.lang = bestVoice.lang;
@@ -152,18 +181,30 @@ export function speakClear(text, {
       utter.lang = isHindi ? 'hi-IN' : 'en-US';
     }
 
-    // Pacing tuned for maximum clarity and articulation
-    utter.rate = Math.max(0.85, Math.min(1.05, rate));
-    utter.pitch = Math.max(0.9, Math.min(1.1, pitch));
+    // Role-tailored natural human acoustics:
+    if (role === 'caller') {
+      // Citizen in emergency: urgent, expressive
+      utter.rate = rate ?? 0.98;
+      utter.pitch = pitch ?? 1.02;
+    } else if (role === 'operator') {
+      // Human Command Dispatcher: calm, authoritative, slightly deeper
+      utter.rate = rate ?? 0.92;
+      utter.pitch = pitch ?? 0.96;
+    } else {
+      // AI CAD Dispatcher: articulate, balanced, perfectly paced
+      utter.rate = rate ?? 0.94;
+      utter.pitch = pitch ?? 1.0;
+    }
+
     utter.volume = Math.max(0.1, Math.min(1.0, volume));
 
     if (onStart) utter.onstart = onStart;
     if (onEnd) utter.onend = onEnd;
 
-    // Small delay allows radio chime to ring first
+    const delay = (playChime && role !== 'caller') ? 130 : 0;
     setTimeout(() => {
       window.speechSynthesis.speak(utter);
-    }, playChime ? 120 : 0);
+    }, delay);
   } catch (err) {
     console.error('Speech error:', err);
   }

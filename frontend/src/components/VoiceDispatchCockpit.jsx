@@ -306,7 +306,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
       if (audioFeedbackOn && res.agent_response) {
         speakClear(res.agent_response, {
           language: res.language || (isHindi ? 'hi' : 'en'),
-          rate: 0.94,
+          role: 'agent',
           volume: 1.0,
           playChime: true,
           onEnd: () => setAgentState('listening'),
@@ -361,8 +361,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     if (audioFeedbackOn) {
       speakClear(text, {
         language: isHindi ? 'hi' : 'en',
-        rate: 0.94,
-        pitch: 0.95,
+        role: 'operator',
         volume: 1.0,
         playChime: true,
       });
@@ -496,7 +495,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         setTimeout(() => {
           speakClear(spokenSim, {
             language: isHindi ? 'hi' : 'en',
-            rate: 0.94,
+            role: 'agent',
             volume: 1.0,
             playChime: true,
             onEnd: () => setAgentState('listening'),

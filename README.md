@@ -2,6 +2,7 @@
 
 > An enterprise-grade, closed-loop civic intelligence and emergency CAD (Computer-Aided Dispatch) platform powered by **Bolna Voice AI**, **Sarvam Indic Speech Models**, **Open311 v2 Standard**, and a **Three.js 3D Digital Twin Command Cockpit**.
 
+[![Bolna Symphony Buildathon](https://img.shields.io/badge/Bolna%20x%20YC-Symphony%20Buildathon-FF5722.svg)](https://bolna.ai/symphony/buildathon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node](https://img.shields.io/badge/Node-20+-43853d.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://react.dev/)
@@ -11,10 +12,10 @@
 [![Open311](https://img.shields.io/badge/Open311-GeoReport%20v2-orange.svg)](https://www.open311.org)
 [![SQLite WAL](https://img.shields.io/badge/Database-SQLite%20(WAL)-003b57.svg)](https://sqlite.org)
 
-> **Autonomous Municipal Emergency & Civic Operating System**  
-> *Transforming fragmented 311/911 reporting into an autonomous, sub-second, bilingual voice-to-dispatch CAD infrastructure.*  
+> **🏆 Built for the Bolna x Y Combinator Symphony Buildathon (Track 03: "A voice layer on an app you already built")**  
+> *Transforming fragmented municipal 311/911 reporting into an autonomous, sub-second, bilingual voice-to-dispatch CAD infrastructure.*  
 >  
-> **Community Hero = Bilingual Bolna Voice AI + Open311 v2 Engine + 75m Spatial Haversine Deduplication + Autonomous Outbound Field Dispatch + 3D Earth Digital Twin Cockpit**
+> **Community Hero = Bilingual Bolna Voice AI + Open311 v2 Engine + 75m Spatial Haversine Deduplication + VoiceStudio Telephony Intercom + 3D Earth Digital Twin Cockpit**
 
 ---
 
@@ -22,7 +23,9 @@
 
 | Subsystem / Layer | Technology & Provider | Status | Interface / Endpoint |
 | :--- | :--- | :---: | :--- |
-| **🎙️ Voice Dispatch Cockpit** *(Core Feature)* | React 18 + Three.js + SSE (Global Edge) | 🟢 **Operational** | **[`/dispatch`](http://localhost:5173/dispatch)** |
+| **🎙️ Voice Dispatch Cockpit** *(Core Feature)* | React 18 + Three.js + SSE + VoiceStudio Telephony | 🟢 **Operational** | **[`/dispatch`](http://localhost:5173/dispatch)** |
+| **📞 Telephony Carrier Simulator & Intercom** | VoiceStudio Telephony Engine + WebRTC RTT | 🟢 **Operational** | In Cockpit / Modal |
+| **🔊 Interactive Waveform Player** | HTML5 Canvas + Dual Gradient Waveform Engine | 🟢 **Operational** | In Cockpit (`WaveformPlayer.jsx`) |
 | **🌐 3D Digital Twin Earth** | Three.js + React Three Fiber | 🟢 **Operational** | **[`/`](http://localhost:5173/)** |
 | **🗺️ Hyperlocal 2D Incident Map** | React-Leaflet + OpenStreetMap + Road GIS | 🟢 **Operational** | **[`/map`](http://localhost:5173/map)** |
 | **🛡️ Municipal Admin Work-Order Portal** | React 18 + SLA Engine + Recharts | 🟢 **Operational** | **[`/admin`](http://localhost:5173/admin)** |
@@ -291,6 +294,18 @@ The voice AI dispatch agent is specified declaratively in [`bolna_agent_config.j
   }
 }
 ```
+
+---
+
+## 🎛️ VoiceStudio Telephony & Command Intercom Subsystem
+
+Extracted and adapted from [debpalash/VoiceStudio](https://github.com/debpalash/VoiceStudio), Community Hero includes a tactical telephony and emergency command intercom architecture:
+
+* **🚨 Human Operator Takeover Mode (`Hand` Intercom)**: Allows a municipal control room supervisor to interrupt autonomous AI speech at any moment and take direct verbal control over the active emergency call.
+* **📢 "Say on Call" Verbal Speech Injector**: Dispatchers can type or dictate tactical orders (e.g. *"Unit 4 Fire Engine is 90 seconds away. Evacuate 100 meters north."*), which are synthesized into audible speech on the line in real time.
+* **🌊 Interactive Waveform Player (`WaveformPlayer.jsx`)**: HTML5 Canvas frequency visualizer with scrub bar seeking, timecode clock (`mm:ss`), and live PCM audio feedback.
+* **📞 Inbound Telephony Carrier Simulator (`VoiceTelephonyModal.jsx`)**: Carrier line dialer testing simulated incoming 311/112 citizen calls, caller ID masking (`+91 ••••••• 4821`), and WebRTC telemetry (18ms RTT latency, 1.9ms jitter, 0% packet loss).
+* **📊 Status Stepper & Agent State Indicator**: Real-time visual timeline (`Carrier Dial` ➔ `Ringing Line` ➔ `In Call` ➔ `Resolved CAD`) and state indicator (🎧 *Listening* ➔ 🧠 *NLP Triage* ➔ 🔊 *Transmitting Speech*).
 
 ---
 

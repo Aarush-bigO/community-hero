@@ -130,5 +130,19 @@ Built for the **Bolna Symphony Buildathon**, synthesizing blueprints from Dispat
 - `POST /api/simulate-voice-call`: 1-Click high-fidelity multi-scenario simulator with live SSE chunk streaming.
 - `GET /api/voice-dispatches`: Active emergency CAD ticket feed.
 - `POST /api/voice-dispatch/:id/vision`: Multimodal vision-verification attachment hook.
+- `GET /api/voice/telephony-session`: Active carrier session status & WebRTC metrics (RTT, jitter, loss).
+- `POST /api/voice/takeover`: Human operator intercom override & AI mute switch.
+- `POST /api/voice/say-on-call`: Dispatcher verbal speech injection over carrier line.
+- `POST /api/voice/hangup`: Terminate and archive emergency CAD call.
+- `POST /api/voice/dial`: Carrier dial-in line simulator.
+
+## VoiceStudio Telephony & Intercom Subsystem
+
+Integrated from `VoiceStudio`, this subsystem provides:
+1. **Operator Takeover Intercom**: Human dispatcher override with "Say on Call" speech synthesis.
+2. **Interactive Waveform Player**: Dual-gradient canvas visualizer with scrubber seeking and timecode clock (`WaveformPlayer.jsx`).
+3. **Carrier Line Simulator**: Masked phone dialer with WebRTC RTT and jitter telemetry (`VoiceTelephonyModal.jsx`).
+4. **Status Stepper & Agent State**: Live visual state progression (`listening` ➔ `thinking` ➔ `speaking`).
+
 
 

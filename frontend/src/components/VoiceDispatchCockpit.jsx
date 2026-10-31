@@ -328,10 +328,14 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
       setAgentState('speaking');
 
       // Real Audible Voice Response via Crystal-Clear Human Speech Engine
-      if (audioFeedbackOn && res.agent_response) {
-        speakClear(res.agent_response, {
+      if (audioFeedbackOn) {
+        const spokenText = res.agent_response || res.voice_response || res.message;
+        const englishFallback = res.agent_response_en || res.voice_response || res.message;
+
+        speakClear(spokenText, {
           persona: voicePersona,
           language: res.language || (isHindi ? 'hi' : 'en'),
+          englishFallback,
           role: 'agent',
           volume: 1.0,
           playChime: true,
@@ -822,22 +826,48 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
             <Sparkles className="w-3 h-3 text-marigold-400" /> Quick Live Speech:
           </span>
           {[
-            { label: '🔥 Gas leak CP Block B', text: 'Connaught Place Block B mein bahut bada commercial gas leak ho gaya hai, jaldi emergency team bhejo' },
-            { label: '⚡ Transformer fire Barakhamba', text: 'High voltage transformer exploded near Barakhamba metro station gate 3 live sparks on road' },
-            { label: '🚨 Swarm duplicate (CP)', text: 'Repeat call: Connaught Place Block B shops evacuating due to intense gas leak fumes' },
-            { label: '💧 Janpath water rupture', text: 'Massive drinking water pipe burst at Janpath crossing road is flooded' },
-            { label: '🏢 Lalit Ashok Bengaluru', text: 'Electrical hazard and snapped cable near Lalit Ashok Bengaluru entrance' },
-          ].map((prompt, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleStopAndDispatch(prompt.text)}
-              disabled={isProcessingLiveCall || isListening}
-              className="px-2 py-0.5 rounded-md bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.06] transition text-[10.5px] truncate max-w-[200px]"
-              title={`Click to simulate speech: "${prompt.text}"`}
-            >
-              {prompt.label}
-            </button>
-          ))}
+            {
+              label: '🔥 Gas leak CP Block B',
+              text: 'Major commercial LPG gas leak detected at Connaught Place Block B. High explosion and fire hazard in pedestrian zone.',
+              text_hi: 'कनॉट प्लेस ब्लॉक B में बहुत बड़ा कमर्शियल गैस लीक हो गया है, तुरंत इमरजेंसी टीम भेजो।',
+            },
+            {
+              label: '⚡ Transformer fire Barakhamba',
+              text: 'High voltage electrical transformer exploded near Barakhamba metro station gate 3 with live sparks on road.',
+              text_hi: 'बाराखंभा मेट्रो स्टेशन गेट 3 के पास 11kV ट्रांसफॉर्मर में भयंकर स्पार्किंग और आग लग गई है।',
+            },
+            {
+              label: '🚨 Swarm duplicate (CP)',
+              text: 'Repeat citizen call: Connaught Place Block B shops evacuating due to intense gas leak fumes.',
+              text_hi: 'कनॉट प्लेस ब्लॉक B में गैस की तेज बदबू से सभी दुकानें खाली कराई जा रही हैं।',
+            },
+            {
+              label: '💧 Janpath water rupture',
+              text: 'Massive drinking water pipe burst at Janpath crossing road is flooded.',
+              text_hi: 'जनपथ क्रॉसिंग पर मुख्य पेयजल पाइपलाइन फट गई है और पूरी सड़क पर पानी भर गया है।',
+            },
+            {
+              label: '🏢 Lalit Ashok Bengaluru',
+              text: 'Electrical hazard and snapped high tension cable near Lalit Ashok Bengaluru entrance.',
+              text_hi: 'ललित अशोक बेंगलुरु के मुख्य द्वार के पास बिजली का तार टूटकर गिर गया है।',
+            },
+          ].map((prompt, idx) => {
+            const spokenText = isHindi ? prompt.text_hi : prompt.text;
+            return (
+              <button
+                key={idx}
+                onClick={() => {
+                  setLiveSpokenText(spokenText);
+                  handleStopAndDispatch(spokenText);
+                }}
+                disabled={isProcessingLiveCall || isListening}
+                className="px-2 py-0.5 rounded-md bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.06] transition text-[10.5px] truncate max-w-[200px]"
+                title={`Click to simulate speech: "${spokenText}"`}
+              >
+                {prompt.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

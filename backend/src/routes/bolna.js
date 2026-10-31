@@ -77,17 +77,17 @@ router.post(['/voice/live-call', '/voice-live-call'], async (req, res, next) => 
     let agentResponse = '';
     const ticketId = result.ticket_id || result.service_request_id || '311-CAD';
 
-    if (result.status === 'clustered') {
-      agentResponse =
-        details.detectedLang === 'hi'
-          ? `हमने इस आपातकाल को पहले ही कई नागरिकों की सूचना के आधार पर टिकट #${ticketId} में दर्ज कर लिया है। आपातकालीन दस्ता सायरन के साथ पहले से रवाना है।`
-          : `We have already logged this incident from multiple nearby citizens under Ticket #${ticketId}. Rapid Response Unit 4 is already en route with sirens.`;
-    } else {
-      agentResponse =
-        details.detectedLang === 'hi'
-          ? `आपातकालीन कार्य आदेश #${ticketId} दर्ज कर लिया गया है। नजदीकी त्वरित प्रतिक्रिया टीम को तुरंत रवाना कर दिया गया है।`
-          : `Emergency Work Order #${ticketId} has been created and transmitted to the nearest rapid field crew.`;
-    }
+    const agentResponseEn =
+      result.status === 'clustered'
+        ? `We have already logged this incident from multiple nearby citizens under Ticket #${ticketId}. Rapid Response Unit 4 is already en route with sirens.`
+        : `Emergency Work Order #${ticketId} has been created and transmitted to the nearest rapid field crew.`;
+
+    const agentResponseHi =
+      result.status === 'clustered'
+        ? `हमने इस आपातकाल को पहले ही कई नागरिकों की सूचना के आधार पर टिकट #${ticketId} में दर्ज कर लिया है। आपातकालीन दस्ता सायरन के साथ पहले से रवाना है।`
+        : `आपातकालीन कार्य आदेश #${ticketId} दर्ज कर लिया गया है। नजदीकी त्वरित प्रतिक्रिया टीम को तुरंत रवाना कर दिया गया है।`;
+
+    agentResponse = details.detectedLang === 'hi' ? agentResponseHi : agentResponseEn;
 
     // 5. Stream agent's transcript chunk to SSE
     setTimeout(() => {
@@ -110,6 +110,9 @@ router.post(['/voice/live-call', '/voice-live-call'], async (req, res, next) => 
       severity: details.severity,
       urgency_score: details.urgencyScore,
       agent_response: agentResponse,
+      agent_response_en: agentResponseEn,
+      agent_response_hi: agentResponseHi,
+      voice_response: agentResponseEn,
       language: details.detectedLang,
     });
   } catch (err) {

@@ -68,6 +68,9 @@ export function playRadioChime() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
     const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
     const now = ctx.currentTime;
 
     // Dual-tone frequency chirp (880Hz -> 1320Hz)
@@ -187,10 +190,6 @@ const MALE_VOICE_PATTERNS = [
 
 /**
  * Pick the highest quality, most natural human voice for the selected persona
- * @param {Object} options
- * @param {string} options.persona - 'female' ("The Girl") or 'male' ("That Boy")
- * @param {string} options.lang - 'en' | 'hi' | 'hi-IN'
- * @param {string} options.role - 'agent' | 'operator' | 'caller'
  */
 export function pickHumanVoice({ persona = 'female', lang = 'en', role = 'agent' } = {}) {
   const isBrowser = typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -259,6 +258,7 @@ export function speakClear(text, {
   persona = 'female', // 'female' ("The Girl") | 'male' ("That Boy")
   language = 'en',
   role = 'agent',
+  englishFallback,
   rate,
   pitch,
   volume = 1.0,
@@ -270,45 +270,75 @@ export function speakClear(text, {
   if (!text || !String(text).trim()) return;
 
   try {
+    // Unstick any paused speech engine in Chrome/WebKit
     window.speechSynthesis.cancel();
+    try { window.speechSynthesis.resume(); } catch {}
 
-    // Only play radio chime for dispatch transmissions (agent and operator)
     if (playChime && role !== 'caller') {
       playRadioChime();
     }
 
-    const cleanText = humanizeSpokenText(text);
-    const utter = new SpeechSynthesisUtterance(cleanText);
     const isHindi = language === 'hi' || language === 'hi-IN';
-
-    // Pick human voice tailored to persona ('female' or 'male')
     const bestVoice = pickHumanVoice({ persona, lang: isHindi ? 'hi' : 'en', role });
+
+    let cleanText = humanizeSpokenText(text);
+
+    // If text contains Devanagari characters, but the browser voice is not Hindi-capable,
+    // Chrome will fail silently. Fall back to English text so audio is guaranteed to play!
+    const hasDevanagari = /[\u0900-\u097F]/.test(cleanText);
+    const isVoiceHindiCapable = bestVoice && (bestVoice.lang.startsWith('hi') || /hindi|lekha/i.test(bestVoice.name));
+
+    if (hasDevanagari && !isVoiceHindiCapable && englishFallback) {
+      cleanText = humanizeSpokenText(englishFallback);
+    }
+
+    const utter = new SpeechSynthesisUtterance(cleanText);
+
     if (bestVoice) {
       utter.voice = bestVoice;
-      utter.lang = bestVoice.lang;
+      utter.lang = (!hasDevanagari || isVoiceHindiCapable) ? bestVoice.lang : 'en-US';
     } else {
       utter.lang = isHindi ? 'hi-IN' : 'en-US';
     }
 
     // Role- & Persona-calibrated natural human acoustics (relaxed human cadence)
     if (persona === 'female') {
-      // "The Girl" (Dispatcher Priya / Samantha): warm, reassuring, crystal clear
       utter.rate = rate ?? (role === 'caller' ? 0.98 : 0.94);
       utter.pitch = pitch ?? (role === 'caller' ? 1.05 : 1.03);
     } else {
-      // "That Boy" (Officer Rahul / Daniel / Rishi): calm, grounded, authoritative
       utter.rate = rate ?? (role === 'caller' ? 0.96 : 0.92);
       utter.pitch = pitch ?? (role === 'caller' ? 0.98 : 0.95);
     }
 
     utter.volume = Math.max(0.1, Math.min(1.0, volume));
 
-    if (onStart) utter.onstart = onStart;
-    if (onEnd) utter.onend = onEnd;
+    // Fix Chrome V8 garbage-collection bug: retain a global reference to utter while speaking
+    if (!window.__activeUtterances) window.__activeUtterances = new Set();
+    window.__activeUtterances.add(utter);
 
-    const delay = (playChime && role !== 'caller') ? 130 : 0;
+    utter.onstart = (e) => {
+      onStart?.(e);
+    };
+
+    utter.onend = (e) => {
+      window.__activeUtterances?.delete(utter);
+      onEnd?.(e);
+    };
+
+    utter.onerror = (e) => {
+      window.__activeUtterances?.delete(utter);
+      console.warn('SpeechSynthesis error:', e);
+      onEnd?.(e);
+    };
+
+    const delay = (playChime && role !== 'caller') ? 70 : 0;
     setTimeout(() => {
-      window.speechSynthesis.speak(utter);
+      try {
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(utter);
+      } catch (err) {
+        console.error('speak error:', err);
+      }
     }, delay);
   } catch (err) {
     console.error('Speech synthesis error:', err);
@@ -320,21 +350,18 @@ export function speakClear(text, {
  */
 export function previewVoicePersona(persona = 'female', lang = 'en') {
   const isHindi = lang === 'hi' || lang === 'hi-IN';
-  let sampleText;
+  const sampleEn = persona === 'female'
+    ? 'Emergency Command Center, Dispatcher Priya. Your report is confirmed and rapid response hazard units are mobilized.'
+    : 'Emergency Command Center, Officer Rahul. CAD transmission verified, all response units are en route with sirens.';
 
-  if (isHindi) {
-    sampleText = persona === 'female'
-      ? 'नमस्ते, मैं आपातकालीन कमांड केंद्र से बोल रही हूँ। आपका संदेश प्राप्त हो गया है और राहत दस्ता रवाना कर दिया गया है।'
-      : 'नमस्ते, मैं कमांड ऑफिसर राहुल बोल रहा हूँ। आपातकालीन दस्ता सायरन के साथ रवाना हो चुका है।';
-  } else {
-    sampleText = persona === 'female'
-      ? 'Emergency Command Center, Dispatcher Priya. Your report is confirmed and rapid response hazard units are mobilized.'
-      : 'Emergency Command Center, Officer Rahul. CAD transmission verified, all response units are en route with sirens.';
-  }
+  const sampleHi = persona === 'female'
+    ? 'नमस्ते, मैं आपातकालीन कमांड केंद्र से बोल रही हूँ। आपका संदेश प्राप्त हो गया है और राहत दस्ता रवाना कर दिया गया है।'
+    : 'नमस्ते, मैं कमांड ऑफिसर राहुल बोल रहा हूँ। आपातकालीन दस्ता सायरन के साथ रवाना हो चुका है।';
 
-  speakClear(sampleText, {
+  speakClear(isHindi ? sampleHi : sampleEn, {
     persona,
     language: isHindi ? 'hi' : 'en',
+    englishFallback: sampleEn,
     role: 'agent',
     playChime: true,
   });

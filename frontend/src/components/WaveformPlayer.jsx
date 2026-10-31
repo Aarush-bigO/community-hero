@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, RotateCcw, Activity, Radio } from 'lucide-react';
 import { speakClear, stopClearSpeech, playRadioChime } from '../utils/speech';
+import { useStore } from '../store/useStore';
 
 /** Format seconds into mm:ss clock */
 export function formatClock(seconds) {
@@ -24,6 +25,7 @@ export default function WaveformPlayer({
   compact = false,
   className = '',
 }) {
+  const voicePersona = useStore((s) => s.voicePersona);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const canvasRef = useRef(null);
@@ -40,10 +42,10 @@ export default function WaveformPlayer({
       setIsPlaying(true);
       setCurrentTime(0);
 
-      // Play real crystal-clear emergency audio transmission
+      // Play real crystal-clear emergency audio transmission in selected human voice
       speakClear(sampleText, {
+        persona: voicePersona,
         language: 'en',
-        rate: 0.94,
         volume: 1.0,
         playChime: true,
         onEnd: () => {

@@ -13,7 +13,7 @@ import { useLang } from '../i18n';
 import { api, assetUrl } from '../utils/api';
 import WaveformPlayer from './WaveformPlayer';
 import VoiceTelephonyModal from './VoiceTelephonyModal';
-import { speakClear, stopClearSpeech } from '../utils/speech';
+import { speakClear, stopClearSpeech, previewVoicePersona } from '../utils/speech';
 
 const SCENARIOS = [
   {
@@ -153,6 +153,8 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const setTelephonySession = useStore((s) => s.setTelephonySession);
   const setTakeover = useStore((s) => s.setTakeover);
   const setAgentState = useStore((s) => s.setAgentState);
+  const voicePersona = useStore((s) => s.voicePersona || 'female');
+  const setVoicePersona = useStore((s) => s.setVoicePersona);
 
   const [simulating, setSimulating] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState('gas_leak');
@@ -325,9 +327,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
       setAgentState('speaking');
 
-      // Real Audible Voice Response via Crystal-Clear Speech Engine
+      // Real Audible Voice Response via Crystal-Clear Human Speech Engine
       if (audioFeedbackOn && res.agent_response) {
         speakClear(res.agent_response, {
+          persona: voicePersona,
           language: res.language || (isHindi ? 'hi' : 'en'),
           role: 'agent',
           volume: 1.0,
@@ -380,9 +383,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     setIsSendingOperatorSpeech(true);
     setOperatorSpeechInput('');
 
-    // Audible speech synthesis for operator's voice
+    // Audible speech synthesis for operator's voice (distinct human voice)
     if (audioFeedbackOn) {
       speakClear(text, {
+        persona: voicePersona === 'female' ? 'male' : 'female',
         language: isHindi ? 'hi' : 'en',
         role: 'operator',
         volume: 1.0,
@@ -527,6 +531,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
         setTimeout(() => {
           speakClear(spokenSim, {
+            persona: voicePersona,
             language: isHindi ? 'hi' : 'en',
             role: 'agent',
             volume: 1.0,
@@ -656,6 +661,55 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
               <PhoneCall className="w-3.5 h-3.5 text-rose-400" />
               <span>Carrier Line</span>
             </button>
+
+            {/* HUMAN VOICE PERSONA SELECTOR: THE GIRL (PRIYA) / THAT BOY (RAHUL) */}
+            <div className="flex items-center gap-1 p-0.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-xs">
+              <button
+                type="button"
+                onClick={() => {
+                  setVoicePersona('female');
+                  previewVoicePersona('female', lang);
+                }}
+                className={`px-2.5 py-1 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-all ${
+                  voicePersona === 'female'
+                    ? 'bg-rose-500/25 text-rose-200 border border-rose-500/50 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
+                }`}
+                title="Switch to The Girl: Warm natural human voice (Dispatcher Priya / Samantha)"
+              >
+                <span>👩</span>
+                <span className="hidden sm:inline">The Girl (Priya)</span>
+                <span className="sm:hidden">Girl</span>
+                {voicePersona === 'female' && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setVoicePersona('male');
+                  previewVoicePersona('male', lang);
+                }}
+                className={`px-2.5 py-1 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-all ${
+                  voicePersona === 'male'
+                    ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-500/50 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
+                }`}
+                title="Switch to That Boy: Calm authoritative human voice (Officer Rahul / Daniel)"
+              >
+                <span>👨</span>
+                <span className="hidden sm:inline">That Boy (Rahul)</span>
+                <span className="sm:hidden">Boy</span>
+                {voicePersona === 'male' && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => previewVoicePersona(voicePersona, lang)}
+                className="px-2 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-marigold-300 hover:text-marigold-200 text-[11px] font-mono flex items-center gap-1 border border-white/[0.06] transition"
+                title="Click to test listen to this human voice"
+              >
+                <Play className="w-2.5 h-2.5 fill-current text-marigold-400" />
+                <span className="hidden md:inline">Test</span>
+              </button>
+            </div>
 
             {/* TTS Audio Mute/Unmute Toggle */}
             <button
@@ -978,7 +1032,9 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                     ? (isHindi ? 'नागरिक' : 'Citizen')
                     : isOperator
                     ? (isHindi ? 'कमांड ऑपरेटर' : 'Command Center Operator')
-                    : (isHindi ? 'एआई डिस्पैच' : 'AI Dispatcher (Bolna)');
+                    : (isHindi
+                        ? (voicePersona === 'female' ? 'डिस्पैचर प्रिया (Voice AI)' : 'ऑफिसर राहुल (Voice AI)')
+                        : (voicePersona === 'female' ? 'Dispatcher Priya (Voice AI)' : 'Officer Rahul (Voice AI)'));
 
                   return (
                     <motion.div
@@ -1006,9 +1062,24 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                           {isAgent && <Radio className="w-3 h-3 text-marigold-400" />}
                           {speakerLabel}
                         </span>
-                        <span className="text-slate-500 font-mono text-[9px]">
-                          {chunk.timestamp ? new Date(chunk.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Live'}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => speakClear(chunkText, {
+                              persona: isOperator ? (voicePersona === 'female' ? 'male' : 'female') : voicePersona,
+                              language: isHindi ? 'hi' : 'en',
+                              role: isCaller ? 'caller' : isOperator ? 'operator' : 'agent',
+                              playChime: !isCaller,
+                            })}
+                            className="p-0.5 rounded hover:bg-white/[0.1] text-slate-400 hover:text-white transition"
+                            title="Play this message in human voice"
+                          >
+                            <Volume2 className="w-3 h-3" />
+                          </button>
+                          <span className="text-slate-500 font-mono text-[9px]">
+                            {chunk.timestamp ? new Date(chunk.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Live'}
+                          </span>
+                        </div>
                       </div>
                       <p className="text-silver-200 leading-snug">{chunkText}</p>
                     </motion.div>

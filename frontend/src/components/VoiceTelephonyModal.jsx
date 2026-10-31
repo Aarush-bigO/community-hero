@@ -26,6 +26,8 @@ export default function VoiceTelephonyModal({ isOpen, onClose, onDialSuccess }) 
   const showToast = useStore((s) => s.showToast);
   const setTelephonySession = useStore((s) => s.setTelephonySession);
   const setActiveVoiceCall = useStore((s) => s.setActiveVoiceCall);
+  const voicePersona = useStore((s) => s.voicePersona || 'female');
+  const setVoicePersona = useStore((s) => s.setVoicePersona);
 
   const [phone, setPhone] = useState('+91 98710 44821');
   const [selectedLocation, setSelectedLocation] = useState(PRESET_LOCATIONS[0].label);
@@ -178,6 +180,38 @@ export default function VoiceTelephonyModal({ isOpen, onClose, onDialSuccess }) 
             </select>
           </div>
 
+          {/* Dispatcher Voice Persona (The Girl / That Boy) */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+              <span>Dispatcher Voice Persona</span>
+              <span className="text-[10px] text-marigold-400 font-normal">Natural Human Speech</span>
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setVoicePersona('female')}
+                className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition ${
+                  voicePersona === 'female'
+                    ? 'bg-rose-500/20 text-rose-200 border-rose-500/40 shadow-sm'
+                    : 'bg-white/[0.03] text-slate-400 border-white/[0.08] hover:bg-white/[0.06]'
+                }`}
+              >
+                <span>👩</span> The Girl (Priya)
+              </button>
+              <button
+                type="button"
+                onClick={() => setVoicePersona('male')}
+                className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition ${
+                  voicePersona === 'male'
+                    ? 'bg-cyan-500/20 text-cyan-200 border-cyan-500/40 shadow-sm'
+                    : 'bg-white/[0.03] text-slate-400 border-white/[0.08] hover:bg-white/[0.06]'
+                }`}
+              >
+                <span>👨</span> That Boy (Rahul)
+              </button>
+            </div>
+          </div>
+
           {/* Language & Voice AI Stack */}
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -242,3 +276,4 @@ export default function VoiceTelephonyModal({ isOpen, onClose, onDialSuccess }) 
     </div>
   );
 }
+

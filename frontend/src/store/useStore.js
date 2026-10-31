@@ -78,6 +78,15 @@ export const useStore = create((set, get) => ({
   selectedIncident: null,
   setSelectedIncident: (selectedIncident) => set({ selectedIncident }),
 
+  // Selected Voice Persona: 'female' (The Girl - Priya/Samantha) or 'male' (That Boy - Rahul/Daniel)
+  voicePersona: (typeof window !== 'undefined' && localStorage.getItem('ch_voice_persona')) || 'female',
+  setVoicePersona: (voicePersona) => {
+    try {
+      localStorage.setItem('ch_voice_persona', voicePersona);
+    } catch {}
+    set({ voicePersona });
+  },
+
   // VoiceStudio Telephony State
   telephonySession: {
     call_id: 'CALL-INIT-104',

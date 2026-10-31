@@ -5,11 +5,14 @@ import {
   Flame, Droplets, Zap, Activity, CheckCircle2, Clock, Users,
   Compass, Volume2, Eye, Play, RefreshCw, Sparkles, ChevronRight,
   Maximize2, Minimize2, ExternalLink, ShieldCheck, Waves, MessageSquare,
-  Mic, MicOff, Send, VolumeX, CornerDownLeft
+  Mic, MicOff, Send, VolumeX, CornerDownLeft, Hand, PhoneOff,
+  Ear, Brain, AudioLines, Settings2, Sliders, Wifi, Check
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useLang } from '../i18n';
 import { api, assetUrl } from '../utils/api';
+import WaveformPlayer from './WaveformPlayer';
+import VoiceTelephonyModal from './VoiceTelephonyModal';
 
 const SCENARIOS = [
   {
@@ -55,6 +58,67 @@ const DEFAULT_PHOTOS = {
   other: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80',
 };
 
+// VoiceStudio Call Phase Stepper
+const CALL_PHASES = ['dialing', 'ringing', 'in_call', 'ended'];
+const PHASE_LABELS = {
+  dialing: 'Carrier Dial',
+  ringing: 'Ringing Line',
+  in_call: 'In Call (Live)',
+  ended: 'Resolved CAD',
+};
+
+function StatusTimeline({ status = 'in_call' }) {
+  const currentIdx = CALL_PHASES.indexOf(status) !== -1 ? CALL_PHASES.indexOf(status) : 2;
+  return (
+    <div className="flex items-center gap-1.5 text-[11px] font-mono select-none">
+      {CALL_PHASES.map((phase, idx) => {
+        const isDone = idx < currentIdx || (idx === currentIdx && phase === 'ended');
+        const isActive = idx === currentIdx;
+        return (
+          <div key={phase} className="flex items-center gap-1.5">
+            {idx > 0 && (
+              <span className={`h-px w-2.5 sm:w-4 transition-colors ${idx <= currentIdx ? 'bg-rose-500' : 'bg-white/10'}`} />
+            )}
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border transition-all ${
+                isActive && !isDone
+                  ? 'bg-rose-500/20 border-rose-500/50 text-white shadow-sm'
+                  : isDone
+                  ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                  : 'bg-white/[0.02] border-white/[0.06] text-slate-500'
+              }`}
+            >
+              {isActive && !isDone && (
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+              )}
+              {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+              {PHASE_LABELS[phase]}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// VoiceStudio Agent State Indicator (Listening / Thinking / Speaking)
+function AgentStateIndicator({ state = 'listening' }) {
+  const config = {
+    listening: { label: 'Listening to Citizen', icon: Ear, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+    thinking: { label: 'NLP Triage & Geocoding', icon: Brain, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
+    speaking: { label: 'Transmitting Speech', icon: AudioLines, color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
+    idle: { label: 'Operator Override', icon: Radio, color: 'text-slate-400 bg-white/[0.03] border-white/[0.08]' },
+  }[state] || { label: 'Standby', icon: Radio, color: 'text-slate-400 bg-white/[0.03] border-white/[0.08]' };
+
+  const Icon = config.icon;
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium font-mono ${config.color}`}>
+      <Icon className="w-3.5 h-3.5 animate-pulse" />
+      {config.label}
+    </span>
+  );
+}
+
 export default function VoiceDispatchCockpit({ isStandalone = false, onToggleStandalone }) {
   const voiceDispatches = useStore((s) => s.voiceDispatches);
   const setVoiceDispatches = useStore((s) => s.setVoiceDispatches);
@@ -69,6 +133,12 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const lang = useLang((s) => s.lang);
   const isHindi = lang === 'hi';
 
+  // VoiceStudio Telephony Session State from Store
+  const telephonySession = useStore((s) => s.telephonySession);
+  const setTelephonySession = useStore((s) => s.setTelephonySession);
+  const setTakeover = useStore((s) => s.setTakeover);
+  const setAgentState = useStore((s) => s.setAgentState);
+
   const [simulating, setSimulating] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState('gas_leak');
   const [minimized, setMinimized] = useState(false);
@@ -77,6 +147,11 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const [isProcessingLiveCall, setIsProcessingLiveCall] = useState(false);
   const [customInput, setCustomInput] = useState('');
   const [audioFeedbackOn, setAudioFeedbackOn] = useState(true);
+
+  // Operator Takeover & Say-on-call State
+  const [operatorSpeechInput, setOperatorSpeechInput] = useState('');
+  const [isSendingOperatorSpeech, setIsSendingOperatorSpeech] = useState(false);
+  const [isTelephonyModalOpen, setIsTelephonyModalOpen] = useState(false);
 
   const canvasRef = useRef(null);
   const transcriptEndRef = useRef(null);
@@ -93,7 +168,13 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         }
       })
       .catch(() => {});
-  }, [setVoiceDispatches]);
+
+    api.voice.telephonySession()
+      .then((data) => {
+        if (data?.session) setTelephonySession(data.session);
+      })
+      .catch(() => {});
+  }, [setVoiceDispatches, setTelephonySession]);
 
   useEffect(() => {
     if (liveTranscript && liveTranscript.length > 0) {
@@ -132,7 +213,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         return;
       }
 
-      // 1. Audio stream for real visualizer
+      // Audio stream for real visualizer
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaStreamRef.current = stream;
@@ -144,10 +225,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         source.connect(analyser);
         analyserRef.current = analyser;
       } catch (err) {
-        console.warn('AudioContext mic stream failed (fallback to synthetic wave):', err);
+        console.warn('AudioContext mic stream fallback:', err);
       }
 
-      // 2. Speech recognition
+      // Speech recognition
       const recognition = new SpeechRecognition();
       recognition.lang = isHindi ? 'hi-IN' : 'en-IN';
       recognition.continuous = true;
@@ -179,14 +260,16 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
 
       recognition.start();
       setIsListening(true);
+      setAgentState('listening');
       clearLiveTranscript();
       setActiveVoiceCall({
-        phone: '+91 95988 19219 (Live)',
+        phone: '+91 95988 19219 (Live Mic)',
         language: isHindi ? 'हिन्दी (Live Mic)' : 'English (Live Mic)',
         urgency_score: 9.6,
         scenario: 'Live Voice Intake',
         startedAt: Date.now(),
       });
+      setTelephonySession({ status: 'in_call', agent_state: 'listening' });
       showToast({ type: 'live', message: isHindi ? '🎙️ माइक्रोफ़ोन सक्रिय: आपातकालीन स्थिति बोलें!' : '🎙️ Microphone listening... Speak your emergency!' });
     } catch (err) {
       console.error('Mic access error:', err);
@@ -207,6 +290,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     setIsListening(false);
     stopMicStream();
     setIsProcessingLiveCall(true);
+    setAgentState('thinking');
 
     try {
       const res = await api.voice.liveCall({
@@ -215,6 +299,8 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         caller_phone: '+91 95988 19219',
       });
 
+      setAgentState('speaking');
+
       // Real Audible Voice Response via SpeechSynthesis
       if (audioFeedbackOn && 'speechSynthesis' in window && res.agent_response) {
         window.speechSynthesis.cancel();
@@ -222,7 +308,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         utter.lang = res.language === 'hi' ? 'hi-IN' : 'en-US';
         utter.rate = 1.02;
         utter.pitch = 1.0;
+        utter.onend = () => setAgentState('listening');
         window.speechSynthesis.speak(utter);
+      } else {
+        setTimeout(() => setAgentState('listening'), 2500);
       }
 
       if (res.event?.lat && res.event?.lng) {
@@ -237,10 +326,63 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
       });
     } catch (err) {
       showToast({ type: 'error', message: 'Dispatch failed: ' + err.message });
+      setAgentState('listening');
     } finally {
       setIsProcessingLiveCall(false);
       setLiveSpokenText('');
       setCustomInput('');
+    }
+  };
+
+  // Human Operator Takeover Handlers (VoiceStudio Intercom)
+  const handleToggleTakeover = async (enabled) => {
+    setTakeover(enabled);
+    if (enabled) {
+      setAgentState('idle');
+      showToast({ type: 'live', message: '🚨 Human Operator Takeover engaged. AI autonomous speech suspended.' });
+    } else {
+      setAgentState('listening');
+      showToast({ type: 'live', message: '🤖 Human Operator disengaged. AI autonomous dispatcher resumed.' });
+    }
+    try {
+      await api.voice.takeover({ takeover: enabled });
+    } catch {}
+  };
+
+  const handleSayOnCall = async (e, customText) => {
+    e?.preventDefault();
+    const text = (customText || operatorSpeechInput || '').trim();
+    if (!text) return;
+    setIsSendingOperatorSpeech(true);
+    setOperatorSpeechInput('');
+
+    // Audible speech synthesis for operator's voice
+    if (audioFeedbackOn && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = isHindi ? 'hi-IN' : 'en-US';
+      utter.rate = 1.05;
+      utter.pitch = 0.95;
+      window.speechSynthesis.speak(utter);
+    }
+
+    try {
+      await api.voice.sayOnCall({ text, language: isHindi ? 'hi' : 'en' });
+      showToast({ type: 'live', message: '📢 Transmitted verbal order to caller' });
+    } catch (err) {
+      showToast({ type: 'error', message: 'Failed to speak on call: ' + err.message });
+    } finally {
+      setIsSendingOperatorSpeech(false);
+    }
+  };
+
+  const handleHangupCall = async () => {
+    try {
+      await api.voice.hangup({ reason: 'Concluded by operator' });
+      setTelephonySession({ status: 'ended' });
+      showToast({ type: 'live', message: '📞 Telephony call concluded & archived in CAD records' });
+    } catch (err) {
+      showToast({ type: 'error', message: 'Failed to hang up: ' + err.message });
     }
   };
 
@@ -301,9 +443,13 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         }
 
         ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(x, y, barWidth, height, 1.5) : ctx.rect(x, y, barWidth, height);
-        ctx.fill();
+        if (ctx.roundRect) {
+          ctx.beginPath();
+          ctx.roundRect(x, y, barWidth, height, 1.5);
+          ctx.fill();
+        } else {
+          ctx.fillRect(x, y, barWidth, height);
+        }
       }
 
       phase += isLive ? 0.14 : 0.04;
@@ -317,6 +463,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
   const handleSimulate = async (scenarioId) => {
     setSimulating(true);
     clearLiveTranscript();
+    setAgentState('thinking');
 
     const selected = SCENARIOS.find((s) => s.id === scenarioId) || SCENARIOS[0];
     setActiveVoiceCall({
@@ -326,6 +473,8 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
       scenario: selected.shortLabel,
       startedAt: Date.now(),
     });
+
+    setTelephonySession({ status: 'in_call', agent_state: 'speaking' });
 
     try {
       await api.voice.simulate(scenarioId, lang);
@@ -338,7 +487,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     } catch {
       showToast({ type: 'live', message: 'Simulation triggered' });
     } finally {
-      setTimeout(() => setSimulating(false), 3500);
+      setTimeout(() => {
+        setSimulating(false);
+        setAgentState('listening');
+      }, 3500);
     }
   };
 
@@ -352,29 +504,8 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
     }
   };
 
-  const handleManualConfirm = async (ticketId) => {
-    try {
-      await api.voice.confirmDispatch({
-        ticket_id: ticketId,
-        officer_name: 'Unit 4 (R. Sharma)',
-        eta: '3m',
-        verbal_note: 'Dispatched',
-      });
-      updateVoiceDispatch(ticketId, {
-        dispatch_status: 'EN_ROUTE (3m)',
-      });
-      showToast({
-        type: 'live',
-        message: `✅ Unit 4 Dispatched`,
-      });
-    } catch {
-      updateVoiceDispatch(ticketId, {
-        dispatch_status: 'EN_ROUTE (3m)',
-      });
-    }
-  };
-
   const activeUrgency = activeVoiceCall?.urgency_score || (voiceDispatches[0]?.urgency_score || 8.5);
+  const takeoverActive = telephonySession?.takeover || false;
 
   return (
     <div className={`pointer-events-auto transition-all duration-300 ${
@@ -382,28 +513,35 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
         ? 'w-full h-full max-h-[calc(100vh-5.5rem)] max-w-[1720px] mx-auto px-4 md:px-6 flex flex-col min-h-0'
         : 'w-full max-w-7xl mx-auto'
     }`}>
-      {/* 1. TOP TACTICAL COMMAND BAR — MINIMALIST & CLEAN */}
-      <div className="bg-slate-950/75 backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-3 md:p-3.5 mb-4 shadow-xl relative overflow-hidden shrink-0">
+      {/* 1. TOP TACTICAL COMMAND BAR — VOICE STUDIO ENHANCED */}
+      <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-3 md:p-3.5 mb-4 shadow-xl relative overflow-hidden shrink-0">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Engine Status */}
-          <div className="flex items-center gap-2.5">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
-            </span>
-            <h3 className="font-display text-sm md:text-base font-bold text-white tracking-tight">
-              Voice AI Dispatch
-            </h3>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
-              Online
-            </span>
+          {/* Engine Status & Timeline */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+              </span>
+              <h3 className="font-display text-sm md:text-base font-bold text-white tracking-tight">
+                Voice AI Dispatch
+              </h3>
+            </div>
+
+            {/* VoiceStudio Agent State Indicator */}
+            <AgentStateIndicator state={telephonySession?.agent_state || (isListening ? 'listening' : isProcessingLiveCall ? 'thinking' : 'listening')} />
+
+            {/* VoiceStudio Status Timeline */}
+            <div className="hidden xl:block pl-2 border-l border-white/[0.08]">
+              <StatusTimeline status={telephonySession?.status || 'in_call'} />
+            </div>
           </div>
 
-          {/* Quick Telemetry Indicators */}
+          {/* Quick Telemetry & WebRTC indicators */}
           <div className="hidden sm:flex items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-marigold-300 font-mono text-[11px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-marigold-400 animate-pulse" />
-              Live SSE
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-emerald-400 font-mono text-[11px]">
+              <Wifi className="w-3 h-3" />
+              {telephonySession?.latency_ms || 18}ms RTT
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-amber-300 font-mono text-[11px]">
               <Users className="w-3 h-3 text-amber-400" />
@@ -411,7 +549,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
             </span>
           </div>
 
-          {/* Preset Pills & Simulate Action */}
+          {/* Preset Pills & Simulator Actions */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 p-0.5 bg-white/[0.03] border border-white/[0.08] rounded-xl overflow-x-auto">
               {SCENARIOS.map((sc) => {
@@ -458,6 +596,16 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
               )}
             </button>
 
+            {/* VoiceStudio Telephony Modal Trigger */}
+            <button
+              onClick={() => setIsTelephonyModalOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition shadow-sm"
+              title="Configure Simulated Carrier Telephony Line"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-rose-400" />
+              <span>Carrier Line</span>
+            </button>
+
             {/* TTS Audio Mute/Unmute Toggle */}
             <button
               onClick={() => setAudioFeedbackOn(!audioFeedbackOn)}
@@ -471,6 +619,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
               {audioFeedbackOn ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4" />}
             </button>
 
+            {/* Simulate Button */}
             <button
               onClick={() => handleSimulate(selectedScenario)}
               disabled={simulating || isListening}
@@ -505,7 +654,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
           </div>
         </div>
 
-        {/* LIVE MICROPHONE SPEECH BAR (VISIBLE WHEN LISTENING OR TYPING) */}
+        {/* LIVE MICROPHONE SPEECH BAR */}
         {(isListening || liveSpokenText || isProcessingLiveCall) && (
           <div className="mt-3 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2.5 bg-rose-950/20 p-2.5 rounded-xl border border-rose-500/20">
             <div className="flex items-center gap-2 flex-1 min-w-[240px]">
@@ -576,21 +725,28 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
       <div className={`grid grid-cols-1 lg:grid-cols-12 gap-4 ${minimized ? 'hidden md:grid' : ''} ${
         isStandalone ? 'flex-1 min-h-0 overflow-hidden' : ''
       }`}>
-        {/* LEFT DRAWER: COMPACT INTAKE & STREAM */}
+        {/* LEFT DRAWER: TELEPHONY SESSION, TAKE OVER & STREAM */}
         <div className={`lg:col-span-5 flex flex-col gap-4 min-h-0 ${isStandalone ? 'h-full' : ''}`}>
-          {/* Stream & Urgency Card */}
+          {/* Active Call & Telephony Carrier Card */}
           <div className="bg-slate-950/70 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-4 shadow-xl space-y-3 shrink-0">
-            {/* Caller row */}
+            {/* Caller row with VoiceStudio details */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-400">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500/20 to-amber-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
                   <PhoneCall className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-mono font-semibold text-white">
-                    {activeVoiceCall?.phone || '+91 98710 44821'}
+                  <div className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                    {activeVoiceCall?.phone || telephonySession?.caller_phone || '+91 98710 44821'}
+                    <span className="text-[10px] font-sans font-medium px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                      HD Voice
+                    </span>
                   </div>
-                  <div className="text-[10px] text-slate-400">Central Zone</div>
+                  <div className="text-[10px] text-slate-400 flex items-center gap-2">
+                    <span>{telephonySession?.caller_location || 'Connaught Place Block B'}</span>
+                    <span>·</span>
+                    <span className="text-emerald-400 font-mono">18ms RTT</span>
+                  </div>
                 </div>
               </div>
 
@@ -602,7 +758,7 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
             <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> Urgency
+                  <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> Urgency Rating
                 </span>
                 <span className="text-sm font-bold font-mono text-rose-400">
                   {activeUrgency.toFixed(1)} <span className="text-xs text-slate-500 font-normal">/ 10</span>
@@ -617,6 +773,108 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                 />
               </div>
             </div>
+
+            {/* VoiceStudio Human Operator Takeover Switch */}
+            <div className={`p-3 rounded-xl border transition-all ${
+              takeoverActive
+                ? 'bg-amber-500/10 border-amber-500/30'
+                : 'bg-white/[0.02] border-white/[0.06]'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Hand className={`w-4 h-4 ${takeoverActive ? 'text-amber-400 animate-bounce' : 'text-slate-400'}`} />
+                  <div>
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                      Human Operator Takeover
+                      {takeoverActive && (
+                        <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-amber-500 text-slate-950 font-black">
+                          Active Override
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      {takeoverActive
+                        ? 'AI autonomous speech paused · Command Center is on the line'
+                        : 'Engage manual intercom to inject verbal orders directly'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleTakeover(!takeoverActive)}
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm ${
+                      takeoverActive
+                        ? 'bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-amber-500/20'
+                        : 'bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 border border-white/[0.1]'
+                    }`}
+                  >
+                    {takeoverActive ? 'Disengage' : 'Take Over'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleHangupCall}
+                    className="p-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition"
+                    title="Terminate / Conclude Call"
+                  >
+                    <PhoneOff className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* VoiceStudio "Say on Call" Form (Active when Takeover is on) */}
+              {takeoverActive && (
+                <div className="mt-3 pt-3 border-t border-amber-500/20 space-y-2">
+                  <form onSubmit={handleSayOnCall} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={operatorSpeechInput}
+                      onChange={(e) => setOperatorSpeechInput(e.target.value)}
+                      placeholder="Type verbal command (e.g. Unit 4 is 90s away, evacuate 50m)…"
+                      className="flex-1 px-3 py-1.5 rounded-xl bg-slate-950 border border-amber-500/40 text-xs text-white focus:outline-none focus:border-amber-400 font-sans placeholder:text-slate-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSendingOperatorSpeech || !operatorSpeechInput.trim()}
+                      className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold flex items-center gap-1 transition disabled:opacity-50"
+                    >
+                      <Send className="w-3 h-3" /> Say
+                    </button>
+                  </form>
+
+                  {/* Quick Tactical Order Chips */}
+                  <div className="flex flex-wrap gap-1 text-[10px]">
+                    {[
+                      'Fire Unit 4 is 90s away. Evacuate 100m north!',
+                      'Delhi Jal Board mainline team en route with sirens.',
+                      'Substation power cut requested. Stay clear of cables!',
+                    ].map((order, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={(e) => handleSayOnCall(e, order)}
+                        className="px-2 py-0.5 rounded bg-black/40 hover:bg-black/60 border border-amber-500/30 text-amber-200 text-[10px] transition"
+                      >
+                        📢 {order}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* VoiceStudio Interactive Waveform Player */}
+            <div className="pt-1">
+              <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 px-0.5">
+                <span className="flex items-center gap-1 font-medium">
+                  <Waves className="w-3 h-3 text-rose-400" /> Audio Dispatch Playback
+                </span>
+                <span className="text-[10px] text-slate-500 font-mono">48kHz Opus · WebRTC</span>
+              </div>
+              <WaveformPlayer duration={24} compact={true} />
+            </div>
           </div>
 
           {/* Transcript Drawer */}
@@ -630,11 +888,11 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                 <MessageSquare className="w-3.5 h-3.5 text-marigold-400" /> {isHindi ? 'लाइव ट्रांसक्रिप्ट' : 'Live Transcript'}
               </span>
               <span className="text-[10px] text-silver-500 font-mono">
-                {liveTranscript.length > 0 ? (isHindi ? `${liveTranscript.length} संवाद` : `${liveTranscript.length} chunks`) : (isHindi ? 'स्टैंडबाय' : 'Standby')}
+                {liveTranscript.length > 0 ? `${liveTranscript.length} chunks` : (isHindi ? 'स्टैंडबाय' : 'Standby')}
               </span>
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1.5 text-xs custom-scrollbar">
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-2.5 pr-1.5 text-xs custom-scrollbar">
               {liveTranscript.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-6 text-silver-500">
                   <Radio className="w-6 h-6 text-marigold-400 opacity-40 mb-2 animate-pulse" />
@@ -643,26 +901,47 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
               ) : (
                 liveTranscript.map((chunk, idx) => {
                   const isCaller = chunk.speaker === 'caller';
+                  const isOperator = chunk.speaker === 'operator';
+                  const isAgent = chunk.speaker === 'agent';
+
                   const chunkText = isHindi
                     ? (chunk.text_hi || chunk.text)
                     : (chunk.text_en || chunk.text);
-                  const speakerName = isCaller
+
+                  let speakerLabel = isCaller
                     ? (isHindi ? 'नागरिक' : 'Citizen')
-                    : (isHindi ? 'एआई डिस्पैच' : 'AI Dispatch');
+                    : isOperator
+                    ? (isHindi ? 'कमांड ऑपरेटर' : 'Command Center Operator')
+                    : (isHindi ? 'एआई डिस्पैच' : 'AI Dispatcher (Bolna)');
+
                   return (
                     <motion.div
                       key={idx}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`p-2.5 rounded-xl border text-xs ${
-                        isCaller
+                      className={`p-2.5 rounded-xl border text-xs transition-all ${
+                        isOperator
+                          ? 'bg-amber-500/[0.1] border-amber-500/30'
+                          : isCaller
                           ? 'bg-rose-500/[0.06] border-rose-500/20'
                           : 'bg-marigold-500/[0.08] border-marigold-500/25'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1 text-[10px]">
-                        <span className={isCaller ? 'text-rose-300 font-medium' : 'text-marigold-300 font-medium'}>
-                          {speakerName}
+                        <span className={`font-semibold flex items-center gap-1 ${
+                          isOperator
+                            ? 'text-amber-300'
+                            : isCaller
+                            ? 'text-rose-300'
+                            : 'text-marigold-300'
+                        }`}>
+                          {isOperator && <Hand className="w-3 h-3 text-amber-400" />}
+                          {isCaller && <PhoneCall className="w-3 h-3 text-rose-400" />}
+                          {isAgent && <Radio className="w-3 h-3 text-marigold-400" />}
+                          {speakerLabel}
+                        </span>
+                        <span className="text-slate-500 font-mono text-[9px]">
+                          {chunk.timestamp ? new Date(chunk.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Live'}
                         </span>
                       </div>
                       <p className="text-silver-200 leading-snug">{chunkText}</p>
@@ -676,10 +955,10 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
             {/* Concise Incident Tags */}
             <div className="pt-2.5 border-t border-white/[0.06] mt-2 flex items-center gap-1.5 text-[11px] text-silver-400 shrink-0">
               <span className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-marigold-300">
-                📍 CP Block B
+                📍 {telephonySession?.caller_location || 'CP Block B'}
               </span>
               <span className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-rose-300">
-                ⚠️ LPG Hazard
+                ⚠️ Critical Hazard
               </span>
               <span className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-emerald-300">
                 ⚡ 4h SLA
@@ -698,11 +977,11 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-4 h-4 text-marigold-400" />
                 <h3 className="text-xs font-semibold text-silver-100 tracking-wide uppercase">
-                  CAD Work Orders
+                  CAD Emergency Work Orders
                 </h3>
               </div>
               <span className="bg-white/[0.04] text-marigold-300 border border-marigold-500/25 text-xs px-2.5 py-0.5 rounded-full font-medium">
-                {voiceDispatches.length} Active
+                {voiceDispatches.length} Active Tickets
               </span>
             </div>
 
@@ -719,7 +998,6 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
                   const isEnRoute = String(ticket.dispatch_status || '').includes('EN_ROUTE');
                   const isSurge = (ticket.report_count || 1) > 1;
 
-                  // Guaranteed breathtaking photo thumbnail
                   const photoSrc =
                     ticket.photo_url && !ticket.photo_url.includes('vision_hazard_proof')
                       ? assetUrl(ticket.photo_url)
@@ -816,8 +1094,17 @@ export default function VoiceDispatchCockpit({ isStandalone = false, onToggleSta
           </div>
         </div>
       </div>
+
+      {/* VoiceStudio Telephony Carrier Simulation Modal */}
+      <VoiceTelephonyModal
+        isOpen={isTelephonyModalOpen}
+        onClose={() => setIsTelephonyModalOpen(false)}
+        onDialSuccess={(session) => {
+          if (session?.scenario) {
+            handleSimulate(session.scenario);
+          }
+        }}
+      />
     </div>
   );
 }
-
-

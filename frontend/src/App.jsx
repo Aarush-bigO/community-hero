@@ -39,6 +39,8 @@ export default function App() {
   const appendTranscriptChunk = useStore((s) => s.appendTranscriptChunk);
   const setActiveVoiceCall = useStore((s) => s.setActiveVoiceCall);
   const setFocusCoords = useStore((s) => s.setFocusCoords);
+  const setTelephonySession = useStore((s) => s.setTelephonySession);
+  const setTakeover = useStore((s) => s.setTakeover);
 
   const { connected } = useEventStream((event) => {
     // 1. Voice AI events
@@ -95,6 +97,30 @@ export default function App() {
         vision_confidence: event.payload.vision_confidence || 98.4,
       });
       showToast({ type: 'live', message: TOAST_FOR[event.type](event) });
+      return;
+    }
+
+    if (event.type === 'VOICE_TAKEOVER_UPDATE') {
+      setTakeover(event.payload.takeover);
+      showToast({
+        type: 'live',
+        message: event.payload.takeover
+          ? '🚨 [INTERCOM] Operator Takeover engaged'
+          : '🤖 [AI CAD] Autonomous agent resumed',
+      });
+      return;
+    }
+
+    if (event.type === 'VOICE_CALL_ENDED') {
+      setTelephonySession({ status: 'ended' });
+      showToast({ type: 'live', message: '📞 Call finalized & logged in CAD records' });
+      return;
+    }
+
+    if (event.type === 'VOICE_SESSION_UPDATE') {
+      if (event.payload.session) {
+        setTelephonySession(event.payload.session);
+      }
       return;
     }
 

@@ -24,6 +24,7 @@ export function useEventStream(onEvent) {
       'NEW_VOICE_DISPATCH', 'INCIDENT_CLUSTER_SURGE',
       'UNIT_DISPATCH_ALERT', 'UNIT_DISPATCH_CONFIRMED',
       'VOICE_TRANSCRIPT_CHUNK', 'VISION_VERIFIED',
+      'VOICE_TAKEOVER_UPDATE', 'VOICE_CALL_ENDED', 'VOICE_SESSION_UPDATE',
     ];
 
     es.addEventListener('hello', () => setConnected(true));

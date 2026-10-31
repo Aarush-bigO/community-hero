@@ -78,6 +78,28 @@ export const useStore = create((set, get) => ({
   selectedIncident: null,
   setSelectedIncident: (selectedIncident) => set({ selectedIncident }),
 
+  // VoiceStudio Telephony State
+  telephonySession: {
+    call_id: 'CALL-INIT-104',
+    status: 'idle',
+    direction: 'inbound',
+    caller_phone: '+91 98710 44821',
+    caller_location: 'Connaught Place Block B',
+    caller_language: 'हिन्दी / English',
+    takeover: false,
+    operator_name: 'Municipal Command Lead (Group 104)',
+    agent_state: 'listening',
+    latency_ms: 18,
+    jitter_ms: 1.9,
+    packet_loss: '0.0%',
+  },
+  setTelephonySession: (updates) =>
+    set({ telephonySession: { ...get().telephonySession, ...updates } }),
+  setTakeover: (takeover) =>
+    set({ telephonySession: { ...get().telephonySession, takeover } }),
+  setAgentState: (agent_state) =>
+    set({ telephonySession: { ...get().telephonySession, agent_state } }),
+
   // Camera flight coordinates for 3D Globe: { lat, lng }
   focusCoords: null,
   setFocusCoords: (focusCoords) => set({ focusCoords }),

@@ -8,6 +8,7 @@
  *   POST /api/voice-dispatch/:id/vision  (Multimodal vision verification hook)
  */
 import { Router } from 'express';
+import { nanoid } from 'nanoid';
 import {
   processInboundVoiceDispatch,
   confirmDispatch,
@@ -18,6 +19,24 @@ import { publish, EVENTS } from '../services/events.js';
 import { getDb } from '../db/init.js';
 
 const router = Router();
+
+// VoiceStudio-inspired Telephony Call Session State
+let currentTelephonySession = {
+  call_id: 'CALL-INIT-104',
+  status: 'idle', // 'idle' | 'dialing' | 'ringing' | 'in_call' | 'ended'
+  direction: 'inbound',
+  caller_phone: '+91 98710 44821',
+  caller_location: 'Connaught Place Block B',
+  caller_language: 'हिन्दी / English',
+  takeover: false,
+  operator_name: 'Municipal Command Lead (Group 104)',
+  agent_state: 'listening', // 'listening' | 'thinking' | 'speaking' | 'idle'
+  latency_ms: 18,
+  jitter_ms: 1.9,
+  packet_loss: '0.0%',
+  started_at: new Date().toISOString(),
+  ended_at: null,
+};
 
 // --- 1. Real Live Microphone Voice Call Intake ---
 router.post(['/voice/live-call', '/voice-live-call'], async (req, res, next) => {
@@ -362,6 +381,155 @@ router.post('/simulate-voice-call', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// --- 5. VoiceStudio-Inspired Telephony Session & Operator Control Endpoints ---
+
+// Get active telephony session & WebRTC quality metrics
+router.get('/voice/telephony-session', (_req, res) => {
+  res.json({
+    success: true,
+    session: currentTelephonySession,
+  });
+});
+
+// Toggle Human Operator Takeover mode
+router.post('/voice/takeover', (req, res) => {
+  const { call_id, takeover = true, operator_name } = req.body;
+  currentTelephonySession.takeover = Boolean(takeover);
+  if (operator_name) {
+    currentTelephonySession.operator_name = operator_name;
+  }
+  if (takeover) {
+    currentTelephonySession.agent_state = 'idle';
+  }
+
+  publish(EVENTS.VOICE_TAKEOVER_UPDATE, {
+    call_id: call_id || currentTelephonySession.call_id,
+    takeover: currentTelephonySession.takeover,
+    operator_name: currentTelephonySession.operator_name,
+    timestamp: new Date().toISOString(),
+  });
+
+  publish(EVENTS.VOICE_SESSION_UPDATE, {
+    session: currentTelephonySession,
+  });
+
+  res.json({
+    success: true,
+    takeover: currentTelephonySession.takeover,
+    operator_name: currentTelephonySession.operator_name,
+    message: currentTelephonySession.takeover
+      ? '🚨 Human Operator Takeover engaged. AI autonomous speech suspended.'
+      : '🤖 Human Operator disengaged. AI autonomous dispatcher resumed.',
+  });
+});
+
+// Operator "Say on Call" (Dispatcher speech injection)
+router.post('/voice/say-on-call', (req, res) => {
+  const { call_id, text, language = 'en' } = req.body;
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: 'text is required' });
+  }
+
+  const statement = text.trim();
+  const timestamp = new Date().toISOString();
+
+  // Broadcast operator's spoken chunk to SSE
+  publish(EVENTS.VOICE_TRANSCRIPT_CHUNK, {
+    speaker: 'operator',
+    text: statement,
+    caller_phone: currentTelephonySession.caller_phone,
+    caller_language: currentTelephonySession.caller_language,
+    urgency_score: 9.8,
+    operator_name: currentTelephonySession.operator_name,
+    timestamp,
+  });
+
+  res.json({
+    success: true,
+    speaker: 'operator',
+    text: statement,
+    operator_name: currentTelephonySession.operator_name,
+    timestamp,
+  });
+});
+
+// Hang up / Terminate Call
+router.post('/voice/hangup', (req, res) => {
+  const { call_id, reason = 'Call concluded by command operator' } = req.body;
+  currentTelephonySession.status = 'ended';
+  currentTelephonySession.ended_at = new Date().toISOString();
+  currentTelephonySession.agent_state = 'idle';
+
+  publish(EVENTS.VOICE_CALL_ENDED, {
+    call_id: call_id || currentTelephonySession.call_id,
+    reason,
+    timestamp: new Date().toISOString(),
+  });
+
+  publish(EVENTS.VOICE_SESSION_UPDATE, {
+    session: currentTelephonySession,
+  });
+
+  res.json({
+    success: true,
+    status: 'ended',
+    message: 'Call terminated successfully',
+  });
+});
+
+// Outbound / Inbound Call Dialer Simulation
+router.post('/voice/dial', (req, res) => {
+  const {
+    phone = '+91 98710 44821',
+    location = 'Connaught Place Block B',
+    scenario = 'gas_leak',
+    language = 'en',
+    direction = 'inbound',
+  } = req.body;
+
+  const newCallId = 'CALL-' + nanoid(6).toUpperCase();
+  currentTelephonySession = {
+    call_id: newCallId,
+    status: 'dialing',
+    direction,
+    caller_phone: phone,
+    caller_location: location,
+    caller_language: language === 'hi' ? 'हिन्दी (Sarvam AI)' : 'English (Bolna AI)',
+    takeover: false,
+    operator_name: 'Municipal Command Lead (Group 104)',
+    agent_state: 'listening',
+    latency_ms: Math.floor(14 + Math.random() * 10),
+    jitter_ms: Number((1.2 + Math.random()).toFixed(1)),
+    packet_loss: '0.0%',
+    started_at: new Date().toISOString(),
+    ended_at: null,
+  };
+
+  publish(EVENTS.VOICE_SESSION_UPDATE, { session: currentTelephonySession });
+
+  // Simulate ringing after 600ms
+  setTimeout(() => {
+    if (currentTelephonySession.status === 'dialing') {
+      currentTelephonySession.status = 'ringing';
+      publish(EVENTS.VOICE_SESSION_UPDATE, { session: currentTelephonySession });
+    }
+  }, 600);
+
+  // Transition to in_call after 1600ms
+  setTimeout(() => {
+    if (currentTelephonySession.status === 'ringing') {
+      currentTelephonySession.status = 'in_call';
+      publish(EVENTS.VOICE_SESSION_UPDATE, { session: currentTelephonySession });
+    }
+  }, 1600);
+
+  res.json({
+    success: true,
+    call_id: newCallId,
+    session: currentTelephonySession,
+  });
 });
 
 export default router;

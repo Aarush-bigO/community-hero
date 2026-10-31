@@ -106,6 +106,27 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(payload),
       }),
+    takeover: (payload) =>
+      request('/api/voice/takeover', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    sayOnCall: (payload) =>
+      request('/api/voice/say-on-call', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    hangup: (payload) =>
+      request('/api/voice/hangup', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    telephonySession: () => request('/api/voice/telephony-session'),
+    dial: (payload) =>
+      request('/api/voice/dial', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
   },
 };
 

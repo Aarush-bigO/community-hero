@@ -122,13 +122,26 @@ html_content = f"""<!DOCTYPE html>
       background: #4A4A4A;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--text-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 0;
+      margin: 0;
+      padding: 0;
       -webkit-font-smoothing: antialiased;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
+    }}
+
+    @media screen {{
+      body {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 0;
+        gap: 32px;
+      }}
+      .slide {{
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border-radius: 8px;
+      }}
     }}
 
     @page {{
@@ -146,16 +159,24 @@ html_content = f"""<!DOCTYPE html>
       flex-direction: column;
       justify-content: space-between;
       padding: 0.45in 0.65in 0.35in 0.65in;
-      margin-bottom: 30px;
       page-break-after: always;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }}
 
     @media print {{
-      body {{ background: transparent; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }}
-      .slide {{ margin-bottom: 0; box-shadow: none; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }}
+      body {{
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+      }}
+      .slide {{
+        margin: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-after: always !important;
+      }}
     }}
 
     /* Global Header */

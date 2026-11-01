@@ -510,23 +510,21 @@ html_content = f"""<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 3 Presenter / Supervisor Cards -->
+      <!-- 3 Presenter / Supervisor Cards (Clean uniform white, removed unnecessary role labels) -->
       <div style="display: grid; grid-template-columns: 1fr 1fr 1.15fr; gap: 0.28in; margin-top: 0.25in;">
-        <div class="clean-card" style="padding: 0.26in 0.28in;">
-          <div class="card-label">Lead Architect & Presenter</div>
-          <div style="font-size: 22px; font-weight: 800; color: var(--plum); margin-bottom: 4px;">Aarush Bharti</div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: var(--amber-dark); font-weight: 700;">Scholar No: 24U020010</div>
+        <div class="clean-card" style="padding: 0.28in; justify-content: center;">
+          <div style="font-size: 24px; font-weight: 800; color: var(--plum); margin-bottom: 6px;">Aarush Bharti</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--amber-dark); font-weight: 700;">Scholar No: 24U020010</div>
         </div>
 
-        <div class="clean-card active-plum" style="padding: 0.26in 0.28in;">
-          <div class="card-label">Systems Engineer & Presenter</div>
-          <div style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px;">Ashish Goutam</div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: var(--amber-light); font-weight: 700;">Scholar No: 24U020011</div>
+        <div class="clean-card" style="padding: 0.28in; justify-content: center;">
+          <div style="font-size: 24px; font-weight: 800; color: var(--plum); margin-bottom: 6px;">Ashish Goutam</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--amber-dark); font-weight: 700;">Scholar No: 24U020011</div>
         </div>
 
-        <div class="clean-card" style="padding: 0.26in 0.28in; border-left: 3px solid var(--amber);">
-          <div class="card-label">Project Supervisor</div>
-          <div style="font-size: 22px; font-weight: 800; color: var(--plum); margin-bottom: 4px;">Dr. Sreemoyee Biswas</div>
+        <div class="clean-card" style="padding: 0.28in; justify-content: center; border-left: 3.5px solid var(--amber);">
+          <div class="card-label" style="margin-bottom: 2px;">Project Supervisor</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--plum); margin-bottom: 4px;">Dr. Sreemoyee Biswas</div>
           <div style="font-size: 13px; color: var(--text-dark); font-weight: 600;">Assistant Professor, Department of CSE</div>
         </div>
       </div>
@@ -1358,3 +1356,4 @@ else:
     print(f"Error compiling PDF: {res.stderr.decode('utf-8')}")
 
 print("Done!")
+

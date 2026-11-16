@@ -2,6 +2,8 @@
 """
 Model-Based Reflex Agents - 10-Slide Highly Advanced Presentation Builder
 Topic: "10. Model-Based Reflex Agents" (AI-ML Coursework, IIIT Bhopal)
+Presenter: Aarush Bharti (Scholar No: 24U020010) - Solo Presentation
+Course Professor: Dr. Meenakshi Choudhary (Dept. of CSE, IIIT Bhopal)
 Matches 100% of the editorial aesthetic, layout fidelity, typography, and card design
 from the user's favorite Community Hero slide deck:
 - 16:9 widescreen layout (16in x 9in)
@@ -57,7 +59,7 @@ html_content = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Model-Based Reflex Agents — AI & ML Presentation</title>
+<title>Model-Based Reflex Agents — AI & ML Academic Presentation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -356,25 +358,13 @@ html_content = f'''<!DOCTYPE html>
     color: #D97706;
     font-weight: 700;
   }}
-
-  /* CODE BOX */
-  .code-block {{
-    background: #11141E;
-    color: #E2E8F0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.125in;
-    line-height: 1.5;
-    padding: 0.16in;
-    border-radius: 12px;
-    border: 1px solid #1E293B;
-  }}
 </style>
 </head>
 <body>
 '''
 
 # -------------------------------------------------------------
-# SLIDE 1: Title & Hero Lockup
+# SLIDE 1: Title & Hero Lockup (Solo Presenter & Dr. Meenakshi Choudhary)
 # -------------------------------------------------------------
 html_content += f'''
 <!-- SLIDE 1 -->
@@ -383,7 +373,7 @@ html_content += f'''
     <div class="header-left-cluster">
       <span class="inst-badge">IIIT BHOPAL</span>
       <span class="course-badge">AI & MACHINE LEARNING</span>
-      <span class="group-badge">CSE 6TH SEMESTER</span>
+      <span class="group-badge">ACADEMIC EVALUATION</span>
     </div>
     <div class="slide-counter">01 / 10</div>
   </div>
@@ -412,61 +402,44 @@ html_content += f'''
       </div>
     </div>
 
-    <!-- Middle Presenter Cards (Symmetric & Taller) -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1.15fr; gap: 0.22in; margin-bottom: 0.22in;">
-      <!-- Presenter 1 -->
-      <div class="card" style="padding: 0.25in; border-left: 5px solid #2D0C1E; height: 2.3in; display: flex; flex-direction: column; justify-content: space-between;">
+    <!-- Middle Presenter & Professor Cards (Clean 2-Column Symmetrical Layout) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3in; margin-bottom: 0.24in;">
+      <!-- Presenter Card (Aarush Bharti Solo) -->
+      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #2D0C1E; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.06in;">
-            <span style="font-size: 0.12in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">STUDENT PRESENTER</span>
-            <div style="width: 0.32in; height: 0.32in; border-radius: 50%; background: #F7F5F0; display: flex; align-items: center; justify-content: center; color: #D97706;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.08in;">
+            <span style="font-size: 0.125in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">STUDENT PRESENTER</span>
+            <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #F7F5F0; display: flex; align-items: center; justify-content: center; color: #D97706;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.27in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Aarush Bharti</div>
-          <div style="font-size: 0.15in; font-weight: 700; color: #92400E; font-family: 'JetBrains Mono', monospace;">Scholar No: 24U020010</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Aarush Bharti</div>
+          <div style="font-size: 0.165in; font-weight: 700; color: #92400E; font-family: 'JetBrains Mono', monospace;">Scholar No: 24U020010</div>
         </div>
-        <div style="font-size: 0.125in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.08in;">
+        <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
           Department of Computer Science & Engineering<br>Indian Institute of Information Technology, Bhopal
         </div>
       </div>
 
-      <!-- Presenter 2 -->
-      <div class="card" style="padding: 0.25in; border-left: 5px solid #2D0C1E; height: 2.3in; display: flex; flex-direction: column; justify-content: space-between;">
+      <!-- Course Professor Card (Dr. Meenakshi Choudhary) -->
+      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #D97706; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.06in;">
-            <span style="font-size: 0.12in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">STUDENT PRESENTER</span>
-            <div style="width: 0.32in; height: 0.32in; border-radius: 50%; background: #F7F5F0; display: flex; align-items: center; justify-content: center; color: #D97706;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.08in;">
+            <span style="font-size: 0.125in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">COURSE PROFESSOR & EVALUATOR</span>
+            <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; display: flex; align-items: center; justify-content: center; color: #D97706;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.27in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Ashish Goutam</div>
-          <div style="font-size: 0.15in; font-weight: 700; color: #92400E; font-family: 'JetBrains Mono', monospace;">Scholar No: 24U020011</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Dr. Meenakshi Choudhary</div>
+          <div style="font-size: 0.16in; font-weight: 600; color: #574B46;">Professor / Faculty, Department of CSE</div>
         </div>
-        <div style="font-size: 0.125in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.08in;">
-          Department of Computer Science & Engineering<br>Indian Institute of Information Technology, Bhopal
-        </div>
-      </div>
-
-      <!-- Supervisor / Instructor Card -->
-      <div class="card" style="padding: 0.25in; border-left: 5px solid #D97706; height: 2.3in; display: flex; flex-direction: column; justify-content: space-between;">
-        <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.06in;">
-            <span style="font-size: 0.12in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">PROJECT SUPERVISOR & COURSE MENTOR</span>
-            <div style="width: 0.32in; height: 0.32in; border-radius: 50%; background: #FEF3C7; display: flex; align-items: center; justify-content: center; color: #D97706;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            </div>
-          </div>
-          <div style="font-size: 0.27in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Dr. Sreemoyee Biswas</div>
-          <div style="font-size: 0.145in; font-weight: 600; color: #574B46;">Assistant Professor, Department of CSE</div>
-        </div>
-        <div style="font-size: 0.125in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.08in;">
-          Course Faculty & Academic Research Advisor<br>Indian Institute of Information Technology, Bhopal
+        <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
+          Artificial Intelligence & Machine Learning Course<br>Indian Institute of Information Technology, Bhopal
         </div>
       </div>
     </div>
 
-    <!-- Bottom Telemetry Metric Chips (Zero Dead Space) -->
+    <!-- Bottom Telemetry Metric Chips -->
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.22in;">
       <div class="card" style="padding: 0.18in 0.22in; display: flex; align-items: center; gap: 0.16in;">
         <div style="width: 0.48in; height: 0.48in; border-radius: 12px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; color: #D97706;">
@@ -512,7 +485,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>IIIT Bhopal • Dept. of Computer Science & Engineering • Artificial Intelligence Coursework</span>
-    <span>Aarush Bharti & Ashish Goutam • Model-Based Reflex Agents</span>
+    <span>Aarush Bharti (24U020010) • Model-Based Reflex Agents</span>
   </div>
 </div>
 '''
@@ -654,7 +627,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 02 / 10 • Foundational Concepts & Reflex Failure Modes</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -791,7 +764,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 03 / 10 • Agent Architecture & Internal Anatomy</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -926,7 +899,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 04 / 10 • Mathematical Formulation & State Update Mechanics</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1104,7 +1077,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 05 / 10 • Operational Flowchart & Decision Pipeline</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1220,7 +1193,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 06 / 10 • Concrete Real-World Implementations</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1348,7 +1321,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 07 / 10 • Comparative Taxonomy Across AI Architectures</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1490,7 +1463,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 08 / 10 • Robustness, Failure Modes & Edge Cases</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1608,7 +1581,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 09 / 10 • Frontier AI Extensions & Neural World Models</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 '''
@@ -1764,21 +1737,21 @@ html_content += f'''
       </div>
     </div>
 
-    <!-- Team & Acknowledgement Footer -->
-    <div style="display: grid; grid-template-columns: 1.2fr 1.2fr 0.8fr; gap: 0.18in;">
+    <!-- Team & Acknowledgement Footer (Solo Presenter & Dr. Meenakshi Choudhary) -->
+    <div style="display: grid; grid-template-columns: 1.3fr 1.3fr 0.8fr; gap: 0.2in;">
       <div class="card" style="padding: 0.1in 0.16in; display: flex; align-items: center; gap: 0.12in;">
         <div style="color: #D97706;">{SVG_CHECK}</div>
         <div>
           <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">PRESENTED BY</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Aarush Bharti (24U020010) & Ashish Goutam (24U020011)</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Aarush Bharti (Scholar No: 24U020010)</div>
         </div>
       </div>
 
       <div class="card" style="padding: 0.1in 0.16in; display: flex; align-items: center; gap: 0.12in;">
         <div style="color: #D97706;">{SVG_BOOK}</div>
         <div>
-          <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">COURSE SUPERVISOR</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Dr. Sreemoyee Biswas, Asst. Prof., CSE, IIIT Bhopal</div>
+          <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">COURSE PROFESSOR</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Dr. Meenakshi Choudhary, Dept. of CSE, IIIT Bhopal</div>
         </div>
       </div>
 
@@ -1790,7 +1763,7 @@ html_content += f'''
 
   <div class="slide-footer">
     <span>Slide 10 / 10 • Conclusion, Future Scope & References</span>
-    <span>IIIT Bhopal • Group 104</span>
+    <span>Aarush Bharti (24U020010) • IIIT Bhopal</span>
   </div>
 </div>
 
@@ -1798,7 +1771,7 @@ html_content += f'''
 </html>
 '''
 
-print(f"Writing HTML presentation to {OUTPUT_HTML}...")
+print(f"Writing updated HTML presentation to {OUTPUT_HTML}...")
 with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
     f.write(html_content)
 
@@ -1807,7 +1780,6 @@ print(f"HTML presentation written ({len(html_content)} characters).")
 # Compile to PDF using Headless Chrome
 chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 if not os.path.exists(chrome_path):
-    # Try Brave Browser
     chrome_path = "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
 print(f"Using browser at {chrome_path} to print PDF...")
@@ -1826,7 +1798,6 @@ cmd = [
 ]
 
 res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-print("Browser output:", res.stdout, res.stderr)
 
 if os.path.exists(OUTPUT_PDF):
     size = os.path.getsize(OUTPUT_PDF)
@@ -1836,22 +1807,9 @@ if os.path.exists(OUTPUT_PDF):
     shutil.copyfile(OUTPUT_PDF, DESKTOP_PDF)
     print(f"Copied PDF to Desktop: {DESKTOP_PDF}")
 
-    # Render PNGs using PyMuPDF
-    try:
-        import fitz
-        doc = fitz.open(OUTPUT_PDF)
-        print(f"PDF Page count: {len(doc)}")
-        for i in range(len(doc)):
-            page = doc[i]
-            pix = page.get_pixmap(dpi=150)
-            png_path = os.path.join(SLIDES_DIR, f"slide_{i+1}.png")
-            pix.save(png_path)
-            text_len = len(page.get_text())
-            print(f"Saved slide {i+1}: {pix.width}x{pix.height}, text len: {text_len}, colors: {pix.color_count()}")
-    except ImportError:
-        print("pymupdf not installed in root python, running via uv...")
-        subprocess.run([
-            "/Users/aarush/.local/bin/uv", "run", "--with", "pymupdf", "python3", "-c", f"""
+    # Re-render PNGs using PyMuPDF via uv
+    subprocess.run([
+        "/Users/aarush/.local/bin/uv", "run", "--with", "pymupdf", "python3", "-c", f"""
 import fitz, os
 doc = fitz.open('{OUTPUT_PDF}')
 for i in range(len(doc)):
@@ -1861,6 +1819,6 @@ for i in range(len(doc)):
     pix.save(png_path)
     print(f'Rendered Slide {{i+1}}: {{pix.width}}x{{pix.height}}, colors: {{pix.color_count()}}')
 """
-        ])
+    ])
 else:
     print("Error: PDF generation failed!")

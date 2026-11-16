@@ -5,8 +5,23 @@
 <title>Model-Based Reflex Agents — AI & ML Academic Presentation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --cream: #FAF7F4;
+    --card-white: #FFFFFF;
+    --plum: #3B1224;
+    --plum-light: #521D34;
+    --amber: #D97706;
+    --amber-dark: #B45309;
+    --peach: #FFF9F2;
+    --peach-border: #F3E4D6;
+    --text-dark: #1F2937;
+    --text-body: #4B5563;
+    --text-muted: #6B7280;
+    --border-subtle: #E5E0D8;
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -21,7 +36,7 @@
   }
 
   html, body {
-    background-color: #EDE8E1;
+    background-color: #4A4A4A;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #1A1A1A;
     -webkit-font-smoothing: antialiased;
@@ -62,7 +77,7 @@
     width: 16in;
     height: 9in;
     position: relative;
-    background-color: #FBF9F5;
+    background-color: var(--cream);
     overflow: hidden;
     padding: 0.45in 0.65in 0.4in;
     display: flex;
@@ -85,19 +100,19 @@
   }
 
   .inst-badge {
-    background: #EFEAE3;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #EFE9E2;
+    border: 1px solid #E2D9CE;
     border-radius: 30px;
     padding: 0.05in 0.16in;
     font-size: 0.12in;
     font-weight: 700;
-    color: #4A3E39;
+    color: #521D34;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .course-badge {
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 30px;
     padding: 0.05in 0.18in;
@@ -108,13 +123,13 @@
   }
 
   .group-badge {
-    background: #EFEAE3;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #EFE9E2;
+    border: 1px solid #E2D9CE;
     border-radius: 30px;
     padding: 0.05in 0.16in;
     font-size: 0.12in;
     font-weight: 700;
-    color: #4A3E39;
+    color: #521D34;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -123,7 +138,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.16in;
     font-weight: 700;
-    color: #1A1A1A;
+    color: var(--plum);
     letter-spacing: 0.08em;
     position: relative;
     padding-bottom: 0.04in;
@@ -135,7 +150,7 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: #D97706;
+    background: var(--amber);
     border-radius: 2px;
   }
 
@@ -146,23 +161,23 @@
   }
 
   .slide-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.42in;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.48in;
     line-height: 1.15;
-    font-weight: 700;
-    color: #1F1614;
+    font-weight: 800;
+    color: var(--plum);
     letter-spacing: -0.01em;
   }
   .slide-title span.accent {
-    color: #D97706;
+    color: var(--amber);
     font-style: italic;
   }
 
   .slide-subtitle {
     font-size: 0.165in;
-    color: #635752;
-    margin-top: 0.05in;
-    font-weight: 400;
+    color: var(--text-body);
+    margin-top: 0.04in;
+    font-weight: 500;
     font-style: italic;
   }
 
@@ -182,7 +197,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #EFEAE3;
+    border-top: 1px solid #EFEAE4;
+    color: var(--text-muted);
     font-size: 0.125in;
     color: #7A6F68;
     flex-shrink: 0;
@@ -190,15 +206,15 @@
 
   /* REUSABLE CARD SYSTEMS */
   .card {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(45, 12, 30, 0.03);
+    background: var(--card-white);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
     position: relative;
   }
 
   .plum-tag {
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 10px;
     padding: 0.06in 0.14in;
@@ -265,20 +281,20 @@
 
   /* QUOTE BANNER */
   .quote-banner {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: var(--card-white);
+    border: 1.5px solid var(--border-subtle);
     border-radius: 14px;
-    padding: 0.13in 0.22in;
+    padding: 0.13in 0.25in;
     display: flex;
     align-items: center;
-    gap: 0.2in;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    gap: 0.22in;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.03);
     margin-top: 0.18in;
     flex-shrink: 0;
   }
 
   .quote-label-badge {
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 20px;
     padding: 0.07in 0.18in;
@@ -293,12 +309,12 @@
 
   .quote-text {
     font-size: 0.145in;
-    color: #382F2D;
+    color: var(--text-dark);
     font-weight: 500;
     line-height: 1.45;
   }
   .quote-text strong {
-    color: #D97706;
+    color: var(--amber-dark);
     font-weight: 700;
   }
 </style>
@@ -323,7 +339,7 @@
           <span style="color: #D97706; font-size: 0.13in;">●</span>
           <span style="font-size: 0.12in; font-weight: 800; color: #92400E; letter-spacing: 0.08em; text-transform: uppercase;">INTELLIGENT AGENT ARCHITECTURES • RUSSELL & NORVIG</span>
         </div>
-        <h1 style="font-family: 'Playfair Display', serif; font-size: 0.65in; font-weight: 700; color: #1F1614; line-height: 1.08; letter-spacing: -0.015em; margin-bottom: 0.12in;">
+        <h1 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 0.76in; font-weight: 800; color: #3B1224; line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 0.12in;">
           Model-Based <span style="color: #D97706; font-style: italic;">Reflex Agents</span>
         </h1>
         <p style="font-size: 0.185in; color: #574B46; font-style: italic; font-weight: 400; line-height: 1.45; max-width: 9.2in;">
@@ -334,7 +350,7 @@
       <!-- University Seal Card -->
       <div style="background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 18px; padding: 0.2in 0.28in; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 4.2in; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
         <img src="data:image/png;base64,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" alt="IIIT Bhopal" style="height: 1.1in; width: auto; object-fit: contain; margin-bottom: 0.1in;">
-        <div style="font-size: 0.14in; font-weight: 700; color: #1F1614; text-align: center;">Indian Institute of Information Technology</div>
+        <div style="font-size: 0.14in; font-weight: 700; color: #1F2937; text-align: center;">Indian Institute of Information Technology</div>
         <div style="font-size: 0.12in; color: #786C66; text-align: center; margin-top: 0.02in;">Bhopal, Madhya Pradesh, India</div>
       </div>
     </div>
@@ -342,7 +358,7 @@
     <!-- Middle Presenter & Professor Cards (Clean 2-Column Symmetrical Layout) -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3in; margin-bottom: 0.24in;">
       <!-- Presenter Card (Aarush Bharti Solo) -->
-      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #2D0C1E; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #3B1224; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.08in;">
             <span style="font-size: 0.125in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">STUDENT PRESENTER</span>
@@ -350,7 +366,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Aarush Bharti</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Aarush Bharti</div>
           <div style="font-size: 0.165in; font-weight: 700; color: #92400E; font-family: 'JetBrains Mono', monospace;">Scholar No: 24U020010</div>
         </div>
         <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
@@ -367,7 +383,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Dr. Meenakshi Choudhary</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Dr. Meenakshi Choudhary</div>
           <div style="font-size: 0.16in; font-weight: 600; color: #574B46;">Assistant Professor, Department of CSE</div>
         </div>
         <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
@@ -383,7 +399,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">POMDP Ready</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">POMDP Ready</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">PARTIAL OBSERVABILITY</div>
         </div>
       </div>
@@ -393,7 +409,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">T(s, a)</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">T(s, a)</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">TRANSITION DYNAMICS</div>
         </div>
       </div>
@@ -403,7 +419,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">P(e | s)</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">P(e | s)</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">SENSOR PERCEPT MODEL</div>
         </div>
       </div>
@@ -413,7 +429,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">O(1) Speed</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">O(1) Speed</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">CONSTANT-TIME LOOKUP</div>
         </div>
       </div>
@@ -446,7 +462,7 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Card 1: Complete Observability Fallacy -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Full vs. Partial Observability</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">P_t ≠ S_t Reality</div>
@@ -471,7 +487,7 @@
 
       <!-- Card 2: The Infinite Loop Trap -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Infinite Loop Trap</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">State Ambiguity</div>
@@ -496,7 +512,7 @@
 
       <!-- Card 3: The History Lookup Paradox -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The History Table Fallacy</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">O(|P|^t) Explosion</div>
@@ -521,7 +537,7 @@
 
       <!-- Card 4: The Model-Based Solution -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg></div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Model-Based Paradigm</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">State Compression</div>
@@ -585,13 +601,13 @@
       <div style="display: flex; flex-direction: column; gap: 0.16in; justify-content: space-between;">
         <!-- Card 1: Internal State -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">01</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg>
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Internal State (Belief State)</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Internal State (Belief State)</span>
               <span class="amber-pill">Memory Buffer</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -602,13 +618,13 @@
 
         <!-- Card 2: Transition Model -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">02</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Transition Model: "How World Evolves"</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Transition Model: "How World Evolves"</span>
               <span class="blue-pill">Environment Physics</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -619,13 +635,13 @@
 
         <!-- Card 3: Action Model -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">03</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Sensor & Action Causality: "What Actions Do"</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Sensor & Action Causality: "What Actions Do"</span>
               <span class="green-pill">Actuator Causal Model</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -638,7 +654,7 @@
       <!-- Right Column: Visual Architecture Flow Box -->
       <div class="card" style="background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 0.22in; display: flex; flex-direction: column; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F0EAE1; padding-bottom: 0.08in;">
-          <span style="font-size: 0.14in; font-weight: 800; color: #2D0C1E; text-transform: uppercase; letter-spacing: 0.06em;">RUSSELL & NORVIG ARCHITECTURAL LOOP</span>
+          <span style="font-size: 0.14in; font-weight: 800; color: #3B1224; text-transform: uppercase; letter-spacing: 0.06em;">RUSSELL & NORVIG ARCHITECTURAL LOOP</span>
           <span class="plum-tag" style="font-size: 0.11in; padding: 0.03in 0.1in;">FIGURE 2.11 MAPPING</span>
         </div>
 
@@ -658,7 +674,7 @@
 
           <div style="text-align: center; color: #D97706; font-weight: 800; font-size: 0.15in;">↓</div>
 
-          <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 10px; padding: 0.12in 0.16in; display: flex; align-items: center; gap: 0.12in;">
+          <div style="background: #3B1224; color: #FFFFFF; border-radius: 10px; padding: 0.12in 0.16in; display: flex; align-items: center; gap: 0.12in;">
             <span style="background: #D97706; color: #FFFFFF; font-weight: 800; padding: 0.03in 0.08in; border-radius: 6px; font-size: 0.11in;">3. MATCH</span>
             <span style="font-size: 0.13in; color: #F1F5F9;">Evaluate <strong>Condition-Action Rules</strong> on <code>S_t</code> (NOT raw <code>P_t</code>)</span>
           </div>
@@ -716,7 +732,7 @@
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.2in; flex: 1;">
       <!-- Col 1 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           01 • Prior Belief State S_(t-1)
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -734,7 +750,7 @@
 
       <!-- Col 2 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           02 • Executed Action A_(t-1)
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -752,7 +768,7 @@
 
       <!-- Col 3 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           03 • Incoming Percept P_t
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -770,7 +786,7 @@
 
       <!-- Col 4 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           04 • State Fusion S_t
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -790,19 +806,19 @@
     <!-- Step Sequence Ribbon -->
     <div style="margin-top: 0.2in; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.18in;">
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 1: Predict (Prior)</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 1: Predict (Prior)</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Forward State Propagation</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 2: Measure (Percept)</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 2: Measure (Percept)</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Partial Sensor Ingestion</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 3: Update State</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 3: Update State</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Belief State Reconciliation</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 4: Execute Action</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 4: Execute Action</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">O(1) Rule Table Trigger</div>
       </div>
     </div>
@@ -846,7 +862,7 @@
     <div style="display: grid; grid-template-columns: 3.4in 1fr 3.4in; gap: 0.22in; flex: 1;">
       <!-- Left Column: Workflow Steps 01 to 06 -->
       <div style="display: flex; flex-direction: column; gap: 0.1in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           <span>Execution Pipeline</span>
         </div>
@@ -854,7 +870,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">01</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Percept Arrival</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Percept Arrival</div>
             <div style="font-size: 0.11in; color: #64748B;">Sensors ingest partial data</div>
           </div>
         </div>
@@ -862,7 +878,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">02</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Model Projection</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Model Projection</div>
             <div style="font-size: 0.11in; color: #64748B;">Predict S_t from S_t-1 & A_t-1</div>
           </div>
         </div>
@@ -870,7 +886,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">03</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Sensor Fusion</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Sensor Fusion</div>
             <div style="font-size: 0.11in; color: #64748B;">Reconcile prediction with P_t</div>
           </div>
         </div>
@@ -878,7 +894,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">04</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Internal State Update</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Internal State Update</div>
             <div style="font-size: 0.11in; color: #64748B;">Write S_t into memory register</div>
           </div>
         </div>
@@ -886,7 +902,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">05</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Rule Evaluation</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Rule Evaluation</div>
             <div style="font-size: 0.11in; color: #64748B;">IF (Condition(S_t)) THEN Action</div>
           </div>
         </div>
@@ -894,7 +910,7 @@
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">06</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Actuation & Loopback</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Actuation & Loopback</div>
             <div style="font-size: 0.11in; color: #64748B;">Send pulse to physical motors</div>
           </div>
         </div>
@@ -956,34 +972,34 @@
 
       <!-- Right Column: 4 Key Properties -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
           <span>Core Properties</span>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Markovian Efficiency</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Markovian Efficiency</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Internal state S_t summarizes all relevant history. Future states depend solely on current state and action.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Microsecond Speed</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Microsecond Speed</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Condition-action evaluation runs in O(1) time without expensive multi-step search tree rollouts.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Temporal Persistence</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Temporal Persistence</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Obstacles behind pillars or trucks in blind spots remain active in memory until explicitly disproven.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Zero Cloud Lock-in</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Zero Cloud Lock-in</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Entire state machine executes on edge microcontrollers without requiring external network connectivity.
           </p>
@@ -1023,7 +1039,7 @@
             <span class="plum-tag"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg> CASE STUDY 1: ADAS VEHICLE</span>
             <span class="amber-pill">Blind Spot Occlusion</span>
           </div>
-          <div style="font-size: 0.2in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.2in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Highway Lane-Change Under Blind-Spot Occlusion
           </div>
           <p style="font-size: 0.135in; color: #4B5563; line-height: 1.5; margin-bottom: 0.14in;">
@@ -1052,7 +1068,7 @@
             <span class="plum-tag"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg> CASE STUDY 2: VACUUM WORLD</span>
             <span class="blue-pill">Russell & Norvig Benchmark</span>
           </div>
-          <div style="font-size: 0.2in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.2in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Partially Observable Two-Room Cleaning Agent
           </div>
           <p style="font-size: 0.135in; color: #4B5563; line-height: 1.5; margin-bottom: 0.14in;">
@@ -1081,7 +1097,7 @@
         <div style="color: #D97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/></svg></div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">STATE ESTIMATION</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">Extended Kalman Filter / Belief Vector</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">Extended Kalman Filter / Belief Vector</div>
         </div>
       </div>
 
@@ -1089,7 +1105,7 @@
         <div style="color: #03543F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">DECISION ENGINE</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">Production Rule Set (Rete Algorithm)</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">Production Rule Set (Rete Algorithm)</div>
         </div>
       </div>
 
@@ -1097,7 +1113,7 @@
         <div style="color: #1E429F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">FAILSAFE GUARANTEE</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">100% Deterministic Edge Response</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">100% Deterministic Edge Response</div>
         </div>
       </div>
     </div>
@@ -1129,7 +1145,7 @@
     <div style="display: grid; grid-template-columns: 3.2in 1fr; gap: 0.25in; flex: 1;">
       <!-- Left Column: Metrics & Highlights -->
       <div style="display: flex; flex-direction: column; gap: 0.15in;">
-        <div class="card" style="padding: 0.2in; background: #2D0C1E; color: #FFFFFF;">
+        <div class="card" style="padding: 0.2in; background: #3B1224; color: #FFFFFF;">
           <div style="font-size: 0.12in; font-weight: 700; color: #F59E0B; text-transform: uppercase; margin-bottom: 0.05in;">CORE BENCHMARK</div>
           <div style="font-size: 0.26in; font-weight: 800; line-height: 1.1; margin-bottom: 0.08in;">The Reflex Sweet Spot</div>
           <p style="font-size: 0.125in; color: #D1D5DB; line-height: 1.45;">
@@ -1157,7 +1173,7 @@
       <div class="card" style="padding: 0.2in; display: flex; flex-direction: column; justify-content: space-between;">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.125in; text-align: left;">
           <thead>
-            <tr style="border-bottom: 2px solid #E5E7EB; color: #1F1614;">
+            <tr style="border-bottom: 2px solid #E5E7EB; color: #1F2937;">
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">AGENT TYPE</th>
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">INTERNAL MEMORY</th>
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">OBSERVABILITY</th>
@@ -1252,7 +1268,7 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Card 1: Model Drift -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Model Drift & Divergence</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">The Reality Gap</div>
@@ -1277,7 +1293,7 @@
 
       <!-- Card 2: State Space Explosion -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">State Space Explosion</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Curse of Dimensionality</div>
@@ -1302,7 +1318,7 @@
 
       <!-- Card 3: Non-Stationary Multi-Agent Worlds -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Dynamic Multi-Agent Worlds</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Unpredictable Actors</div>
@@ -1327,7 +1343,7 @@
 
       <!-- Card 4: Myopic Horizon -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Myopic Horizon Trap</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Lack of Deliberation</div>
@@ -1394,7 +1410,7 @@
             <span class="amber-pill">NeurIPS Landmark</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">2018</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Ha & Schmidhuber: World Models
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1413,7 +1429,7 @@
             <span class="blue-pill">Deep POMDP</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">Recurrent Q</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Deep Recurrent Q-Networks (DRQN)
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1432,7 +1448,7 @@
             <span class="green-pill">SOTA Model-Based</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">Nature 2023</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Hafner et al.: DreamerV3
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1451,7 +1467,7 @@
             <span class="purple-pill">Embodied Robotics</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">2026 Production</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Tesla FSD & Boston Dynamics
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1502,7 +1518,7 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Col 1: What We Established -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Core Takeaways (Conclusion)</span>
         </div>
@@ -1510,7 +1526,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #D97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Overcomes Partial Observability</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Overcomes Partial Observability</div>
             <div style="font-size: 0.11in; color: #64748B;">Memory buffers bridge sensor occlusions.</div>
           </div>
         </div>
@@ -1518,7 +1534,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #03543F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Eliminates Infinite Loops</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Eliminates Infinite Loops</div>
             <div style="font-size: 0.11in; color: #64748B;">Breaks identical percept ambiguity.</div>
           </div>
         </div>
@@ -1526,7 +1542,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #1E429F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Constant-Time O(1) Speed</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Constant-Time O(1) Speed</div>
             <div style="font-size: 0.11in; color: #64748B;">Direct rule evaluation on internal state.</div>
           </div>
         </div>
@@ -1534,7 +1550,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #6B21A8;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Stepping Stone to Planning</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Stepping Stone to Planning</div>
             <div style="font-size: 0.11in; color: #64748B;">Forms core of Goal & Utility agents.</div>
           </div>
         </div>
@@ -1542,7 +1558,7 @@
 
       <!-- Col 2: Future Scope -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
           <span>Future Scope (Next Steps)</span>
         </div>
@@ -1550,7 +1566,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #D97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Neuro-Symbolic World Models</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Neuro-Symbolic World Models</div>
             <div style="font-size: 0.11in; color: #64748B;">Hybrid neural nets with explicit logic rules.</div>
           </div>
         </div>
@@ -1558,7 +1574,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #03543F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Diffusion-Based Belief States</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Diffusion-Based Belief States</div>
             <div style="font-size: 0.11in; color: #64748B;">Generative world models for edge robotics.</div>
           </div>
         </div>
@@ -1566,7 +1582,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #1E429F;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Multi-Agent Game Models</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Multi-Agent Game Models</div>
             <div style="font-size: 0.11in; color: #64748B;">Estimating beliefs of external intelligent actors.</div>
           </div>
         </div>
@@ -1574,7 +1590,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #6B21A8;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Zero-Shot Sim-to-Real</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Zero-Shot Sim-to-Real</div>
             <div style="font-size: 0.11in; color: #64748B;">Self-calibrating physical models under drift.</div>
           </div>
         </div>
@@ -1582,7 +1598,7 @@
 
       <!-- Col 3: Academic References -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           <span>Key Academic References</span>
         </div>
@@ -1590,7 +1606,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[1]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Russell & Norvig (2020)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Russell & Norvig (2020)</div>
             <div style="font-size: 0.11in; color: #64748B;">AI: A Modern Approach (4th Ed.), Chapter 2.</div>
           </div>
         </div>
@@ -1598,7 +1614,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[2]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Ha & Schmidhuber (2018)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Ha & Schmidhuber (2018)</div>
             <div style="font-size: 0.11in; color: #64748B;">World Models, NeurIPS / arXiv:1803.10122.</div>
           </div>
         </div>
@@ -1606,7 +1622,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[3]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Hafner et al. (2023)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Hafner et al. (2023)</div>
             <div style="font-size: 0.11in; color: #64748B;">Mastering Domains with World Models (DreamerV3).</div>
           </div>
         </div>
@@ -1614,7 +1630,7 @@
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[4]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Kaelbling et al. (1998)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Kaelbling et al. (1998)</div>
             <div style="font-size: 0.11in; color: #64748B;">Planning & Acting in POMDPs, AI Journal.</div>
           </div>
         </div>
@@ -1622,7 +1638,7 @@
     </div>
 
     <!-- Final Takeaway Banner -->
-    <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.12in 0.2in; display: flex; align-items: center; gap: 0.16in; margin: 0.14in 0 0.12in;">
+    <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.12in 0.2in; display: flex; align-items: center; gap: 0.16in; margin: 0.14in 0 0.12in;">
       <div style="color: #F59E0B;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg></div>
       <div style="font-size: 0.135in; font-weight: 500;">
         "Model-Based Reflex Agents form the critical cognitive bridge between <strong>reactive sensory instinct</strong> and <strong>deliberative forward planning</strong> in artificial intelligence."
@@ -1635,7 +1651,7 @@
         <div style="color: #D97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div>
           <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">PRESENTED BY</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Aarush Bharti (Scholar No: 24U020010)</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Aarush Bharti (Scholar No: 24U020010)</div>
         </div>
       </div>
 
@@ -1643,7 +1659,7 @@
         <div style="color: #D97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <div>
           <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">ASSISTANT PROFESSOR & GUIDE</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Dr. Meenakshi Choudhary, Dept. of CSE, IIIT Bhopal</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Dr. Meenakshi Choudhary, Dept. of CSE, IIIT Bhopal</div>
         </div>
       </div>
 

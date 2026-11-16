@@ -7,7 +7,7 @@ Course Professor: Dr. Meenakshi Choudhary (Dept. of CSE, IIIT Bhopal)
 Matches 100% of the editorial aesthetic, layout fidelity, typography, and card design
 from the user's favorite Community Hero slide deck:
 - 16:9 widescreen layout (16in x 9in)
-- Deep plum containers (#2D0C1E), warm eggshell background (#FBF9F5), terracotta golden accents (#D97706)
+- Deep plum containers (#3B1224), warm eggshell background (#FBF9F5), terracotta golden accents (#D97706)
 - Balanced, full-height card grids with ZERO empty blank dead space
 - Mathematical formulations, flowcharts, comparative matrices, failure modes, and modern neural world models
 - Generates HTML, compiles to PDF via headless Chrome, verifies color/text, renders PNG slides, and saves to Desktop.
@@ -62,8 +62,23 @@ html_content = f'''<!DOCTYPE html>
 <title>Model-Based Reflex Agents — AI & ML Academic Presentation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {{
+    --cream: #FAF7F4;
+    --card-white: #FFFFFF;
+    --plum: #3B1224;
+    --plum-light: #521D34;
+    --amber: #D97706;
+    --amber-dark: #B45309;
+    --peach: #FFF9F2;
+    --peach-border: #F3E4D6;
+    --text-dark: #1F2937;
+    --text-body: #4B5563;
+    --text-muted: #6B7280;
+    --border-subtle: #E5E0D8;
+  }}
+
   * {{
     box-sizing: border-box;
     margin: 0;
@@ -78,7 +93,7 @@ html_content = f'''<!DOCTYPE html>
   }}
 
   html, body {{
-    background-color: #EDE8E1;
+    background-color: #4A4A4A;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #1A1A1A;
     -webkit-font-smoothing: antialiased;
@@ -119,7 +134,7 @@ html_content = f'''<!DOCTYPE html>
     width: 16in;
     height: 9in;
     position: relative;
-    background-color: #FBF9F5;
+    background-color: var(--cream);
     overflow: hidden;
     padding: 0.45in 0.65in 0.4in;
     display: flex;
@@ -142,19 +157,19 @@ html_content = f'''<!DOCTYPE html>
   }}
 
   .inst-badge {{
-    background: #EFEAE3;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #EFE9E2;
+    border: 1px solid #E2D9CE;
     border-radius: 30px;
     padding: 0.05in 0.16in;
     font-size: 0.12in;
     font-weight: 700;
-    color: #4A3E39;
+    color: #521D34;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }}
 
   .course-badge {{
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 30px;
     padding: 0.05in 0.18in;
@@ -165,13 +180,13 @@ html_content = f'''<!DOCTYPE html>
   }}
 
   .group-badge {{
-    background: #EFEAE3;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #EFE9E2;
+    border: 1px solid #E2D9CE;
     border-radius: 30px;
     padding: 0.05in 0.16in;
     font-size: 0.12in;
     font-weight: 700;
-    color: #4A3E39;
+    color: #521D34;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }}
@@ -180,7 +195,7 @@ html_content = f'''<!DOCTYPE html>
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.16in;
     font-weight: 700;
-    color: #1A1A1A;
+    color: var(--plum);
     letter-spacing: 0.08em;
     position: relative;
     padding-bottom: 0.04in;
@@ -192,7 +207,7 @@ html_content = f'''<!DOCTYPE html>
     left: 0;
     width: 100%;
     height: 3px;
-    background: #D97706;
+    background: var(--amber);
     border-radius: 2px;
   }}
 
@@ -203,23 +218,23 @@ html_content = f'''<!DOCTYPE html>
   }}
 
   .slide-title {{
-    font-family: 'Playfair Display', serif;
-    font-size: 0.42in;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.48in;
     line-height: 1.15;
-    font-weight: 700;
-    color: #1F1614;
+    font-weight: 800;
+    color: var(--plum);
     letter-spacing: -0.01em;
   }}
   .slide-title span.accent {{
-    color: #D97706;
+    color: var(--amber);
     font-style: italic;
   }}
 
   .slide-subtitle {{
     font-size: 0.165in;
-    color: #635752;
-    margin-top: 0.05in;
-    font-weight: 400;
+    color: var(--text-body);
+    margin-top: 0.04in;
+    font-weight: 500;
     font-style: italic;
   }}
 
@@ -239,7 +254,8 @@ html_content = f'''<!DOCTYPE html>
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #EFEAE3;
+    border-top: 1px solid #EFEAE4;
+    color: var(--text-muted);
     font-size: 0.125in;
     color: #7A6F68;
     flex-shrink: 0;
@@ -247,15 +263,15 @@ html_content = f'''<!DOCTYPE html>
 
   /* REUSABLE CARD SYSTEMS */
   .card {{
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(45, 12, 30, 0.03);
+    background: var(--card-white);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
     position: relative;
   }}
 
   .plum-tag {{
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 10px;
     padding: 0.06in 0.14in;
@@ -322,20 +338,20 @@ html_content = f'''<!DOCTYPE html>
 
   /* QUOTE BANNER */
   .quote-banner {{
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: var(--card-white);
+    border: 1.5px solid var(--border-subtle);
     border-radius: 14px;
-    padding: 0.13in 0.22in;
+    padding: 0.13in 0.25in;
     display: flex;
     align-items: center;
-    gap: 0.2in;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    gap: 0.22in;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.03);
     margin-top: 0.18in;
     flex-shrink: 0;
   }}
 
   .quote-label-badge {{
-    background: #2D0C1E;
+    background: var(--plum);
     color: #FFFFFF;
     border-radius: 20px;
     padding: 0.07in 0.18in;
@@ -350,12 +366,12 @@ html_content = f'''<!DOCTYPE html>
 
   .quote-text {{
     font-size: 0.145in;
-    color: #382F2D;
+    color: var(--text-dark);
     font-weight: 500;
     line-height: 1.45;
   }}
   .quote-text strong {{
-    color: #D97706;
+    color: var(--amber-dark);
     font-weight: 700;
   }}
 </style>
@@ -385,7 +401,7 @@ html_content += f'''
           <span style="color: #D97706; font-size: 0.13in;">●</span>
           <span style="font-size: 0.12in; font-weight: 800; color: #92400E; letter-spacing: 0.08em; text-transform: uppercase;">INTELLIGENT AGENT ARCHITECTURES • RUSSELL & NORVIG</span>
         </div>
-        <h1 style="font-family: 'Playfair Display', serif; font-size: 0.65in; font-weight: 700; color: #1F1614; line-height: 1.08; letter-spacing: -0.015em; margin-bottom: 0.12in;">
+        <h1 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 0.76in; font-weight: 800; color: #3B1224; line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 0.12in;">
           Model-Based <span style="color: #D97706; font-style: italic;">Reflex Agents</span>
         </h1>
         <p style="font-size: 0.185in; color: #574B46; font-style: italic; font-weight: 400; line-height: 1.45; max-width: 9.2in;">
@@ -396,7 +412,7 @@ html_content += f'''
       <!-- University Seal Card -->
       <div style="background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); border-radius: 18px; padding: 0.2in 0.28in; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 4.2in; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
         <img src="{b64_iiit_logo}" alt="IIIT Bhopal" style="height: 1.1in; width: auto; object-fit: contain; margin-bottom: 0.1in;">
-        <div style="font-size: 0.14in; font-weight: 700; color: #1F1614; text-align: center;">Indian Institute of Information Technology</div>
+        <div style="font-size: 0.14in; font-weight: 700; color: #1F2937; text-align: center;">Indian Institute of Information Technology</div>
         <div style="font-size: 0.12in; color: #786C66; text-align: center; margin-top: 0.02in;">Bhopal, Madhya Pradesh, India</div>
       </div>
     </div>
@@ -404,7 +420,7 @@ html_content += f'''
     <!-- Middle Presenter & Professor Cards (Clean 2-Column Symmetrical Layout) -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3in; margin-bottom: 0.24in;">
       <!-- Presenter Card (Aarush Bharti Solo) -->
-      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #2D0C1E; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="card" style="padding: 0.28in 0.32in; border-left: 6px solid #3B1224; height: 2.35in; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.08in;">
             <span style="font-size: 0.125in; font-weight: 800; color: #D97706; letter-spacing: 0.08em; text-transform: uppercase;">STUDENT PRESENTER</span>
@@ -412,7 +428,7 @@ html_content += f'''
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Aarush Bharti</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Aarush Bharti</div>
           <div style="font-size: 0.165in; font-weight: 700; color: #92400E; font-family: 'JetBrains Mono', monospace;">Scholar No: 24U020010</div>
         </div>
         <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
@@ -429,7 +445,7 @@ html_content += f'''
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </div>
           </div>
-          <div style="font-size: 0.32in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Dr. Meenakshi Choudhary</div>
+          <div style="font-size: 0.32in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Dr. Meenakshi Choudhary</div>
           <div style="font-size: 0.16in; font-weight: 600; color: #574B46;">Assistant Professor, Department of CSE</div>
         </div>
         <div style="font-size: 0.135in; color: #665A54; border-top: 1px solid #F0EAE1; padding-top: 0.1in;">
@@ -445,7 +461,7 @@ html_content += f'''
           {SVG_EYE_OFF}
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">POMDP Ready</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">POMDP Ready</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">PARTIAL OBSERVABILITY</div>
         </div>
       </div>
@@ -455,7 +471,7 @@ html_content += f'''
           {SVG_REFRESH}
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">T(s, a)</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">T(s, a)</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">TRANSITION DYNAMICS</div>
         </div>
       </div>
@@ -465,7 +481,7 @@ html_content += f'''
           {SVG_DATABASE}
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">P(e | s)</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">P(e | s)</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">SENSOR PERCEPT MODEL</div>
         </div>
       </div>
@@ -475,7 +491,7 @@ html_content += f'''
           {SVG_CLOCK}
         </div>
         <div>
-          <div style="font-size: 0.24in; font-weight: 800; color: #1F1614; line-height: 1;">O(1) Speed</div>
+          <div style="font-size: 0.24in; font-weight: 800; color: #1F2937; line-height: 1;">O(1) Speed</div>
           <div style="font-size: 0.11in; font-weight: 700; color: #7A6F68; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.03in;">CONSTANT-TIME LOOKUP</div>
         </div>
       </div>
@@ -513,7 +529,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Card 1: Complete Observability Fallacy -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;">{SVG_EYE}</div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Full vs. Partial Observability</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">P_t ≠ S_t Reality</div>
@@ -538,7 +554,7 @@ html_content += f'''
 
       <!-- Card 2: The Infinite Loop Trap -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;">{SVG_REFRESH}</div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Infinite Loop Trap</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">State Ambiguity</div>
@@ -563,7 +579,7 @@ html_content += f'''
 
       <!-- Card 3: The History Lookup Paradox -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;">{SVG_DATABASE}</div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The History Table Fallacy</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">O(|P|^t) Explosion</div>
@@ -588,7 +604,7 @@ html_content += f'''
 
       <!-- Card 4: The Model-Based Solution -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #F59E0B;">{SVG_BRAIN}</div>
           <div style="font-size: 0.18in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Model-Based Paradigm</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">State Compression</div>
@@ -657,13 +673,13 @@ html_content += f'''
       <div style="display: flex; flex-direction: column; gap: 0.16in; justify-content: space-between;">
         <!-- Card 1: Internal State -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">01</span>
             {SVG_BRAIN}
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Internal State (Belief State)</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Internal State (Belief State)</span>
               <span class="amber-pill">Memory Buffer</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -674,13 +690,13 @@ html_content += f'''
 
         <!-- Card 2: Transition Model -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">02</span>
             {SVG_REFRESH}
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Transition Model: "How World Evolves"</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Transition Model: "How World Evolves"</span>
               <span class="blue-pill">Environment Physics</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -691,13 +707,13 @@ html_content += f'''
 
         <!-- Card 3: Action Model -->
         <div class="card" style="padding: 0.18in 0.22in; display: flex; gap: 0.18in; align-items: flex-start;">
-          <div style="background: #2D0C1E; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="background: #3B1224; color: #FFFFFF; width: 0.55in; height: 0.55in; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
             <span style="font-size: 0.11in; font-weight: 800; color: #F59E0B;">03</span>
             {SVG_TARGET}
           </div>
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.04in;">
-              <span style="font-size: 0.17in; font-weight: 800; color: #1F1614;">Sensor & Action Causality: "What Actions Do"</span>
+              <span style="font-size: 0.17in; font-weight: 800; color: #1F2937;">Sensor & Action Causality: "What Actions Do"</span>
               <span class="green-pill">Actuator Causal Model</span>
             </div>
             <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45;">
@@ -710,7 +726,7 @@ html_content += f'''
       <!-- Right Column: Visual Architecture Flow Box -->
       <div class="card" style="background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 0.22in; display: flex; flex-direction: column; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F0EAE1; padding-bottom: 0.08in;">
-          <span style="font-size: 0.14in; font-weight: 800; color: #2D0C1E; text-transform: uppercase; letter-spacing: 0.06em;">RUSSELL & NORVIG ARCHITECTURAL LOOP</span>
+          <span style="font-size: 0.14in; font-weight: 800; color: #3B1224; text-transform: uppercase; letter-spacing: 0.06em;">RUSSELL & NORVIG ARCHITECTURAL LOOP</span>
           <span class="plum-tag" style="font-size: 0.11in; padding: 0.03in 0.1in;">FIGURE 2.11 MAPPING</span>
         </div>
 
@@ -730,7 +746,7 @@ html_content += f'''
 
           <div style="text-align: center; color: #D97706; font-weight: 800; font-size: 0.15in;">↓</div>
 
-          <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 10px; padding: 0.12in 0.16in; display: flex; align-items: center; gap: 0.12in;">
+          <div style="background: #3B1224; color: #FFFFFF; border-radius: 10px; padding: 0.12in 0.16in; display: flex; align-items: center; gap: 0.12in;">
             <span style="background: #D97706; color: #FFFFFF; font-weight: 800; padding: 0.03in 0.08in; border-radius: 6px; font-size: 0.11in;">3. MATCH</span>
             <span style="font-size: 0.13in; color: #F1F5F9;">Evaluate <strong>Condition-Action Rules</strong> on <code>S_t</code> (NOT raw <code>P_t</code>)</span>
           </div>
@@ -793,7 +809,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.2in; flex: 1;">
       <!-- Col 1 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           01 • Prior Belief State S_(t-1)
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -811,7 +827,7 @@ html_content += f'''
 
       <!-- Col 2 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           02 • Executed Action A_(t-1)
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -829,7 +845,7 @@ html_content += f'''
 
       <!-- Col 3 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           03 • Incoming Percept P_t
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -847,7 +863,7 @@ html_content += f'''
 
       <!-- Col 4 -->
       <div class="card" style="display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background: #2D0C1E; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
+        <div style="background: #3B1224; color: #FFFFFF; padding: 0.16in 0.18in; font-size: 0.13in; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
           04 • State Fusion S_t
         </div>
         <div style="padding: 0.2in; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
@@ -867,19 +883,19 @@ html_content += f'''
     <!-- Step Sequence Ribbon -->
     <div style="margin-top: 0.2in; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.18in;">
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 1: Predict (Prior)</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 1: Predict (Prior)</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Forward State Propagation</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 2: Measure (Percept)</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 2: Measure (Percept)</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Partial Sensor Ingestion</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 3: Update State</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 3: Update State</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">Belief State Reconciliation</div>
       </div>
       <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 10px; padding: 0.12in 0.16in; text-align: center;">
-        <div style="font-size: 0.12in; font-weight: 800; color: #1F1614;">Step 4: Execute Action</div>
+        <div style="font-size: 0.12in; font-weight: 800; color: #1F2937;">Step 4: Execute Action</div>
         <div style="font-size: 0.11in; color: #6B7280; margin-top: 0.02in;">O(1) Rule Table Trigger</div>
       </div>
     </div>
@@ -928,7 +944,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: 3.4in 1fr 3.4in; gap: 0.22in; flex: 1;">
       <!-- Left Column: Workflow Steps 01 to 06 -->
       <div style="display: flex; flex-direction: column; gap: 0.1in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           {SVG_FLOW}
           <span>Execution Pipeline</span>
         </div>
@@ -936,7 +952,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">01</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Percept Arrival</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Percept Arrival</div>
             <div style="font-size: 0.11in; color: #64748B;">Sensors ingest partial data</div>
           </div>
         </div>
@@ -944,7 +960,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">02</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Model Projection</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Model Projection</div>
             <div style="font-size: 0.11in; color: #64748B;">Predict S_t from S_t-1 & A_t-1</div>
           </div>
         </div>
@@ -952,7 +968,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">03</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Sensor Fusion</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Sensor Fusion</div>
             <div style="font-size: 0.11in; color: #64748B;">Reconcile prediction with P_t</div>
           </div>
         </div>
@@ -960,7 +976,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">04</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Internal State Update</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Internal State Update</div>
             <div style="font-size: 0.11in; color: #64748B;">Write S_t into memory register</div>
           </div>
         </div>
@@ -968,7 +984,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">05</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Rule Evaluation</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Rule Evaluation</div>
             <div style="font-size: 0.11in; color: #64748B;">IF (Condition(S_t)) THEN Action</div>
           </div>
         </div>
@@ -976,7 +992,7 @@ html_content += f'''
         <div class="card" style="padding: 0.1in 0.14in; display: flex; align-items: center; gap: 0.12in; flex: 1;">
           <div style="width: 0.36in; height: 0.36in; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.12in;">06</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Actuation & Loopback</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Actuation & Loopback</div>
             <div style="font-size: 0.11in; color: #64748B;">Send pulse to physical motors</div>
           </div>
         </div>
@@ -1038,34 +1054,34 @@ html_content += f'''
 
       <!-- Right Column: 4 Key Properties -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           {SVG_TARGET}
           <span>Core Properties</span>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Markovian Efficiency</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Markovian Efficiency</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Internal state S_t summarizes all relevant history. Future states depend solely on current state and action.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Microsecond Speed</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Microsecond Speed</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Condition-action evaluation runs in O(1) time without expensive multi-step search tree rollouts.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Temporal Persistence</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Temporal Persistence</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Obstacles behind pillars or trucks in blind spots remain active in memory until explicitly disproven.
           </p>
         </div>
 
         <div class="card" style="padding: 0.14in 0.16in; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="font-size: 0.15in; font-weight: 800; color: #1F1614; margin-bottom: 0.04in;">Zero Cloud Lock-in</div>
+          <div style="font-size: 0.15in; font-weight: 800; color: #1F2937; margin-bottom: 0.04in;">Zero Cloud Lock-in</div>
           <p style="font-size: 0.12in; color: #64748B; line-height: 1.4;">
             Entire state machine executes on edge microcontrollers without requiring external network connectivity.
           </p>
@@ -1110,7 +1126,7 @@ html_content += f'''
             <span class="plum-tag">{SVG_CAR} CASE STUDY 1: ADAS VEHICLE</span>
             <span class="amber-pill">Blind Spot Occlusion</span>
           </div>
-          <div style="font-size: 0.2in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.2in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Highway Lane-Change Under Blind-Spot Occlusion
           </div>
           <p style="font-size: 0.135in; color: #4B5563; line-height: 1.5; margin-bottom: 0.14in;">
@@ -1139,7 +1155,7 @@ html_content += f'''
             <span class="plum-tag">{SVG_REFRESH} CASE STUDY 2: VACUUM WORLD</span>
             <span class="blue-pill">Russell & Norvig Benchmark</span>
           </div>
-          <div style="font-size: 0.2in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.2in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Partially Observable Two-Room Cleaning Agent
           </div>
           <p style="font-size: 0.135in; color: #4B5563; line-height: 1.5; margin-bottom: 0.14in;">
@@ -1168,7 +1184,7 @@ html_content += f'''
         <div style="color: #D97706;">{SVG_CPU}</div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">STATE ESTIMATION</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">Extended Kalman Filter / Belief Vector</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">Extended Kalman Filter / Belief Vector</div>
         </div>
       </div>
 
@@ -1176,7 +1192,7 @@ html_content += f'''
         <div style="color: #03543F;">{SVG_FLOW}</div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">DECISION ENGINE</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">Production Rule Set (Rete Algorithm)</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">Production Rule Set (Rete Algorithm)</div>
         </div>
       </div>
 
@@ -1184,7 +1200,7 @@ html_content += f'''
         <div style="color: #1E429F;">{SVG_SHIELD}</div>
         <div>
           <div style="font-size: 0.11in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">FAILSAFE GUARANTEE</div>
-          <div style="font-size: 0.14in; font-weight: 700; color: #1F1614;">100% Deterministic Edge Response</div>
+          <div style="font-size: 0.14in; font-weight: 700; color: #1F2937;">100% Deterministic Edge Response</div>
         </div>
       </div>
     </div>
@@ -1221,7 +1237,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: 3.2in 1fr; gap: 0.25in; flex: 1;">
       <!-- Left Column: Metrics & Highlights -->
       <div style="display: flex; flex-direction: column; gap: 0.15in;">
-        <div class="card" style="padding: 0.2in; background: #2D0C1E; color: #FFFFFF;">
+        <div class="card" style="padding: 0.2in; background: #3B1224; color: #FFFFFF;">
           <div style="font-size: 0.12in; font-weight: 700; color: #F59E0B; text-transform: uppercase; margin-bottom: 0.05in;">CORE BENCHMARK</div>
           <div style="font-size: 0.26in; font-weight: 800; line-height: 1.1; margin-bottom: 0.08in;">The Reflex Sweet Spot</div>
           <p style="font-size: 0.125in; color: #D1D5DB; line-height: 1.45;">
@@ -1249,7 +1265,7 @@ html_content += f'''
       <div class="card" style="padding: 0.2in; display: flex; flex-direction: column; justify-content: space-between;">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.125in; text-align: left;">
           <thead>
-            <tr style="border-bottom: 2px solid #E5E7EB; color: #1F1614;">
+            <tr style="border-bottom: 2px solid #E5E7EB; color: #1F2937;">
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">AGENT TYPE</th>
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">INTERNAL MEMORY</th>
               <th style="padding: 0.1in 0.12in; font-weight: 800; text-transform: uppercase; font-size: 0.11in;">OBSERVABILITY</th>
@@ -1349,7 +1365,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Card 1: Model Drift -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;">{SVG_ALERT}</div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Model Drift & Divergence</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">The Reality Gap</div>
@@ -1374,7 +1390,7 @@ html_content += f'''
 
       <!-- Card 2: State Space Explosion -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;">{SVG_DATABASE}</div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">State Space Explosion</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Curse of Dimensionality</div>
@@ -1399,7 +1415,7 @@ html_content += f'''
 
       <!-- Card 3: Non-Stationary Multi-Agent Worlds -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;">{SVG_NETWORK}</div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">Dynamic Multi-Agent Worlds</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Unpredictable Actors</div>
@@ -1424,7 +1440,7 @@ html_content += f'''
 
       <!-- Card 4: Myopic Horizon -->
       <div class="card" style="padding: 0; display: flex; overflow: hidden;">
-        <div style="width: 2.3in; background: #2D0C1E; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
+        <div style="width: 2.3in; background: #3B1224; color: #FFFFFF; padding: 0.25in 0.18in; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0;">
           <div style="margin-bottom: 0.12in; color: #EF4444;">{SVG_TARGET}</div>
           <div style="font-size: 0.17in; font-weight: 800; line-height: 1.25; margin-bottom: 0.05in;">The Myopic Horizon Trap</div>
           <div style="font-size: 0.115in; color: #D1D5DB; font-family: 'JetBrains Mono', monospace;">Lack of Deliberation</div>
@@ -1496,7 +1512,7 @@ html_content += f'''
             <span class="amber-pill">NeurIPS Landmark</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">2018</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Ha & Schmidhuber: World Models
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1515,7 +1531,7 @@ html_content += f'''
             <span class="blue-pill">Deep POMDP</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">Recurrent Q</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Deep Recurrent Q-Networks (DRQN)
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1534,7 +1550,7 @@ html_content += f'''
             <span class="green-pill">SOTA Model-Based</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">Nature 2023</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Hafner et al.: DreamerV3
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1553,7 +1569,7 @@ html_content += f'''
             <span class="purple-pill">Embodied Robotics</span>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.11in; color: #64748B;">2026 Production</span>
           </div>
-          <div style="font-size: 0.18in; font-weight: 800; color: #1F1614; margin-bottom: 0.08in;">
+          <div style="font-size: 0.18in; font-weight: 800; color: #1F2937; margin-bottom: 0.08in;">
             Tesla FSD & Boston Dynamics
           </div>
           <p style="font-size: 0.13in; color: #4B5563; line-height: 1.45; margin-bottom: 0.12in;">
@@ -1609,7 +1625,7 @@ html_content += f'''
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.22in; flex: 1;">
       <!-- Col 1: What We Established -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           {SVG_CHECK}
           <span>Core Takeaways (Conclusion)</span>
         </div>
@@ -1617,7 +1633,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #D97706;">{SVG_EYE}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Overcomes Partial Observability</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Overcomes Partial Observability</div>
             <div style="font-size: 0.11in; color: #64748B;">Memory buffers bridge sensor occlusions.</div>
           </div>
         </div>
@@ -1625,7 +1641,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #03543F;">{SVG_REFRESH}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Eliminates Infinite Loops</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Eliminates Infinite Loops</div>
             <div style="font-size: 0.11in; color: #64748B;">Breaks identical percept ambiguity.</div>
           </div>
         </div>
@@ -1633,7 +1649,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #1E429F;">{SVG_CLOCK}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Constant-Time O(1) Speed</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Constant-Time O(1) Speed</div>
             <div style="font-size: 0.11in; color: #64748B;">Direct rule evaluation on internal state.</div>
           </div>
         </div>
@@ -1641,7 +1657,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #6B21A8;">{SVG_BRAIN}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Stepping Stone to Planning</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Stepping Stone to Planning</div>
             <div style="font-size: 0.11in; color: #64748B;">Forms core of Goal & Utility agents.</div>
           </div>
         </div>
@@ -1649,7 +1665,7 @@ html_content += f'''
 
       <!-- Col 2: Future Scope -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           {SVG_LIGHTBULB}
           <span>Future Scope (Next Steps)</span>
         </div>
@@ -1657,7 +1673,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #D97706;">{SVG_NETWORK}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Neuro-Symbolic World Models</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Neuro-Symbolic World Models</div>
             <div style="font-size: 0.11in; color: #64748B;">Hybrid neural nets with explicit logic rules.</div>
           </div>
         </div>
@@ -1665,7 +1681,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #03543F;">{SVG_CPU}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Diffusion-Based Belief States</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Diffusion-Based Belief States</div>
             <div style="font-size: 0.11in; color: #64748B;">Generative world models for edge robotics.</div>
           </div>
         </div>
@@ -1673,7 +1689,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #1E429F;">{SVG_FLOW}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Multi-Agent Game Models</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Multi-Agent Game Models</div>
             <div style="font-size: 0.11in; color: #64748B;">Estimating beliefs of external intelligent actors.</div>
           </div>
         </div>
@@ -1681,7 +1697,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <div style="color: #6B21A8;">{SVG_SHIELD}</div>
           <div>
-            <div style="font-size: 0.13in; font-weight: 800; color: #1F1614;">Zero-Shot Sim-to-Real</div>
+            <div style="font-size: 0.13in; font-weight: 800; color: #1F2937;">Zero-Shot Sim-to-Real</div>
             <div style="font-size: 0.11in; color: #64748B;">Self-calibrating physical models under drift.</div>
           </div>
         </div>
@@ -1689,7 +1705,7 @@ html_content += f'''
 
       <!-- Col 3: Academic References -->
       <div style="display: flex; flex-direction: column; gap: 0.12in;">
-        <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
+        <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.1in 0.16in; font-size: 0.13in; font-weight: 700; display: flex; align-items: center; gap: 0.08in;">
           {SVG_BOOK}
           <span>Key Academic References</span>
         </div>
@@ -1697,7 +1713,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[1]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Russell & Norvig (2020)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Russell & Norvig (2020)</div>
             <div style="font-size: 0.11in; color: #64748B;">AI: A Modern Approach (4th Ed.), Chapter 2.</div>
           </div>
         </div>
@@ -1705,7 +1721,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[2]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Ha & Schmidhuber (2018)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Ha & Schmidhuber (2018)</div>
             <div style="font-size: 0.11in; color: #64748B;">World Models, NeurIPS / arXiv:1803.10122.</div>
           </div>
         </div>
@@ -1713,7 +1729,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[3]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Hafner et al. (2023)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Hafner et al. (2023)</div>
             <div style="font-size: 0.11in; color: #64748B;">Mastering Domains with World Models (DreamerV3).</div>
           </div>
         </div>
@@ -1721,7 +1737,7 @@ html_content += f'''
         <div class="card" style="padding: 0.12in 0.16in; flex: 1; display: flex; align-items: center; gap: 0.12in;">
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.14in; font-weight: 800; color: #D97706;">[4]</span>
           <div>
-            <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Kaelbling et al. (1998)</div>
+            <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Kaelbling et al. (1998)</div>
             <div style="font-size: 0.11in; color: #64748B;">Planning & Acting in POMDPs, AI Journal.</div>
           </div>
         </div>
@@ -1729,7 +1745,7 @@ html_content += f'''
     </div>
 
     <!-- Final Takeaway Banner -->
-    <div style="background: #2D0C1E; color: #FFFFFF; border-radius: 12px; padding: 0.12in 0.2in; display: flex; align-items: center; gap: 0.16in; margin: 0.14in 0 0.12in;">
+    <div style="background: #3B1224; color: #FFFFFF; border-radius: 12px; padding: 0.12in 0.2in; display: flex; align-items: center; gap: 0.16in; margin: 0.14in 0 0.12in;">
       <div style="color: #F59E0B;">{SVG_BRAIN}</div>
       <div style="font-size: 0.135in; font-weight: 500;">
         "Model-Based Reflex Agents form the critical cognitive bridge between <strong>reactive sensory instinct</strong> and <strong>deliberative forward planning</strong> in artificial intelligence."
@@ -1742,7 +1758,7 @@ html_content += f'''
         <div style="color: #D97706;">{SVG_CHECK}</div>
         <div>
           <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">PRESENTED BY</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Aarush Bharti (Scholar No: 24U020010)</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Aarush Bharti (Scholar No: 24U020010)</div>
         </div>
       </div>
 
@@ -1750,7 +1766,7 @@ html_content += f'''
         <div style="color: #D97706;">{SVG_BOOK}</div>
         <div>
           <div style="font-size: 0.105in; font-weight: 800; color: #7A6F68; text-transform: uppercase;">ASSISTANT PROFESSOR & GUIDE</div>
-          <div style="font-size: 0.125in; font-weight: 800; color: #1F1614;">Dr. Meenakshi Choudhary, Dept. of CSE, IIIT Bhopal</div>
+          <div style="font-size: 0.125in; font-weight: 800; color: #1F2937;">Dr. Meenakshi Choudhary, Dept. of CSE, IIIT Bhopal</div>
         </div>
       </div>
 
